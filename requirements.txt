@@ -1,0 +1,7 @@
+requests
+pandas
+aiohttp
+async_timeout
+python-dotenv
+supabase
+bs4
