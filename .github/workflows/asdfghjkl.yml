@@ -25,3 +25,4 @@ jobs:
           python asdfghjkl2.py
           python genex.py
           python bp.py
+          python gg.py
