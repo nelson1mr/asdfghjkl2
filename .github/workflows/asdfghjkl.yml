@@ -24,3 +24,4 @@ jobs:
         run: |
           python asdfghjkl2.py
           python genex.py
+          python bp.py

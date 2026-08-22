@@ -21,7 +21,7 @@ load_dotenv()
 # =============================================================================
 SUPABASE_URL = os.getenv("V3")
 SUPABASE_KEY = os.getenv("V4")
-GENEX_URL = os.getenv("gx")
+GENEX_URL = os.getenv("gx") or ""
 
 HEADERS = {
     "User-Agent": (
@@ -126,7 +126,7 @@ def scrape_and_parse_genex() -> list[dict]:
       cola_str = cola_tag.get_text(strip=True) if cola_tag else ""
 
       # 4. Determinar condición, litros y cola
-      litros = None
+      litros = None 
       if volumen_str == "[AGOTADO]":
         condition = "unavailable"
         litros = 0.0
@@ -148,7 +148,7 @@ def scrape_and_parse_genex() -> list[dict]:
           "fuel_type_id": fuel_type_id,
           "reported_at": now_utc,
           "official_condition": condition,
-          "official_queue_cars_estimate": queue_estimate,
+          #"official_queue_cars_estimate": queue_estimate,
           "available_liters": litros,
           "source": SOURCE_NAME,
       })
@@ -157,19 +157,16 @@ def scrape_and_parse_genex() -> list[dict]:
   # 5. REPORTE DE AUDITORÍA Y SALUD DE SINCRONIZACIÓN
   # =========================================================================
   if unmatched_stations:
-    print("\n" + "⚠️ " * 20)
     print(
-        f"[ALERTA DE SINCRONIZACIÓN] Se encontraron"
-        f" {len(unmatched_stations)} estaciones NO emparejadas en Genex:"
+        f"[GX ALERT] Se encontraron"
+        f" {len(unmatched_stations)} estaciones NO emparejadas:"
     )
     for un in unmatched_stations:
       print(f"   -> Nombre: '{un['nombre']}' | Dirección: '{un['direccion']}'")
-    print("   👉 Regístralas en tu BD y agrégalas a GENEX_STATION_MAPPING.")
-    print("⚠️ " * 20 + "\n")
   else:
-    print("[OK] Todas las estaciones de la web de Genex están 100% emparejadas.")
+    print("[GX] Todas las estaciones de la web emparejadas.")
 
-  print(f"[OK] Se generaron {len(records)} reportes de combustibles líquidos.")
+  print(f"[GX] Se generaron {len(records)} reportes de combustibles líquidos.")
   return records
 
 
@@ -178,7 +175,7 @@ def scrape_and_parse_genex() -> list[dict]:
 # =============================================================================
 def main():
   if not SUPABASE_URL or not SUPABASE_KEY:
-    print("[ERROR] Faltan variables de entorno de Supabase.")
+    print("[GX] Faltan variables de entorno de Supabase.")
     return
 
   db: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -187,9 +184,9 @@ def main():
   if reports:
     try:
       db.table("station_official_reports").insert(reports).execute()
-      print(f"✅ {len(reports)} reportes insertados con éxito en Supabase.")
+      print(f"[GX] {len(reports)} reportes insertados con éxito.")
     except Exception as e:
-      print(f"❌ Error insertando en Supabase: {e}")
+      print(f"[GX] Error insertando datos: {e}")
 
 
 if __name__ == "__main__":
