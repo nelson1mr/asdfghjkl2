@@ -21,6 +21,8 @@ jobs:
           V3: ${{ secrets.V3 }}
           V4: ${{ secrets.V4 }}
           gx: ${{ secrets.gx }}
+          bp: ${{ secrets.bp }}
+          gg: ${{ secrets.gg }}
         run: |
           python asdfghjkl2.py
           python genex.py
