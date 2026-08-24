@@ -43,7 +43,7 @@ DEPARTAMENTOS = list(DEPARTAMENTOS_MAP.keys())
 API_PRODUCT_TO_FUEL_TYPE_ID = {
     0: {"id": 1, "name": "GES"},
     1: {"id": 2, "name": "DOS"},
-    2: {"id": 3, "name": "GP"},
+    2: {"id": 3, "name": "GP+"},
     3: {"id": 4, "name": "DUL"},
 }
 
@@ -234,17 +234,16 @@ async def fetch_all_anh_telemetry() -> list[dict]:
 def determine_availability(item: dict) -> str:
     saldo_estado = (item.get("saldo_estado") or "bajo").lower()
     fecha_venta_raw = item.get("fecha_ultima_venta")
-    server_time_raw = item.get("_server_time")
 
     if not fecha_venta_raw:
         return "unknown"
 
     try:
-        ref_time = datetime.fromisoformat(server_time_raw) if server_time_raw else datetime.now(timezone.utc)
+        now_bolivia = datetime.now(BOLIVIA_TZ)
         fecha_venta = datetime.fromisoformat(fecha_venta_raw)
-        if ref_time.tzinfo and not fecha_venta.tzinfo:
-            fecha_venta = fecha_venta.replace(tzinfo=ref_time.tzinfo)
-        minutos_sin_venta = (ref_time - fecha_venta).total_seconds() / 60.0
+        if not fecha_venta.tzinfo:
+            fecha_venta = fecha_venta.replace(tzinfo=BOLIVIA_TZ)
+        minutos_sin_venta = (now_bolivia - fecha_venta).total_seconds() / 60.0
     except Exception:
         return "unknown"
 
