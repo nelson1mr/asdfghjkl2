@@ -315,6 +315,7 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
         dep_id = item.get("departamento_id") or item.get("_dep_id", 2)
         prod_code = item.get("_api_producto", 0)
         prod_name = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("name", "GES")
+        fuel_type_id = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("id", 1)
 
         try:
             fecha_salida = datetime.fromisoformat(fecha_despacho_raw)
@@ -344,6 +345,7 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
             "fecha_salida_planta": fecha_salida.isoformat(),
             "fecha_llegada_aprox": fecha_llegada.isoformat(),
             "report_timestamp": now_utc.isoformat(),
+            "fuel_type_id": fuel_type_id,
         }
 
         # Generación del hash único idéntico
