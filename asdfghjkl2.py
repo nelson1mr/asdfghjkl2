@@ -231,12 +231,12 @@ async def fetch_all_anh_telemetry() -> list[dict]:
 # =============================================================================
 # 5. REPORTES DE DISPONIBILIDAD
 # =============================================================================
-def determine_availability(item: dict) -> str:
-    saldo_estado = (item.get("saldo_estado") or "bajo").lower()
+def determine_availability(item: dict) -> str | None:
+    saldo_estado = (item.get("saldo_estado") or "").lower()
     fecha_venta_raw = item.get("fecha_ultima_venta")
 
     if not fecha_venta_raw:
-        return "unknown"
+        return None
 
     try:
         now_bolivia = datetime.now(BOLIVIA_TZ)
@@ -245,14 +245,14 @@ def determine_availability(item: dict) -> str:
             fecha_venta = fecha_venta.replace(tzinfo=BOLIVIA_TZ)
         minutos_sin_venta = (now_bolivia - fecha_venta).total_seconds() / 60.0
     except Exception:
-        return "unknown"
+        return None
 
     if saldo_estado in ["alto", "medio"]:
-        return "available" if minutos_sin_venta <= 720.0 else "unknown"
+        return "available" if minutos_sin_venta <= 720.0 else None
     elif saldo_estado == "bajo":
         return "available" if minutos_sin_venta <= 45.0 else "unavailable"
 
-    return "unknown"
+    return None
 
 
 def transform_and_insert_reports(db: Client, raw_data: list[dict], stations_cache: dict[int, dict]):
@@ -270,10 +270,14 @@ def transform_and_insert_reports(db: Client, raw_data: list[dict], stations_cach
             un_records.append(item)
             continue
 
+        official_condition = determine_availability(item)
+        if official_condition is None:
+            continue
+
         records.append({
             "station_id": station["id"],
             "fuel_type_id": prod_meta["id"],
-            "official_condition": determine_availability(item),
+            "official_condition": official_condition,
             "official_queue_cars_estimate": None,
             "available_liters": None,
             "source": SOURCE_NAME,
@@ -315,7 +319,7 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
         dep_id = item.get("departamento_id") or item.get("_dep_id", 2)
         prod_code = item.get("_api_producto", 0)
         prod_name = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("name", "GES")
-        fuel_type_id = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("id", 1)
+        fuel_type_id = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("id", None)
 
         try:
             fecha_salida = datetime.fromisoformat(fecha_despacho_raw)
