@@ -149,13 +149,16 @@ def extract_and_parse() -> list[dict]:
     print(f"[BP] Total de registros generados: {len(all_records)}")
     return all_records
 
+# Alias estandarizado para el orquestador
+scrape = extract_and_parse
+
 def main():
     if not URL or not KEY:
         print("[BP] Faltan variables de entorno.")
         return
 
     db: Client = create_client(URL, KEY)
-    reports = extract_and_parse()
+    reports = scrape()
 
     if reports:
         try:
@@ -166,4 +169,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()

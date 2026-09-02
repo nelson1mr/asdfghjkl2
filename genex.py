@@ -170,8 +170,12 @@ def scrape_and_parse_genex() -> list[dict]:
   return records
 
 
+# Alias estandarizado para el orquestador
+scrape = scrape_and_parse_genex
+
+
 # =============================================================================
-# 3. INSERCIÓN EN SUPABASE
+# 3. EJECUCIÓN INDEPENDIENTE (OPCIONAL PARA PRUEBAS LOCALES)
 # =============================================================================
 def main():
   if not SUPABASE_URL or not SUPABASE_KEY:
@@ -179,7 +183,7 @@ def main():
     return
 
   db: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-  reports = scrape_and_parse_genex()
+  reports = scrape()
 
   if reports:
     try:
@@ -190,4 +194,4 @@ def main():
 
 
 if __name__ == "__main__":
-  main()
+  main()

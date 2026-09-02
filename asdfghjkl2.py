@@ -255,8 +255,7 @@ def determine_availability(item: dict) -> str | None:
     return None
 
 
-def transform_and_insert_reports(db: Client, raw_data: list[dict], stations_cache: dict[int, dict]):
-    print("[PASO 3/5] Guardando estados en official reports...")
+def generate_anh_reports(raw_data: list[dict], stations_cache: dict[int, dict]) -> list[dict]:
     records = []
     un_records = []
 
@@ -283,23 +282,36 @@ def transform_and_insert_reports(db: Client, raw_data: list[dict], stations_cach
             "source": SOURCE_NAME,
         })
 
-    for i in range(0, len(records), BATCH_SIZE):
-        batch = records[i:i + BATCH_SIZE]
+    if un_records:
+        print(f"  [INFO] Registros ANH sin procesar / no emparejados: {len(un_records)}")
+
+    return records
+
+
+def batch_insert_reports(db: Client, records: list[dict], batch_size: int = BATCH_SIZE) -> int:
+    inserted_count = 0
+    if not records:
+        print("  [INFO] No hay reportes para insertar.")
+        return 0
+
+    print(f"  [DB] Insertando {len(records)} reportes en lotes de {batch_size}...")
+    for i in range(0, len(records), batch_size):
+        batch = records[i:i + batch_size]
         try:
             db.table(REPORTS_TABLE).insert(batch).execute()
+            inserted_count += len(batch)
         except Exception as e:
-            print(f"  [ERROR] Falló inserción en '{REPORTS_TABLE}': {e}")
+            print(f"  [ERROR] Falló inserción en '{REPORTS_TABLE}' (lote {i//batch_size + 1}): {e}")
 
-    if un_records:
-        print(f"  [INFO] Registros sin procesar: {len(un_records)}")
-        #listar las estaciones no encontradas
-        for item in un_records:
-            anh_id = item.get("id")
-            raw_station_name = item.get("nombre") or "DESCONOCIDO"
-            coord = f"({item.get('lat')}, {item.get('lng')})" or "(sin coordenadas)"
-            prod_name = API_PRODUCT_TO_FUEL_TYPE_ID.get(item.get("_api_producto"), {}).get("name", "GES")
-            ultima_venta = item.get("fecha_ultima_venta") or "N/A"
-            print(f"    - ANH_ID: {anh_id}, {prod_name}, {ultima_venta}, {raw_station_name}, {coord}")
+    print(f"  [OK] Inserción finalizada: {inserted_count}/{len(records)} registros guardados.")
+    return inserted_count
+
+
+def transform_and_insert_reports(db: Client, raw_data: list[dict], stations_cache: dict[int, dict]):
+    print("[PASO 3/5] Generando e insertando estados en official reports...")
+    records = generate_anh_reports(raw_data, stations_cache)
+    batch_insert_reports(db, records)
+
 
 # =============================================================================
 # 6. GESTIÓN DE HISTORIAL DE DESPACHOS Y MAPEO RPC

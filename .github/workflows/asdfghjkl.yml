@@ -15,7 +15,7 @@ jobs:
           cache: 'pip'
       - run: |
           pip install -r requirements.txt
-      - name: Run Processing Script
+      - name: Run Unified Ingestion Engine
         env:
           V0: ${{ secrets.V0 }}
           V3: ${{ secrets.V3 }}
@@ -24,7 +24,5 @@ jobs:
           bp: ${{ secrets.bp }}
           gg: ${{ secrets.gg }}
         run: |
-          python asdfghjkl2.py
-          python genex.py
-          python bp.py
-          python gg.py
+          python main.py
+
