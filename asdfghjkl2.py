@@ -250,7 +250,8 @@ def determine_availability(item: dict) -> str | None:
     if saldo_estado in ["alto", "medio"]:
         return "available" if minutos_sin_venta <= 720.0 else None
     elif saldo_estado == "bajo":
-        return "available" if minutos_sin_venta <= 45.0 else "unavailable"
+        # Una venta antigua no confirma el estado actual de la estación.
+        return "available" if minutos_sin_venta <= 45.0 else None
 
     return None
 
