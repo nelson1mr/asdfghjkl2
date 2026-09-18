@@ -231,8 +231,22 @@ async def fetch_all_anh_telemetry() -> list[dict]:
 # =============================================================================
 # 5. REPORTES DE DISPONIBILIDAD
 # =============================================================================
+def parse_available_liters(item: dict) -> float | None:
+    raw_liters = item.get("saldo_litros")
+    if raw_liters is None or raw_liters == "":
+        return None
+
+    try:
+        liters = float(raw_liters)
+        # ANH usa cero también cuando el surtidor no expone una medición fiable.
+        return liters if math.isfinite(liters) and liters > 0 else None
+    except (TypeError, ValueError):
+        return None
+
+
 def determine_availability(item: dict) -> str | None:
     saldo_estado = (item.get("saldo_estado") or "").lower()
+    # La única señal temporal usada por este motor es la última venta real.
     fecha_venta_raw = item.get("fecha_ultima_venta")
 
     if not fecha_venta_raw:
@@ -250,8 +264,8 @@ def determine_availability(item: dict) -> str | None:
     if saldo_estado in ["alto", "medio"]:
         return "available" if minutos_sin_venta <= 720.0 else None
     elif saldo_estado == "bajo":
-        # Una venta antigua no confirma el estado actual de la estación.
-        return "available" if minutos_sin_venta <= 45.0 else None
+        # En bajo, una venta antigua permite inferir falta de disponibilidad.
+        return "available" if minutos_sin_venta <= 45.0 else "unavailable"
 
     return None
 
@@ -279,12 +293,16 @@ def generate_anh_reports(raw_data: list[dict], stations_cache: dict[int, dict]) 
             "fuel_type_id": prod_meta["id"],
             "official_condition": official_condition,
             "official_queue_cars_estimate": None,
-            "available_liters": None,
+            "available_liters": parse_available_liters(item),
             "source": SOURCE_NAME,
         })
 
     if un_records:
         print(f"  [INFO] Registros ANH sin procesar / no emparejados: {len(un_records)}")
+        for unrec in un_records:
+            anh_id = unrec.get("id")
+            api_prod = unrec.get("_api_producto")
+            print(f"    - ANH_ID: {anh_id}, Producto: {api_prod}, Nombre: {unrec.get('nombre')}, Dep_ID: {unrec.get('_dep_id')}")
 
     return records
 
