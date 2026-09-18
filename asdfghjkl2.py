@@ -100,6 +100,12 @@ PLANTAS_DISTRIBUIDORAS = {
     ],
 }
 
+# Los siguientes anh_id son falsos positivos o ya han sido considerados
+#  - ANH_ID: 2719, Nombre: INVERSIONES JANA S.A., Dep_ID: 1 - En la api existen duplicados de esta estación, se considera solo el mas reciente
+#  - ANH_ID: 2733, Nombre: YUPANQUI QUISPE MARCOS, Dep_ID: 2 - El ultimo reporte de esta estación es de 2025 y no esta claro su ubicacion, se ignora
+#  - ANH_ID: 3275, Nombre: REFINERIA ORIENTAL S.A. SUCURSAL 6 ORURO, Dep_ID: 4 - sospecha de que es el surtidor lucyfer que ya ha desaparecido de la api oficial
+#  - ANH_ID: 2333, Nombre: ESTACION DE SERVICIO GUADALUPE POTOSI, Dep_ID: 5 - En la api existen duplicados de esta estación, se considera solo el mas reciente
+
 STATIONS_TABLE = "stations"
 REPORTS_TABLE = "station_official_reports"
 DISPATCHES_TABLE = "anh_dispatches_history"
