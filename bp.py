@@ -22,16 +22,28 @@ HEADERS = {
 # Configuración de productos a consultar (puedes agregar más en el futuro)
 PRODUCTS = [
     {
-        "bp_code": 134,
+        "bp_code": "G",
         "fuel_type_id": 1,
         "name": "Gasolina Especial",
-        "url": f"{BP_URL}/134",
+        "url": f"{BP_URL}/G",
     },
     {
-        "bp_code": 132,
+        "bp_code": "D",
         "fuel_type_id": 2,
         "name": "Diésel Oil",
-        "url": f"{BP_URL}/132",
+        "url": f"{BP_URL}/D",
+    },
+    {
+        "bp_code": "GU",
+        "fuel_type_id": 3,
+        "name": "Gasolina Ultra",
+        "url": f"{BP_URL}/GU",
+    },
+    {
+        "bp_code": "DI",
+        "fuel_type_id": 4,
+        "name": "Diésel Ultra",
+        "url": f"{BP_URL}/DI",
     },
 ]
 
@@ -39,25 +51,25 @@ PRODUCTS = [
 STATION_MAPPING = {
     "BEREA":        {"id": 1053, "fuels": [1, 2]}, 
     "CABEZAS":      {"id": 1055, "fuels": [1, 2]}, 
-    "CEDENO":       {"id": 881,  "fuels": [1, 2]}, 
-    "CHACO":        {"id": 1220, "fuels": [1, 2]}, 
+    #"CEDENO":       {"id": 881,  "fuels": [1, 2]}, #ya no existe en la web de Biopetrol, se ignora
+    "CHACO":        {"id": 1220, "fuels": [1, 2, 3]}, 
     "EQUIPETROL":   {"id": 1221, "fuels": [1, 2]},  
     "LA TECA":      {"id": 1241, "fuels": [1, 2]},  
-    "LOPEZ":        {"id": 1103, "fuels": [1, 2]}, 
+    "LOPEZ":        {"id": 1103, "fuels": [1, 2, 3]}, 
     "LUCYFER":      {"id": 1009, "fuels": [1, 2]},  
-    "MONTEVERDE":   {"id": 1104, "fuels": [1, 2]},  
-    "MONTECRISTO":  {"id": 1238, "fuels": [1, 2]},  
+    "MONTEVERDE":   {"id": 1104, "fuels": [1, 2, 4]},  
+    "MONTECRISTO":  {"id": 1238, "fuels": [1, 2, 4]},  
     "PARAGUA":      {"id": 1244, "fuels": [1, 2]},  
     "PARAPETI":     {"id": 1054, "fuels": [1, 2]}, 
     "SAAVEDRA":     {"id": 1247, "fuels": [1, 2]},  
     "VIRU VIRU":    {"id": 1246, "fuels": [1, 2]}, 
 
-    "ALEMANA":      {"id": 1219, "fuels": [1]},     
+    "ALEMANA":      {"id": 1219, "fuels": [1, 3]},     
     "BENI":         {"id": 1102, "fuels": [1]},     
     "GASCO":        {"id": 1183, "fuels": [1]},    
-    "PIRAI":        {"id": 1052, "fuels": [1]},     
+    "PIRAI":        {"id": 1052, "fuels": [1, 3]},     
     "ROYAL":        {"id": 1245, "fuels": [1]},     
-    "SUR CENTRAL":  {"id": 1101, "fuels": [1]},     
+    "SUR CENTRAL":  {"id": 1101, "fuels": [1, 3]},     
 
     "BELL GAS":     {"id": 1638, "fuels": []},      
 }
@@ -169,4 +181,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()
