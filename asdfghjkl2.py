@@ -329,8 +329,8 @@ def determine_availability(item: dict, minutos_sin_venta: float) -> str | None:
     if saldo_estado in ["alto", "medio"]:
         return "available"
     elif saldo_estado == "bajo":
-        # 60 minutos es el termómetro natural entre despacho activo y manguera colgada
-        return "available" if minutos_sin_venta <= 60.0 else "unavailable"
+        # 45 minutos es el termómetro natural entre despacho activo y manguera colgada
+        return "available" if minutos_sin_venta <= 45.0 else "unavailable"
 
     return None
 
