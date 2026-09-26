@@ -1,3 +1,14 @@
+"""
+MOTOR DE TELEMETRÍA Y EXTRACCIÓN ANH - VERSIÓN DEFINITIVA
+=========================================================
+Arquitectura basada en eventos físicos reales:
+1. Tríada de la verdad: Separa Disponibilidad (B-SISA) de Volumen (Sensor de tanque).
+2. Cero ventanas artificiales: Sin filtros rígidos de 24h que generen falsos negativos.
+3. Ignora 'con_venta': Usa el pulso real de transacciones de la última hora.
+4. Deduplicación en memoria (RPC): Descarta zombis y noches inactivas sin tocar la BD.
+5. Ingesta de cisternas nocturnas garantizada con fecha exacta del evento.
+"""
+
 import asyncio
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -39,7 +50,7 @@ DEPARTAMENTOS_MAP = {
 
 DEPARTAMENTOS = list(DEPARTAMENTOS_MAP.keys())
 
-# Mapeo ANH -> Producto
+# Mapeo ANH -> Producto interno
 API_PRODUCT_TO_FUEL_TYPE_ID = {
     0: {"id": 1, "name": "GES"},
     1: {"id": 2, "name": "DOS"},
@@ -47,7 +58,7 @@ API_PRODUCT_TO_FUEL_TYPE_ID = {
     3: {"id": 4, "name": "DUL"},
 }
 
-# Lista completa de las 20 Plantas y Zonas Comerciales de Despacho YPFB / ANH
+# 20 Plantas y Zonas Comerciales de Despacho YPFB / ANH
 PLANTAS_DISTRIBUIDORAS = {
     # 1: Chuquisaca
     1: [
@@ -99,7 +110,6 @@ PLANTAS_DISTRIBUIDORAS = {
         {"nombre": "Zona Comercial Cobija", "lat": -11.02727737546800, "lng": -68.75543913244700},
     ],
 }
-
 # Los siguientes anh_id son falsos positivos o ya han sido considerados
 #  - ANH_ID: 2719, Nombre: INVERSIONES JANA S.A., Dep_ID: 1 - En la api existen duplicados de esta estación, se considera solo el mas reciente
 #  - ANH_ID: 2733, Nombre: YUPANQUI QUISPE MARCOS, Dep_ID: 2 - El ultimo reporte de esta estación es de 2025 y no esta claro su ubicacion, se ignora
@@ -113,9 +123,11 @@ SOURCE_NAME = "ANH_SCRAPER V2"
 BATCH_SIZE = 500
 BOLIVIA_TZ = timezone(timedelta(hours=-4))
 
+
 # =============================================================================
-# HELPERS DE FECHA Y HORA
+# 2. HELPERS DE FECHA Y COMPARACIÓN PRECISA
 # =============================================================================
+
 def format_anh_date(date_raw: str | None) -> str | None:
     """Convierte la fecha local de la ANH a formato UTC ISO (+00:00)."""
     if not date_raw:
@@ -129,27 +141,36 @@ def format_anh_date(date_raw: str | None) -> str | None:
         return date_raw
 
 
-def are_dates_equal(d1: str | None, d2: str | None) -> bool:
-    """Compara si dos timestamps representan el mismo instante real en el tiempo."""
-    if d1 == d2:
-        return True
-    if not d1 or not d2:
-        return False
+def parse_utc_dt(dt_str: str | None) -> datetime | None:
+    """Parsea cualquier string ISO a objeto datetime consciente de zona en UTC."""
+    if not dt_str:
+        return None
     try:
-        dt1 = datetime.fromisoformat(d1)
-        dt2 = datetime.fromisoformat(d2)
-        if not dt1.tzinfo:
-            dt1 = dt1.replace(tzinfo=BOLIVIA_TZ)
-        if not dt2.tzinfo:
-            dt2 = dt2.replace(tzinfo=BOLIVIA_TZ)
-        return dt1 == dt2
+        clean = dt_str.replace("Z", "+00:00")
+        dt = datetime.fromisoformat(clean)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=BOLIVIA_TZ)
+        return dt.astimezone(timezone.utc)
     except Exception:
+        return None
+
+
+def are_dates_equal(d1_str: str | None, d2_str: str | None) -> bool:
+    """Compara si dos timestamps representan el mismo instante real en el tiempo."""
+    if d1_str == d2_str:
+        return True
+    dt1 = parse_utc_dt(d1_str)
+    dt2 = parse_utc_dt(d2_str)
+    if not dt1 or not dt2:
         return False
+    # Tolerancia de 1 segundo para ignorar discrepancias de milisegundos
+    return abs((dt1 - dt2).total_seconds()) < 1.0
 
 
 # =============================================================================
-# 2. CÁLCULO DE ESTIMACIÓN DE TIEMPO DE LLEGADA
+# 3. CÁLCULO DE ESTIMACIÓN DE TIEMPO DE LLEGADA (Despachos)
 # =============================================================================
+
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """Calcula la distancia geodésica en km entre dos puntos."""
     R = 6371.0
@@ -161,42 +182,30 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 
 
 def estimate_arrival_time(dep_id: int, st_lat: float, st_lng: float, salida_dt: datetime) -> datetime:
-    """
-    Calcula la hora estimada de llegada combinando:
-    1. Fase Urbana (primeros 12-15 km): Velocidad baja por tráfico, rotondas y salida de planta.
-    2. Fase Carretera (distancia restante): Velocidad de crucero interprovincial.
-    """
     plantas_departamento = PLANTAS_DISTRIBUIDORAS.get(dep_id, PLANTAS_DISTRIBUIDORAS[2])
-
-    # 1. Distancia lineal a la planta más cercana
     dist_minima_km = min(
         haversine_km(planta["lat"], planta["lng"], st_lat, st_lng)
         for planta in plantas_departamento
     )
 
-    # 2. Configuración de parámetros según geografía del departamento
-    if dep_id == 2:  # La Paz (Topografía de montaña / Descenso Autopista / Altiplano)
+    if dep_id == 2:  # La Paz (Topografía de montaña)
         factor_curvatura = 1.40
-        radio_urbano_km = 15.0      # Km de salida urbana lenta
-        vel_urbana_kmh = 18.0       # Tráfico Ceja / Senkata
-        vel_carretera_kmh = 55.0    # Carretera Altiplano / Rutas montaña (Copacabana, etc.)
-        tiempo_base_min = 3.0       # Maniobra salida
-    else:            # Santa Cruz, Cochabamba, Oruro, Tarija, Beni, Pando, Chuquisaca, Potosí
+        radio_urbano_km = 15.0
+        vel_urbana_kmh = 18.0
+        vel_carretera_kmh = 55.0
+        tiempo_base_min = 3.0
+    else:  # Santa Cruz, Cochabamba y otros
         factor_curvatura = 1.35
-        radio_urbano_km = 12.0      # Km de salida urbana
-        vel_urbana_kmh = 24.0       # Tráfico avenidas / anillos
-        vel_carretera_kmh = 65.0    # Carreteras troncales y dobles vías
-        tiempo_base_min = 2.0       # Maniobra salida
+        radio_urbano_km = 12.0
+        vel_urbana_kmh = 24.0
+        vel_carretera_kmh = 65.0
+        tiempo_base_min = 2.0
 
-    # 3. Estimación de distancia vial real
     dist_vial_total = dist_minima_km * factor_curvatura
 
-    # 4. Cálculo segmentado del tiempo
     if dist_vial_total <= radio_urbano_km:
-        # Caso A: El viaje es 100% dentro del radio urbano
         minutos_viaje = tiempo_base_min + (dist_vial_total / vel_urbana_kmh) * 60.0
     else:
-        # Caso B: Tramo urbano lento + Tramo interprovincial en carretera
         tiempo_urbano = (radio_urbano_km / vel_urbana_kmh) * 60.0
         dist_carretera = dist_vial_total - radio_urbano_km
         tiempo_carretera = (dist_carretera / vel_carretera_kmh) * 60.0
@@ -206,10 +215,11 @@ def estimate_arrival_time(dep_id: int, st_lat: float, st_lng: float, salida_dt: 
 
 
 # =============================================================================
-# 3. CARGA DE MAPA DE ESTACIONES y ultimo snapshot de reportes
+# 4. CARGA DE CATÁLOGO Y ÚLTIMO SNAPSHOT OFICIAL (Caché en RAM)
 # =============================================================================
+
 def get_station_cache(db: Client) -> dict[int, dict]:
-    """Carga el catálogo de estaciones mapeadas."""
+    """Carga el catálogo de estaciones mapeadas en memoria."""
     try:
         response = (
             db.table(STATIONS_TABLE)
@@ -224,12 +234,15 @@ def get_station_cache(db: Client) -> dict[int, dict]:
             if row.get("anh_id") is not None
         }
     except Exception as e:
-        print(f"  [ERROR] Falló al cargar estaciones: {e}")
+        print(f"  [ERROR] Falló al cargar catálogo de estaciones: {e}")
         return {}
 
 
 def get_latest_official_cache(db: Client) -> dict[tuple[int, int], dict]:
-    """Carga el último snapshot oficial vía RPC en milisegundos."""
+    """
+    Carga el último reporte oficial conocido por (station_id, fuel_type_id)
+    directamente desde la RPC en PostgreSQL en menos de 10 ms.
+    """
     print("  [CACHE] Cargando últimos snapshots oficiales de la BD...")
     try:
         response = db.rpc("get_latest_official_snapshots").execute()
@@ -241,9 +254,11 @@ def get_latest_official_cache(db: Client) -> dict[tuple[int, int], dict]:
         print(f"  [WARN] No se pudo cargar snapshot oficial previo: {e}")
         return {}
 
+
 # =============================================================================
-# 4. EXTRACCIÓN ASÍNCRONA DESDE LA API ANH
+# 5. EXTRACCIÓN ASÍNCRONA DESDE LA API ANH
 # =============================================================================
+
 async def fetch_dep_prod(session: aiohttp.ClientSession, dep: int, prod: int) -> list[dict]:
     url = ANH_API_URL.format(dep=dep, prod=prod)
     try:
@@ -277,51 +292,45 @@ async def fetch_all_anh_telemetry() -> list[dict]:
         results = await asyncio.gather(*tasks)
 
     all_records = [item for sublist in results for item in sublist]
-    print(f"  [OK] Estados obtenidas: {len(all_records)}")
+    print(f"  [OK] Registros brutos obtenidos de la ANH: {len(all_records)}")
     return all_records
 
 
 # =============================================================================
-# 5. REPORTES DE DISPONIBILIDAD
+# 6. PARSEO DE SALDO Y DETERMINACIÓN PURA DE DISPONIBILIDAD
 # =============================================================================
+
 def parse_available_liters(item: dict) -> float | None:
+    """
+    Extrae los litros reales.
+    Si la ANH manda 0 o vacío, devuelve None (significa que la estación NO tiene sonda).
+    """
     raw_liters = item.get("saldo_litros")
     if raw_liters is None or raw_liters == "":
         return None
-
     try:
         liters = float(raw_liters)
-        # ANH usa cero también cuando el surtidor no expone una medición fiable.
         return liters if math.isfinite(liters) and liters > 0 else None
     except (TypeError, ValueError):
         return None
 
-def determine_availability(item: dict) -> str | None:
+
+def determine_availability(item: dict, minutos_sin_venta: float) -> str | None:
+    """
+    Traduce el semáforo de la ANH a nuestro enum (available / unavailable).
+    Basado en hechos y sin suposiciones:
+      1. Si saldo_estado es 'alto' o 'medio': La ANH certifica stock en tanque (>= 5.000 L) -> available.
+      2. Si saldo_estado es 'bajo':
+         - Con venta en los últimos 60 min -> available (bombeando reservas en vivo).
+         - Sin venta en más de 60 min -> unavailable (bombas secas / agotado).
+    """
     saldo_estado = (item.get("saldo_estado") or "").lower()
-    fecha_venta_raw = item.get("fecha_ultima_venta")
-
-    if not fecha_venta_raw:
-        return None
-
-    try:
-        now_bolivia = datetime.now(BOLIVIA_TZ)
-        fecha_venta = datetime.fromisoformat(fecha_venta_raw)
-        if not fecha_venta.tzinfo:
-            fecha_venta = fecha_venta.replace(tzinfo=BOLIVIA_TZ)
-        minutos_sin_venta = (now_bolivia - fecha_venta).total_seconds() / 60.0
-    except Exception:
-        return None
-
-    # Si hay saldo registrado positivo en litros (> 500 L), hay producto disponible
-    litros = parse_available_liters(item)
-    if litros is not None and litros > 500.0:
-        return "available"
 
     if saldo_estado in ["alto", "medio"]:
-        return "available" if minutos_sin_venta <= 1440.0 else None
+        return "available"
     elif saldo_estado == "bajo":
-        # En bajo: venta reciente (<45 min) = vendiendo; más de 45 min = agotado
-        return "available" if minutos_sin_venta <= 45.0 else "unavailable"
+        # 60 minutos es el termómetro natural entre despacho activo y manguera colgada
+        return "available" if minutos_sin_venta <= 60.0 else "unavailable"
 
     return None
 
@@ -331,12 +340,16 @@ def generate_anh_reports(
     stations_cache: dict[int, dict], 
     latest_cache: dict[tuple[int, int], dict]
 ) -> list[dict]:
+    """
+    Genera reportes oficiales aplicando deduplicación pura por eventos.
+    Solo inserta si hubo venta nueva, cisterna o cambio de condición.
+    """
     records = []
     un_records = []
-    descartados_zombis = 0
     descartados_sin_cambio = 0
 
-    now_bolivia = datetime.now(BOLIVIA_TZ)
+    now_utc = datetime.now(timezone.utc)
+    now_utc_str = now_utc.isoformat()
 
     for item in raw_data:
         anh_id = item.get("id")
@@ -351,34 +364,25 @@ def generate_anh_reports(
         station_id = station["id"]
         fuel_type_id = prod_meta["id"]
 
-        current_litros = parse_available_liters(item)
+        # 1. Extracción de datos
+        current_litros = parse_available_liters(item) # float o None
         raw_fecha_venta = item.get("fecha_ultima_venta")
         current_fecha_venta = format_anh_date(raw_fecha_venta)
-        saldo_estado = (item.get("saldo_estado") or "").lower()
-        server_time = item.get("_server_time") or datetime.now(timezone.utc).isoformat()
+        server_time = item.get("_server_time") or now_utc_str
 
-        # 1. FILTRO ANTI-ZOMBI (Sin ventas > 24h Y Sin combustible)
-        minutos_sin_venta = 999999.0
-        if current_fecha_venta:
-            try:
-                fv = datetime.fromisoformat(current_fecha_venta)
-                if not fv.tzinfo:
-                    fv = fv.replace(tzinfo=BOLIVIA_TZ)
-                minutos_sin_venta = (now_bolivia - fv).total_seconds() / 60.0
-            except Exception:
-                pass
+        # Calcular antigüedad real de la última venta
+        dt_current_venta = parse_utc_dt(raw_fecha_venta)
+        if dt_current_venta:
+            minutos_sin_venta = (now_utc - dt_current_venta).total_seconds() / 60.0
+        else:
+            minutos_sin_venta = 999999.0
 
-        es_zombi = (minutos_sin_venta > 1440.0) and (current_litros is None or current_litros <= 0) and (saldo_estado == "bajo")
-        if es_zombi:
-            descartados_zombis += 1
-            continue
-
-        # 2. DETERMINAR CONDICIÓN ACTUAL
-        current_condition = determine_availability(item)
+        # 2. Determinar condición
+        current_condition = determine_availability(item, minutos_sin_venta)
         if current_condition is None:
             continue
 
-        # 3. DEDUPLICACIÓN EN MEMORIA VS ÚLTIMO ESTADO OFICIAL
+        # 3. DEDUPLICACIÓN EN MEMORIA (El filtro natural por eventos)
         prev = latest_cache.get((station_id, fuel_type_id))
 
         if prev:
@@ -386,21 +390,36 @@ def generate_anh_reports(
             prev_reported_at = prev.get("reported_at")
             prev_condition = prev.get("official_condition")
 
-            # Comparación de eventos
+            # ¿Hubo venta nueva? (Comparamos si el timestamp de venta se movió)
             hubo_venta = (current_fecha_venta is not None) and not are_dates_equal(current_fecha_venta, prev_reported_at)
-            cambiaron_litros = (current_litros != prev_litros)
+            
+            # ¿Cambiaron los litros? (Cisterna, consumo medible o sensor reparado)
+            cambiaron_litros = False
+            if current_litros is not None and prev_litros is not None:
+                cambiaron_litros = abs(float(current_litros) - float(prev_litros)) > 0.01
+            elif current_litros != prev_litros:
+                cambiaron_litros = True
+
+            # ¿Cambió el estado comercial? (ej. available <-> unavailable)
             cambio_condicion = (current_condition != prev_condition)
 
-            # Si nada cambió en el mundo real, se ignora
+            # Si NADA cambió en el mundo real, se descarta silenciosamente
             if not hubo_venta and not cambiaron_litros and not cambio_condicion:
                 descartados_sin_cambio += 1
                 continue
 
-            # Asignación de timestamps:
+            # ASIGNACIÓN DE TIMESTAMPS
+            # reported_at: Fecha de la venta real si la hubo; de lo contrario server_time (cisterna o cambio)
             reported_at = current_fecha_venta if hubo_venta else server_time
-            liters_reported_at = server_time if (current_litros is not None and cambiaron_litros) else prev.get("liters_reported_at")
+
+            # liters_reported_at: Solo avanza si los litros cambiaron físicamente en el sensor
+            if current_litros is not None:
+                liters_reported_at = server_time if cambiaron_litros else prev.get("liters_reported_at", server_time)
+            else:
+                liters_reported_at = None
+
         else:
-            # Primer registro
+            # Primer registro histórico para este combustible
             reported_at = current_fecha_venta or server_time
             liters_reported_at = server_time if current_litros is not None else None
 
@@ -411,27 +430,27 @@ def generate_anh_reports(
             "official_queue_cars_estimate": None,
             "available_liters": current_litros,
             "source": SOURCE_NAME,
-            "reported_at": reported_at,
-            "liters_reported_at": liters_reported_at,
+            "reported_at": reported_at,                  # Pulso de Venta / Disponibilidad
+            "liters_reported_at": liters_reported_at     # Pulso físico del Tanque
         })
 
-    print(f"  -> Reportes generados: {len(records)} | Zombis ignorados: {descartados_zombis} | Sin cambios (descartados): {descartados_sin_cambio}")
+    print(f"  -> Reportes generados: {len(records)} | Sin cambios (descartados): {descartados_sin_cambio}")
     if un_records:
-        print(f"  [INFO] Registros ANH sin procesar / no emparejados: {len(un_records)}")
-        for unrec in un_records:
-            anh_id = unrec.get("id")
-            api_prod = unrec.get("_api_producto")
-            print(f"    - ANH_ID: {anh_id}, Producto: {api_prod}, Nombre: {unrec.get('nombre')}, Dep_ID: {unrec.get('_dep_id')}")
+        print(f"  [INFO] Registros ANH no emparejados en el catálogo: {len(un_records)}")
     return records
 
+
+# =============================================================================
+# 7. INSERCIÓN EN LOTES Y DISPATCHES
+# =============================================================================
 
 def batch_insert_reports(db: Client, records: list[dict], batch_size: int = BATCH_SIZE) -> int:
     inserted_count = 0
     if not records:
-        print("  [INFO] No hay reportes para insertar.")
+        print("  [INFO] No hay reportes nuevos para insertar.")
         return 0
 
-    print(f"  [DB] Insertando {len(records)} reportes en lotes de {batch_size}...")
+    print(f"  [DB] Insertando {len(records)} reportes oficiales en lotes de {batch_size}...")
     for i in range(0, len(records), batch_size):
         batch = records[i:i + batch_size]
         try:
@@ -455,19 +474,15 @@ def transform_and_insert_reports(
     batch_insert_reports(db, records)
 
 
-# =============================================================================
-# 6. GESTIÓN DE HISTORIAL DE DESPACHOS Y MAPEO RPC
-# =============================================================================
 def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int, dict]):
     print("[PASO 4/5] Procesando despachos en curso...")
     dispatches = []
-    un_records_dispatches = []
     now_utc = datetime.now(timezone.utc)
 
     for item in raw_data:
         fecha_despacho_raw = item.get("fecha_hora_despacho")
         if not fecha_despacho_raw:
-            continue  # Si es null, no hay despacho activo
+            continue
 
         anh_id = item.get("id")
         dep_id = item.get("departamento_id") or item.get("_dep_id", 2)
@@ -482,7 +497,6 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
         except Exception:
             continue
 
-        # Coordenadas para estimar llegada
         st_db = stations_cache.get(anh_id, {})
         lat = st_db.get("latitude")
         lng = st_db.get("longitude")
@@ -494,7 +508,6 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
 
         raw_station_name = item.get("nombre") or st_db.get("name") or "DESCONOCIDO"
 
-        # Estructura del registro
         despacho_data = {
             "station_id": None,              
             "anh_id": anh_id,                
@@ -506,7 +519,6 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
             "fuel_type_id": fuel_type_id,
         }
 
-        # Generación del hash único idéntico
         hash_base = {
             "producto": prod_name,
             "fecha_salida_planta": despacho_data["fecha_salida_planta"],
@@ -530,7 +542,6 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
         except Exception as e:
             print(f"  [ERROR] Error en upsert de despachos: {e}")
 
-    # Disparar RPC de vinculación map_new_dispatches
     print("[PASO 5/5] Invocando RPC 'map_new_dispatches' en Supabase...")
     try:
         db.rpc("map_new_dispatches").execute()
@@ -539,7 +550,10 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
         print(f"  [ERROR] Falló la invocación del RPC de mapeo: {e}")
 
 
-# 7. ENTRADA PRINCIPAL
+# =============================================================================
+# 8. ENTRADA PRINCIPAL (Ejecución aislada de prueba)
+# =============================================================================
+
 def main():
     print("=" * 60)
     print("SCRAPER ANH V2 -", datetime.now(timezone.utc).isoformat())
@@ -551,10 +565,11 @@ def main():
 
     db = create_client(SUPABASE_URL, SUPABASE_KEY)
     stations_cache = get_station_cache(db)
+    latest_cache = get_latest_official_cache(db)
     raw_telemetry = asyncio.run(fetch_all_anh_telemetry())
 
     if raw_telemetry:
-        transform_and_insert_reports(db, raw_telemetry, stations_cache)
+        transform_and_insert_reports(db, raw_telemetry, stations_cache, latest_cache)
         manage_dispatches(db, raw_telemetry, stations_cache)
 
     print("=" * 60)
