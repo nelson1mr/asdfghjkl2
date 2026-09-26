@@ -122,7 +122,9 @@ def main():
     # 1. Cargar caché de estaciones y telemetría ANH
     print("\n[ETAPA 2/4] Consultando catálogo de estaciones y API ANH...")
     stations_cache = asdfghjkl2.get_station_cache(db)
+    print('  [CACHE] Estaciones extraidas para el cache', len(stations_cache))
     latest_official_cache = asdfghjkl2.get_latest_official_cache(db)
+    print('  [CACHE] Registros traidos para la deduplicacion', len(latest_official_cache))
     raw_anh_telemetry = asdfghjkl2.asyncio.run(asdfghjkl2.fetch_all_anh_telemetry())
     anh_reports = asdfghjkl2.generate_anh_reports(raw_anh_telemetry, stations_cache, latest_official_cache)
     print(f"  -> Reportes generados por ANH (macro nacional): {len(anh_reports)}")

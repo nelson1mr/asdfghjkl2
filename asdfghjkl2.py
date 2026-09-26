@@ -245,7 +245,7 @@ def get_latest_official_cache(db: Client) -> dict[tuple[int, int], dict]:
     """
     print("  [CACHE] Cargando últimos snapshots oficiales de la BD...")
     try:
-        response = db.rpc("get_latest_official_snapshots").execute()
+        response = db.rpc("get_latest_official_snapshots").limit(5000).execute()
         return {
             (row["station_id"], row["fuel_type_id"]): row
             for row in response.data
