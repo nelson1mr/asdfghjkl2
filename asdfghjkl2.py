@@ -15,6 +15,7 @@ import hashlib
 import json
 import math
 import os
+import time
 import aiohttp
 from dotenv import load_dotenv
 from supabase import Client, create_client
@@ -120,7 +121,7 @@ STATIONS_TABLE = "stations"
 REPORTS_TABLE = "station_official_reports"
 DISPATCHES_TABLE = "anh_dispatches_history"
 SOURCE_NAME = "ANH_SCRAPER V2"
-BATCH_SIZE = 500
+BATCH_SIZE = 150
 BOLIVIA_TZ = timezone(timedelta(hours=-4))
 
 
@@ -451,15 +452,24 @@ def batch_insert_reports(db: Client, records: list[dict], batch_size: int = BATC
         return 0
 
     print(f"  [DB] Insertando {len(records)} reportes oficiales en lotes de {batch_size}...")
+    t_total = time.time()
     for i in range(0, len(records), batch_size):
         batch = records[i:i + batch_size]
+        lote_num = i // batch_size + 1
+        t_batch = time.time()
         try:
+            print(f"    [DB] Insertando lote {lote_num} de {len(batch)} registros...", end="", flush=True)
             db.table(REPORTS_TABLE).insert(batch).execute()
+            duracion = time.time() - t_batch
+            print(f" completado en {duracion:.2f}s")
             inserted_count += len(batch)
         except Exception as e:
-            print(f"  [ERROR] Falló inserción en '{REPORTS_TABLE}' (lote {i//batch_size + 1}): {e}")
+            duracion = time.time() - t_batch
+            print(f" falló tras {duracion:.2f}s")
+            print(f"  [ERROR] Falló inserción en '{REPORTS_TABLE}' (lote {lote_num}): {e}")
 
-    print(f"  [OK] Inserción finalizada: {inserted_count}/{len(records)} registros guardados.")
+    total_elapsed = time.time() - t_total
+    print(f"  [OK] Inserción finalizada: {inserted_count}/{len(records)} registros guardados en {total_elapsed:.2f}s.")
     return inserted_count
 
 
