@@ -114,6 +114,40 @@ BATCH_SIZE = 500
 BOLIVIA_TZ = timezone(timedelta(hours=-4))
 
 # =============================================================================
+# HELPERS DE FECHA Y HORA
+# =============================================================================
+def format_anh_date(date_raw: str | None) -> str | None:
+    """Convierte la fecha local de la ANH a formato UTC ISO (+00:00)."""
+    if not date_raw:
+        return None
+    try:
+        dt = datetime.fromisoformat(date_raw)
+        if not dt.tzinfo:
+            dt = dt.replace(tzinfo=BOLIVIA_TZ)
+        return dt.astimezone(timezone.utc).isoformat()
+    except Exception:
+        return date_raw
+
+
+def are_dates_equal(d1: str | None, d2: str | None) -> bool:
+    """Compara si dos timestamps representan el mismo instante real en el tiempo."""
+    if d1 == d2:
+        return True
+    if not d1 or not d2:
+        return False
+    try:
+        dt1 = datetime.fromisoformat(d1)
+        dt2 = datetime.fromisoformat(d2)
+        if not dt1.tzinfo:
+            dt1 = dt1.replace(tzinfo=BOLIVIA_TZ)
+        if not dt2.tzinfo:
+            dt2 = dt2.replace(tzinfo=BOLIVIA_TZ)
+        return dt1 == dt2
+    except Exception:
+        return False
+
+
+# =============================================================================
 # 2. CÁLCULO DE ESTIMACIÓN DE TIEMPO DE LLEGADA
 # =============================================================================
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -172,10 +206,10 @@ def estimate_arrival_time(dep_id: int, st_lat: float, st_lng: float, salida_dt: 
 
 
 # =============================================================================
-# 3. CARGA DE MAPA DE ESTACIONES
+# 3. CARGA DE MAPA DE ESTACIONES y ultimo snapshot de reportes
 # =============================================================================
 def get_station_cache(db: Client) -> dict[int, dict]:
-    print("[PASO 1/5] Cargando catálogo de estaciones desde Supabase...")
+    """Carga el catálogo de estaciones mapeadas."""
     try:
         response = (
             db.table(STATIONS_TABLE)
@@ -193,6 +227,19 @@ def get_station_cache(db: Client) -> dict[int, dict]:
         print(f"  [ERROR] Falló al cargar estaciones: {e}")
         return {}
 
+
+def get_latest_official_cache(db: Client) -> dict[tuple[int, int], dict]:
+    """Carga el último snapshot oficial vía RPC en milisegundos."""
+    print("  [CACHE] Cargando últimos snapshots oficiales de la BD...")
+    try:
+        response = db.rpc("get_latest_official_snapshots").execute()
+        return {
+            (row["station_id"], row["fuel_type_id"]): row
+            for row in response.data
+        }
+    except Exception as e:
+        print(f"  [WARN] No se pudo cargar snapshot oficial previo: {e}")
+        return {}
 
 # =============================================================================
 # 4. EXTRACCIÓN ASÍNCRONA DESDE LA API ANH
@@ -249,10 +296,8 @@ def parse_available_liters(item: dict) -> float | None:
     except (TypeError, ValueError):
         return None
 
-
 def determine_availability(item: dict) -> str | None:
     saldo_estado = (item.get("saldo_estado") or "").lower()
-    # La única señal temporal usada por este motor es la última venta real.
     fecha_venta_raw = item.get("fecha_ultima_venta")
 
     if not fecha_venta_raw:
@@ -267,18 +312,31 @@ def determine_availability(item: dict) -> str | None:
     except Exception:
         return None
 
+    # Si hay saldo registrado positivo en litros (> 500 L), hay producto disponible
+    litros = parse_available_liters(item)
+    if litros is not None and litros > 500.0:
+        return "available"
+
     if saldo_estado in ["alto", "medio"]:
-        return "available" if minutos_sin_venta <= 720.0 else None
+        return "available" if minutos_sin_venta <= 1440.0 else None
     elif saldo_estado == "bajo":
-        # En bajo, una venta antigua permite inferir falta de disponibilidad.
+        # En bajo: venta reciente (<45 min) = vendiendo; más de 45 min = agotado
         return "available" if minutos_sin_venta <= 45.0 else "unavailable"
 
     return None
 
 
-def generate_anh_reports(raw_data: list[dict], stations_cache: dict[int, dict]) -> list[dict]:
+def generate_anh_reports(
+    raw_data: list[dict], 
+    stations_cache: dict[int, dict], 
+    latest_cache: dict[tuple[int, int], dict]
+) -> list[dict]:
     records = []
     un_records = []
+    descartados_zombis = 0
+    descartados_sin_cambio = 0
+
+    now_bolivia = datetime.now(BOLIVIA_TZ)
 
     for item in raw_data:
         anh_id = item.get("id")
@@ -290,26 +348,80 @@ def generate_anh_reports(raw_data: list[dict], stations_cache: dict[int, dict]) 
             un_records.append(item)
             continue
 
-        official_condition = determine_availability(item)
-        if official_condition is None:
+        station_id = station["id"]
+        fuel_type_id = prod_meta["id"]
+
+        current_litros = parse_available_liters(item)
+        raw_fecha_venta = item.get("fecha_ultima_venta")
+        current_fecha_venta = format_anh_date(raw_fecha_venta)
+        saldo_estado = (item.get("saldo_estado") or "").lower()
+        server_time = item.get("_server_time") or datetime.now(timezone.utc).isoformat()
+
+        # 1. FILTRO ANTI-ZOMBI (Sin ventas > 24h Y Sin combustible)
+        minutos_sin_venta = 999999.0
+        if current_fecha_venta:
+            try:
+                fv = datetime.fromisoformat(current_fecha_venta)
+                if not fv.tzinfo:
+                    fv = fv.replace(tzinfo=BOLIVIA_TZ)
+                minutos_sin_venta = (now_bolivia - fv).total_seconds() / 60.0
+            except Exception:
+                pass
+
+        es_zombi = (minutos_sin_venta > 1440.0) and (current_litros is None or current_litros <= 0) and (saldo_estado == "bajo")
+        if es_zombi:
+            descartados_zombis += 1
             continue
 
+        # 2. DETERMINAR CONDICIÓN ACTUAL
+        current_condition = determine_availability(item)
+        if current_condition is None:
+            continue
+
+        # 3. DEDUPLICACIÓN EN MEMORIA VS ÚLTIMO ESTADO OFICIAL
+        prev = latest_cache.get((station_id, fuel_type_id))
+
+        if prev:
+            prev_litros = prev.get("available_liters")
+            prev_reported_at = prev.get("reported_at")
+            prev_condition = prev.get("official_condition")
+
+            # Comparación de eventos
+            hubo_venta = (current_fecha_venta is not None) and not are_dates_equal(current_fecha_venta, prev_reported_at)
+            cambiaron_litros = (current_litros != prev_litros)
+            cambio_condicion = (current_condition != prev_condition)
+
+            # Si nada cambió en el mundo real, se ignora
+            if not hubo_venta and not cambiaron_litros and not cambio_condicion:
+                descartados_sin_cambio += 1
+                continue
+
+            # Asignación de timestamps:
+            reported_at = current_fecha_venta if hubo_venta else server_time
+            liters_reported_at = server_time if (current_litros is not None and cambiaron_litros) else prev.get("liters_reported_at")
+        else:
+            # Primer registro
+            reported_at = current_fecha_venta or server_time
+            liters_reported_at = server_time if current_litros is not None else None
+
         records.append({
-            "station_id": station["id"],
-            "fuel_type_id": prod_meta["id"],
-            "official_condition": official_condition,
+            "station_id": station_id,
+            "fuel_type_id": fuel_type_id,
+            "official_condition": current_condition,
             "official_queue_cars_estimate": None,
-            "available_liters": parse_available_liters(item),
+            "available_liters": current_litros,
             "source": SOURCE_NAME,
+            "reported_at": reported_at,
+            "liters_reported_at": liters_reported_at,
         })
 
+    print(f"  -> Reportes generados: {len(records)} | Zombis ignorados: {descartados_zombis} | Sin cambios (descartados): {descartados_sin_cambio}")
     if un_records:
         print(f"  [INFO] Registros ANH sin procesar / no emparejados: {len(un_records)}")
         for unrec in un_records:
             anh_id = unrec.get("id")
             api_prod = unrec.get("_api_producto")
             print(f"    - ANH_ID: {anh_id}, Producto: {api_prod}, Nombre: {unrec.get('nombre')}, Dep_ID: {unrec.get('_dep_id')}")
-
     return records
 
 
@@ -332,9 +444,14 @@ def batch_insert_reports(db: Client, records: list[dict], batch_size: int = BATC
     return inserted_count
 
 
-def transform_and_insert_reports(db: Client, raw_data: list[dict], stations_cache: dict[int, dict]):
+def transform_and_insert_reports(
+    db: Client, 
+    raw_data: list[dict], 
+    stations_cache: dict[int, dict],
+    latest_cache: dict[tuple[int, int], dict]
+):
     print("[PASO 3/5] Generando e insertando estados en official reports...")
-    records = generate_anh_reports(raw_data, stations_cache)
+    records = generate_anh_reports(raw_data, stations_cache, latest_cache)
     batch_insert_reports(db, records)
 
 

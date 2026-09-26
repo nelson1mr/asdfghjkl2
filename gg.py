@@ -1,3 +1,5 @@
+from datetime import timezone
+from datetime import datetime
 import os
 import requests
 from dotenv import load_dotenv
@@ -58,6 +60,7 @@ def extract_and_parse() -> list[dict]:
     all_records = []
     unmatched_stations = []
     unmatched_products = set()
+    now_utc = datetime.now(timezone.utc).isoformat()
 
     for dept in DEPARTMENTS:
         print(f"[GG] Procesando departamento: {dept}...")
@@ -102,6 +105,8 @@ def extract_and_parse() -> list[dict]:
                     "fuel_type_id": fuel_id,
                     "official_condition": condition,
                     "available_liters": volumen,
+                    "reported_at": now_utc,
+                    "liters_reported_at": now_utc,
                     "source": "GASGROUP_OFFICIAL_WEB",
                 })
 
@@ -139,4 +144,4 @@ def main():
             print(f"[GG] Error insertando datos: {e}")
 
 if __name__ == "__main__":
-    main()
+    main()

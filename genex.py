@@ -146,7 +146,8 @@ def scrape_and_parse_genex() -> list[dict]:
       records.append({
           "station_id": internal_station_id,
           "fuel_type_id": fuel_type_id,
-          #"reported_at": now_utc,
+          "reported_at": now_utc,
+          "liters_reported_at": now_utc,
           "official_condition": condition,
           #"official_queue_cars_estimate": queue_estimate,
           "available_liters": litros,
@@ -194,4 +195,4 @@ def main():
 
 
 if __name__ == "__main__":
-  main()
+  main()

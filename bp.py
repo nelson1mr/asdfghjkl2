@@ -78,6 +78,7 @@ def parse_product_page(prod_cfg: dict) -> tuple[list[dict], list[dict]]:
     url = prod_cfg["url"]
     fuel_id = prod_cfg["fuel_type_id"]
     fuel_name = prod_cfg["name"]
+    now_utc = datetime.now(timezone.utc).isoformat()
 
     try:
         res = requests.get(url, headers=HEADERS, timeout=25)
@@ -122,6 +123,8 @@ def parse_product_page(prod_cfg: dict) -> tuple[list[dict], list[dict]]:
         records.append({
             "station_id": st_info["id"],
             "fuel_type_id": fuel_id,
+            "reported_at": now_utc,
+            "liters_reported_at": now_utc,
             "official_condition": "available" if volumen > 0 else "unavailable",
             "available_liters": volumen,
             "source": "BIOPETROL_OFFICIAL_WEB",
@@ -133,6 +136,8 @@ def parse_product_page(prod_cfg: dict) -> tuple[list[dict], list[dict]]:
                 records.append({
                     "station_id": st_info["id"],
                     "fuel_type_id": fuel_id,
+                    "reported_at": now_utc,
+                    "liters_reported_at": now_utc,
                     "official_condition": "unavailable",
                     "available_liters": 0.0,
                     "source": "BIOPETROL_OFFICIAL_WEB",
