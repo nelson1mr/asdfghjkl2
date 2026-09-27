@@ -419,7 +419,7 @@ def generate_anh_reports(
             if len(records) < 20:
                 motivo = []
                 if hubo_venta:
-                    motivo.append(f"Venta ({prev_reported_at[-14:]} -> {current_fecha_venta[-14:]})")
+                    motivo.append(f"Venta ({prev_reported_at} -> {current_fecha_venta})")
                 if cambiaron_litros:
                     motivo.append(f"Litros ({prev_litros}L -> {current_litros}L)")
                 if cambio_condicion:
