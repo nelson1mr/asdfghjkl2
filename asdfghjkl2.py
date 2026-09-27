@@ -414,7 +414,17 @@ def generate_anh_reports(
             # Si NADA cambió en el mundo real, se descarta silenciosamente
             if not hubo_venta and not cambiaron_litros and not cambio_condicion:
                 descartados_sin_cambio += 1
-                continue
+                
+            # LOG DE DIAGNÓSTICO (Solo muestra los primeros 5 eventos para no saturar la terminal)
+            if len(records) < 20:
+                motivo = []
+                if hubo_venta:
+                    motivo.append(f"Venta ({prev_reported_at[-14:]} -> {current_fecha_venta[-14:]})")
+                if cambiaron_litros:
+                    motivo.append(f"Litros ({prev_litros}L -> {current_litros}L)")
+                if cambio_condicion:
+                    motivo.append(f"Condicion ({prev_condition} -> {current_condition})")
+                print(f"  [CAMBIO DETECTADO] Estación {station_id}: {', '.join(motivo)}")
 
             # ASIGNACIÓN DE TIMESTAMPS
             # reported_at: Fecha de la venta real si la hubo; de lo contrario server_time (cisterna o cambio)
