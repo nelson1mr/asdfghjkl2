@@ -221,6 +221,7 @@ def estimate_arrival_time(dep_id: int, st_lat: float, st_lng: float, salida_dt: 
 
 def get_station_cache(db: Client) -> dict[int, dict]:
     """Carga el catálogo de estaciones mapeadas en memoria."""
+    t_start = time.time()
     try:
         response = (
             db.table(STATIONS_TABLE)
@@ -229,13 +230,16 @@ def get_station_cache(db: Client) -> dict[int, dict]:
             .limit(5000)
             .execute()
         )
+        elapsed = time.time() - t_start
+        print(f"  [CACHE] Estaciones extraidas para el cache {len(response.data)} completado en {elapsed:.2f}s")
         return {
             row["anh_id"]: row
             for row in response.data
             if row.get("anh_id") is not None
         }
     except Exception as e:
-        print(f"  [ERROR] Falló al cargar catálogo de estaciones: {e}")
+        elapsed = time.time() - t_start
+        print(f"  [ERROR] Falló al cargar catálogo de estaciones tras {elapsed:.2f}s: {e}")
         return {}
 
 
@@ -244,15 +248,18 @@ def get_latest_official_cache(db: Client) -> dict[tuple[int, int], dict]:
     Carga el último reporte oficial conocido por (station_id, fuel_type_id)
     directamente desde la RPC en PostgreSQL en menos de 10 ms.
     """
-    print("  [CACHE] Cargando últimos snapshots oficiales de la BD...")
+    t_start = time.time()
     try:
         response = db.rpc("get_latest_official_snapshots").limit(5000).execute()
+        elapsed = time.time() - t_start
+        print(f"  [CACHE] Registros traidos para la deduplicacion {len(response.data)} completado en {elapsed:.2f}s")
         return {
             (row["station_id"], row["fuel_type_id"]): row
             for row in response.data
         }
     except Exception as e:
-        print(f"  [WARN] No se pudo cargar snapshot oficial previo: {e}")
+        elapsed = time.time() - t_start
+        print(f"  [WARN] No se pudo cargar snapshot oficial previo tras {elapsed:.2f}s: {e}")
         return {}
 
 
