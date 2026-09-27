@@ -143,12 +143,25 @@ def format_anh_date(date_raw: str | None) -> str | None:
 
 
 def parse_utc_dt(dt_str: str | None) -> datetime | None:
-    """Parsea cualquier string ISO a objeto datetime consciente de zona en UTC."""
+    """Parsea fechas ISO con cualquier cantidad de microsegundos en Python 3.10 sin fallar."""
     if not dt_str:
         return None
     try:
-        clean = dt_str.replace("Z", "+00:00")
-        dt = datetime.fromisoformat(clean)
+        s = dt_str.strip().replace("Z", "+00:00")
+        # Normalizar microsegundos variables (ej. .2359 o .86482) a exactamente 6 dígitos
+        if "." in s:
+            base, rest = s.split(".", 1)
+            tz = ""
+            for sep in ["+", "-"]:
+                if sep in rest:
+                    frac, tz_part = rest.split(sep, 1)
+                    tz = sep + tz_part
+                    rest = frac
+                    break
+            frac = (rest + "000000")[:6]
+            s = f"{base}.{frac}{tz}"
+
+        dt = datetime.fromisoformat(s)
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=BOLIVIA_TZ)
         return dt.astimezone(timezone.utc)
@@ -157,14 +170,16 @@ def parse_utc_dt(dt_str: str | None) -> datetime | None:
 
 
 def are_dates_equal(d1_str: str | None, d2_str: str | None) -> bool:
-    """Compara si dos timestamps representan el mismo instante real en el tiempo."""
+    """Compara si dos timestamps representan el mismo segundo en el tiempo."""
     if d1_str == d2_str:
         return True
+    if not d1_str or not d2_str:
+        return False
     dt1 = parse_utc_dt(d1_str)
     dt2 = parse_utc_dt(d2_str)
     if not dt1 or not dt2:
-        return False
-    # Tolerancia de 1 segundo para ignorar discrepancias de milisegundos
+        # Comparación de respaldo hasta los segundos (primeros 19 caracteres)
+        return d1_str[:19] == d2_str[:19]
     return abs((dt1 - dt2).total_seconds()) < 1.0
 
 
