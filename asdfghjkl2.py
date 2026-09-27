@@ -391,7 +391,8 @@ def generate_anh_reports(
         current_litros = parse_available_liters(item) # float o None
         raw_fecha_venta = item.get("fecha_ultima_venta")
         current_fecha_venta = format_anh_date(raw_fecha_venta)
-        server_time = item.get("_server_time") or now_utc_str
+        # server_time = item.get("_server_time") or now_utc_str
+        scrape_time = now_utc_str
 
         # Calcular antigüedad real de la última venta
         dt_current_venta = parse_utc_dt(raw_fecha_venta)
@@ -429,9 +430,10 @@ def generate_anh_reports(
             # Si NADA cambió en el mundo real, se descarta silenciosamente
             if not hubo_venta and not cambiaron_litros and not cambio_condicion:
                 descartados_sin_cambio += 1
+                continue
                 
             # LOG DE DIAGNÓSTICO (Solo muestra los primeros 5 eventos para no saturar la terminal)
-            if len(records) < 20:
+            if len(records) < 5:
                 motivo = []
                 if hubo_venta:
                     motivo.append(f"Venta ({prev_reported_at} -> {current_fecha_venta})")
@@ -443,18 +445,18 @@ def generate_anh_reports(
 
             # ASIGNACIÓN DE TIMESTAMPS
             # reported_at: Fecha de la venta real si la hubo; de lo contrario server_time (cisterna o cambio)
-            reported_at = current_fecha_venta if hubo_venta else server_time
+            reported_at = current_fecha_venta or scrape_time
 
             # liters_reported_at: Solo avanza si los litros cambiaron físicamente en el sensor
             if current_litros is not None:
-                liters_reported_at = server_time if cambiaron_litros else prev.get("liters_reported_at", server_time)
+                liters_reported_at = scrape_time if cambiaron_litros else prev.get("liters_reported_at", scrape_time)
             else:
                 liters_reported_at = None
 
         else:
             # Primer registro histórico para este combustible
-            reported_at = current_fecha_venta or server_time
-            liters_reported_at = server_time if current_litros is not None else None
+            reported_at = current_fecha_venta or scrape_time
+            liters_reported_at = scrape_time if current_litros is not None else None
 
         records.append({
             "station_id": station_id,
