@@ -131,15 +131,9 @@ BOLIVIA_TZ = timezone(timedelta(hours=-4))
 
 def format_anh_date(date_raw: str | None) -> str | None:
     """Convierte la fecha local de la ANH a formato UTC ISO (+00:00)."""
-    if not date_raw:
-        return None
-    try:
-        dt = datetime.fromisoformat(date_raw)
-        if not dt.tzinfo:
-            dt = dt.replace(tzinfo=BOLIVIA_TZ)
-        return dt.astimezone(timezone.utc).isoformat()
-    except Exception:
-        return date_raw
+    # Reutiliza parse_utc_dt para que Python 3.10 no falle con microsegundos de 5 dígitos
+    dt = parse_utc_dt(date_raw)
+    return dt.isoformat() if dt else date_raw
 
 
 def parse_utc_dt(dt_str: str | None) -> datetime | None:
@@ -534,11 +528,8 @@ def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int
         prod_name = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("name", "GES")
         fuel_type_id = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("id", None)
 
-        try:
-            fecha_salida = datetime.fromisoformat(fecha_despacho_raw)
-            if not fecha_salida.tzinfo:
-                fecha_salida = fecha_salida.replace(tzinfo=BOLIVIA_TZ)
-        except Exception:
+        fecha_salida = parse_utc_dt(fecha_despacho_raw)
+        if not fecha_salida:
             continue
 
         st_db = stations_cache.get(anh_id, {})
