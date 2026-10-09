@@ -234,7 +234,7 @@ def get_station_cache(db: Client) -> dict[int, dict]:
     try:
         response = (
             db.table(STATIONS_TABLE)
-            .select("id, anh_id, latitude, longitude, department, name")
+            .select("id, anh_id, latitude, longitude, department, name, ypfb_names")
             .not_.is_("anh_id", "null")
             .limit(5000)
             .execute()
@@ -512,77 +512,17 @@ def transform_and_insert_reports(
     batch_insert_reports(db, records)
 
 
-def manage_dispatches(db: Client, raw_data: list[dict], stations_cache: dict[int, dict]):
-    print("[PASO 4/5] Procesando despachos en curso...")
-    dispatches = []
-    now_utc = datetime.now(timezone.utc)
-
-    for item in raw_data:
-        fecha_despacho_raw = item.get("fecha_hora_despacho")
-        if not fecha_despacho_raw:
-            continue
-
-        anh_id = item.get("id")
-        dep_id = item.get("departamento_id") or item.get("_dep_id", 2)
-        prod_code = item.get("_api_producto", 0)
-        prod_name = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("name", "GES")
-        fuel_type_id = API_PRODUCT_TO_FUEL_TYPE_ID.get(prod_code, {}).get("id", None)
-
-        fecha_salida = parse_utc_dt(fecha_despacho_raw)
-        if not fecha_salida:
-            continue
-
-        st_db = stations_cache.get(anh_id, {})
-        lat = st_db.get("latitude")
-        lng = st_db.get("longitude")
-
-        if lat and lng:
-            fecha_llegada = estimate_arrival_time(dep_id, float(lat), float(lng), fecha_salida)
-        else:
-            fecha_llegada = fecha_salida + timedelta(minutes=45)
-
-        raw_station_name = item.get("nombre") or st_db.get("name") or "DESCONOCIDO"
-
-        despacho_data = {
-            "station_id": None,              
-            "anh_id": anh_id,                
-            "raw_station_name": raw_station_name,
-            "producto": prod_name,
-            "fecha_salida_planta": fecha_salida.isoformat(),
-            "fecha_llegada_aprox": fecha_llegada.isoformat(),
-            "report_timestamp": now_utc.isoformat(),
-            "fuel_type_id": fuel_type_id,
-        }
-
-        hash_base = {
-            "producto": prod_name,
-            "fecha_salida_planta": despacho_data["fecha_salida_planta"],
-            "fecha_llegada_aprox": despacho_data["fecha_llegada_aprox"],
-            "anh_id": anh_id
-        }
-        unique_hash = hashlib.md5(json.dumps(hash_base, sort_keys=True).encode("utf-8")).hexdigest()
-        despacho_data["unique_hash"] = unique_hash
-
-        dispatches.append(despacho_data)
-
-    if not dispatches:
-        print("  [INFO] No hay despachos activos con fecha de salida en esta ejecución.")
-        return
-
-    print(f"  [OK] Insertando {len(dispatches)} despachos en '{DISPATCHES_TABLE}'...")
-    for i in range(0, len(dispatches), BATCH_SIZE):
-        batch = dispatches[i:i + BATCH_SIZE]
-        try:
-            db.table(DISPATCHES_TABLE).upsert(batch, on_conflict="unique_hash", ignore_duplicates=True).execute()
-        except Exception as e:
-            print(f"  [ERROR] Error en upsert de despachos: {e}")
-
-    print("[PASO 5/5] Invocando RPC 'map_new_dispatches' en Supabase...")
+def manage_dispatches(db: Client, raw_data: list[dict] = None, stations_cache: dict[int, dict] = None):
+    """
+    Función de compatibilidad: Delega la ingesta de despachos al nuevo motor
+    oficial de YPFB / Kyros (V3), reemplazando el endpoint obsoleto de la ANH.
+    """
+    print("[PASO 4/5] Sincronizando despachos oficiales con nuevo motor YPFB/Kyros (V3)...")
     try:
-        db.rpc("map_new_dispatches").execute()
-        print("  [OK] RPC de mapeo completado exitosamente.")
+        import ingestar_despachos_ypfb
+        ingestar_despachos_ypfb.run_ypfb_ingestion(db, dias_atras=0)
     except Exception as e:
-        print(f"  [ERROR] Falló la invocación del RPC de mapeo: {e}")
+        print(f"  [ERROR] Falló la sincronización de despachos YPFB: {e}")
 
 
 # =============================================================================

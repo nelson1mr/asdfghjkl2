@@ -21,6 +21,7 @@ import asdfghjkl2
 import bp
 import genex
 import gg
+import ingestar_despachos_ypfb
 
 # Cargar variables de entorno
 load_dotenv()
@@ -152,12 +153,15 @@ def main():
     print(f"  -> TOTAL consolidado a insertar en la BD: {len(consolidated_reports)}")
 
     # 4. Inserción única en lote (Elimina parpadeos)
-    print("\n[ETAPA 4/4] Guardando lote unificado y procesando despachos...")
+    print("\n[ETAPA 4/5] Guardando lote unificado de disponibilidad en BD...")
     asdfghjkl2.batch_insert_reports(db, consolidated_reports)
 
-    # 5. Gestión de despachos ANH y mapeo RPC
-    if raw_anh_telemetry:
-        asdfghjkl2.manage_dispatches(db, raw_anh_telemetry, stations_cache)
+    # 5. Ingestión oficial de despachos y nominaciones YPFB / Kyros (Nuevo Motor V3)
+    print("\n[ETAPA 5/5] Sincronizando despachos y nominaciones oficiales YPFB...")
+    try:
+        ingestar_despachos_ypfb.run_ypfb_ingestion(db, dias_atras=0)
+    except Exception as e:
+        print(f"  [ERROR] Falló la sincronización de despachos YPFB: {e}")
 
     total_time = time.time() - start_total
     print("\n" + "=" * 70)
