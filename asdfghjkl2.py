@@ -24,7 +24,7 @@ from supabase import Client, create_client
 load_dotenv()
 
 # =============================================================================
-# 1. CONFIGURACIÓN Y CONSTANTES
+#  CONFIGURACIÓN Y CONSTANTES
 # =============================================================================
 SUPABASE_URL = os.getenv("V3")
 SUPABASE_KEY = os.getenv("V4")
@@ -59,58 +59,6 @@ API_PRODUCT_TO_FUEL_TYPE_ID = {
     3: {"id": 4, "name": "DUL"},
 }
 
-# 20 Plantas y Zonas Comerciales de Despacho YPFB / ANH
-PLANTAS_DISTRIBUIDORAS = {
-    # 1: Chuquisaca
-    1: [
-        {"nombre": "Planta Qhora Qhora (Sucre)", "lat": -19.07998626110280, "lng": -65.22167650982740},
-        {"nombre": "Planta Monteagudo", "lat": -19.74559341842000, "lng": -63.95991249941300},
-    ],
-    # 2: La Paz
-    2: [
-        {"nombre": "Planta Senkata (El Alto)", "lat": -16.57400707348200, "lng": -68.18613838385400},
-    ],
-    # 3: Cochabamba
-    3: [
-        {"nombre": "Planta Valle Hermoso", "lat": -17.45056070037580, "lng": -66.12384363077580},
-        {"nombre": "Planta Puerto Villarroel", "lat": -16.84177978017380, "lng": -64.80314536951480},
-    ],
-    # 4: Oruro
-    4: [
-        {"nombre": "Planta San Pedro", "lat": -17.93571571041580, "lng": -67.11460797116160},
-    ],
-    # 5: Potosí
-    5: [
-        {"nombre": "Planta Potosí (San Clemente)", "lat": -19.57737082058280, "lng": -65.76022191904490},
-        {"nombre": "Planta Uyuni", "lat": -20.45555987377030, "lng": -66.81324108503760},
-        {"nombre": "Planta Tupiza", "lat": -21.46794714927200, "lng": -65.71686132811010},
-        {"nombre": "Zona Comercial Villazón", "lat": -22.07423729756340, "lng": -65.59901311062280},
-    ],
-    # 6: Tarija
-    6: [
-        {"nombre": "Planta Tarija (El Portillo)", "lat": -21.56692058473000, "lng": -64.66612664982680},
-        {"nombre": "Planta Villa Montes", "lat": -21.26809159197950, "lng": -63.45017401501540},
-        {"nombre": "Zona Comercial Yacuiba", "lat": -22.04187815162910, "lng": -63.67874361108990},
-        {"nombre": "Zona Comercial Bermejo", "lat": -22.72582853533690, "lng": -64.35166157316420},
-    ],
-    # 7: Santa Cruz
-    7: [
-        {"nombre": "Planta Santa Cruz (Palmasola)", "lat": -17.87708642377990, "lng": -63.20039447396990},
-        {"nombre": "Planta Camiri", "lat": -20.01562013641880, "lng": -63.53367201983930},
-        {"nombre": "Planta San José de Chiquitos", "lat": -17.84416194151650, "lng": -60.73058573529120},
-        {"nombre": "Zona Comercial Puerto Suárez", "lat": -18.98924775924940, "lng": -57.79274321626870},
-    ],
-    # 8: Beni
-    8: [
-        {"nombre": "Planta Trinidad", "lat": -14.84321802876630, "lng": -64.90912405774000},
-        {"nombre": "Planta Riberalta", "lat": -11.00370517677800, "lng": -66.04830114170910},
-        {"nombre": "Zona Comercial Guayaramerín", "lat": -10.80801641933020, "lng": -65.35227326676250},
-    ],
-    # 9: Pando
-    9: [
-        {"nombre": "Zona Comercial Cobija", "lat": -11.02727737546800, "lng": -68.75543913244700},
-    ],
-}
 # Los siguientes anh_id son falsos positivos o ya han sido considerados
 #  - ANH_ID: 2719, Nombre: INVERSIONES JANA S.A., Dep_ID: 1 - En la api existen duplicados de esta estación, se considera solo el mas reciente
 #  - ANH_ID: 2733, Nombre: YUPANQUI QUISPE MARCOS, Dep_ID: 2 - El ultimo reporte de esta estación es de 2025 y no esta claro su ubicacion, se ignora
@@ -126,7 +74,7 @@ BOLIVIA_TZ = timezone(timedelta(hours=-4))
 
 
 # =============================================================================
-# 2. HELPERS DE FECHA Y COMPARACIÓN PRECISA
+#  HELPERS DE FECHA Y COMPARACIÓN PRECISA
 # =============================================================================
 
 def format_anh_date(date_raw: str | None) -> str | None:
@@ -178,54 +126,7 @@ def are_dates_equal(d1_str: str | None, d2_str: str | None) -> bool:
 
 
 # =============================================================================
-# 3. CÁLCULO DE ESTIMACIÓN DE TIEMPO DE LLEGADA (Despachos)
-# =============================================================================
-
-def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Calcula la distancia geodésica en km entre dos puntos."""
-    R = 6371.0
-    phi1, phi2 = math.radians(lat1), math.radians(lat2)
-    dphi = math.radians(lat2 - lat1)
-    dlambda = math.radians(lon2 - lon1)
-    a = math.sin(dphi / 2)**2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2)**2
-    return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-
-def estimate_arrival_time(dep_id: int, st_lat: float, st_lng: float, salida_dt: datetime) -> datetime:
-    plantas_departamento = PLANTAS_DISTRIBUIDORAS.get(dep_id, PLANTAS_DISTRIBUIDORAS[2])
-    dist_minima_km = min(
-        haversine_km(planta["lat"], planta["lng"], st_lat, st_lng)
-        for planta in plantas_departamento
-    )
-
-    if dep_id == 2:  # La Paz (Topografía de montaña)
-        factor_curvatura = 1.40
-        radio_urbano_km = 15.0
-        vel_urbana_kmh = 18.0
-        vel_carretera_kmh = 55.0
-        tiempo_base_min = 3.0
-    else:  # Santa Cruz, Cochabamba y otros
-        factor_curvatura = 1.35
-        radio_urbano_km = 12.0
-        vel_urbana_kmh = 24.0
-        vel_carretera_kmh = 65.0
-        tiempo_base_min = 2.0
-
-    dist_vial_total = dist_minima_km * factor_curvatura
-
-    if dist_vial_total <= radio_urbano_km:
-        minutos_viaje = tiempo_base_min + (dist_vial_total / vel_urbana_kmh) * 60.0
-    else:
-        tiempo_urbano = (radio_urbano_km / vel_urbana_kmh) * 60.0
-        dist_carretera = dist_vial_total - radio_urbano_km
-        tiempo_carretera = (dist_carretera / vel_carretera_kmh) * 60.0
-        minutos_viaje = tiempo_base_min + tiempo_urbano + tiempo_carretera
-
-    return salida_dt + timedelta(minutes=int(round(minutos_viaje)))
-
-
-# =============================================================================
-# 4. CARGA DE CATÁLOGO Y ÚLTIMO SNAPSHOT OFICIAL (Caché en RAM)
+#  CARGA DE CATÁLOGO Y ÚLTIMO SNAPSHOT OFICIAL (Caché en RAM)
 # =============================================================================
 
 def get_station_cache(db: Client) -> dict[int, dict]:
@@ -273,7 +174,7 @@ def get_latest_official_cache(db: Client) -> dict[tuple[int, int], dict]:
 
 
 # =============================================================================
-# 5. EXTRACCIÓN ASÍNCRONA DESDE LA API ANH
+#  EXTRACCIÓN ASÍNCRONA DESDE LA API ANH
 # =============================================================================
 
 async def fetch_dep_prod(session: aiohttp.ClientSession, dep: int, prod: int) -> list[dict]:
@@ -314,7 +215,7 @@ async def fetch_all_anh_telemetry() -> list[dict]:
 
 
 # =============================================================================
-# 6. PARSEO DE SALDO Y DETERMINACIÓN PURA DE DISPONIBILIDAD
+#  PARSEO DE SALDO Y DETERMINACIÓN PURA DE DISPONIBILIDAD
 # =============================================================================
 
 def parse_available_liters(item: dict) -> float | None:
