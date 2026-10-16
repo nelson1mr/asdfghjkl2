@@ -386,12 +386,10 @@ async def fetch_district_data(
     semaphore: asyncio.Semaphore,
     district_info: dict,
     fecha_desde: str,
-    fecha_hasta: str,
-    incluir_prog: bool
-) -> tuple[list[dict], list[dict]]:
+    fecha_hasta: str
+) -> list[dict]:
     d_id = district_info["id"]
     despachos_raw = []
-    programacion_raw = []
 
     url_desp = f"{KYROS_BASE_URL}/reportes/despachos/publico"
     p1 = await fetch_kyros_page(session, semaphore, url_desp, {
@@ -428,50 +426,13 @@ async def fetch_district_data(
         it["_distrito_id"] = d_id
         despachos_raw.append(it)
 
-    if incluir_prog:
-        url_prog = f"{KYROS_BASE_URL}/reportes/programacion/publico"
-        p1_prog = await fetch_kyros_page(session, semaphore, url_prog, {
-            "distrito_id": d_id,
-            "desde": fecha_desde,
-            "hasta": fecha_hasta,
-            "page": 1,
-            "page_size": PAGE_SIZE
-        })
-        total_p_prog = p1_prog.get("total_pages", 1)
-        items_prog = p1_prog.get("items", [])
-
-        if total_p_prog > 1:
-            tasks_prog = [
-                fetch_kyros_page(session, semaphore, url_prog, {
-                    "distrito_id": d_id,
-                    "desde": fecha_desde,
-                    "hasta": fecha_hasta,
-                    "page": p,
-                    "page_size": PAGE_SIZE
-                })
-                for p in range(2, total_p_prog + 1)
-            ]
-            pages_p = await asyncio.gather(*tasks_prog)
-            for pg in pages_p:
-                items_prog.extend(pg.get("items", []))
-
-        for it in items_prog:
-            prod = it.get("producto", "")
-            if "EESS" in prod or "GASOLINA" in prod or "DIESEL" in prod:
-                cliente = it.get("cliente")
-                if not cliente or cliente.strip() == "YPFB":
-                    continue
-                it["_distrito_id"] = d_id
-                programacion_raw.append(it)
-
-    return despachos_raw, programacion_raw
+    return despachos_raw
 
 # =============================================================================
 # 7. PROCESAMIENTO Y TRANSFORMACIÓN AL ESQUEMA EN INGLÉS
 # =============================================================================
 async def process_and_transform_records(
     despachos_raw: list[dict],
-    programacion_raw: list[dict],
     matcher: StationMatcher,
     osrm_cache: OSRMCache,
     enable_osrm: bool
@@ -504,50 +465,54 @@ async def process_and_transform_records(
             has_gps = bool(plate)
             is_provincia = (it.get("ambito") or "").strip().lower() == "provincia"
 
-            fecha_salida_str = it.get("fecha_despacho_efectivo_hora") or it.get("fecha_despacho_efectivo")
-            dispatched_at = parse_kyros_datetime(fecha_salida_str) or now_utc
+            fecha_hora_efectiva = it.get("fecha_despacho_efectivo_hora")
+            has_departed = bool(fecha_hora_efectiva)
+            dispatched_at = parse_kyros_datetime(fecha_hora_efectiva) if has_departed else None
 
-            st_lat = st_dict.get("latitude") if st_dict else None
-            st_lng = st_dict.get("longitude") if st_dict else None
-            plant_lat = d_meta.get("plant_lat")
-            plant_lng = d_meta.get("plant_lng")
+            # Fecha programada u operativa (YYYY-MM-DD)
+            scheduled_date_val = str(it.get("fecha_despacho_programado") or it.get("fecha_despacho_efectivo") or now_utc.astimezone(BOLIVIA_TZ).strftime("%Y-%m-%d"))[:10]
 
-            # 1. Obtener ruta OSRM con distancia y duración real de viaje
             planned_route_polyline = None
-            travel_min = None
+            estimated_arrival_at = None
+            confirmed_arrival_at = None
 
-            if enable_osrm and plant_lat and plant_lng and st_lat and st_lng:
-                osrm_data = await fetch_osrm_route(
-                    osrm_session, osrm_cache, plant_lat, plant_lng, float(st_lat), float(st_lng)
-                )
-                if osrm_data and osrm_data.get("duration_min"):
-                    travel_min = osrm_data["duration_min"]
-                    planned_route_polyline = osrm_data.get("polyline")
+            if has_departed and dispatched_at:
+                st_lat = st_dict.get("latitude") if st_dict else None
+                st_lng = st_dict.get("longitude") if st_dict else None
+                plant_lat = d_meta.get("plant_lat")
+                plant_lng = d_meta.get("plant_lng")
 
-            # 2. Respaldo por física vial si OSRM no responde o está desactivado
-            if travel_min is None:
-                travel_min = estimate_travel_minutes(plant_lat, plant_lng, st_lat, st_lng, is_provincia)
+                # 1. Obtener ruta OSRM con distancia y duración real de viaje (SOLO para ETA referencial y polilínea)
+                travel_min = None
+                if enable_osrm and plant_lat and plant_lng and st_lat and st_lng:
+                    osrm_data = await fetch_osrm_route(
+                        osrm_session, osrm_cache, plant_lat, plant_lng, float(st_lat), float(st_lng)
+                    )
+                    if osrm_data and osrm_data.get("duration_min"):
+                        travel_min = osrm_data["duration_min"]
+                        planned_route_polyline = osrm_data.get("polyline")
 
-            estimated_arrival_at = dispatched_at + timedelta(minutes=travel_min)
-            elapsed_min = (now_utc - dispatched_at).total_seconds() / 60.0
+                # 2. Respaldo por física vial si OSRM no responde o está desactivado
+                if travel_min is None:
+                    travel_min = estimate_travel_minutes(plant_lat, plant_lng, st_lat, st_lng, is_provincia)
 
-            if elapsed_min < 0:
-                status = "scheduled"
+                # ETA referencial para informar al usuario (NO determina el estado físico)
+                estimated_arrival_at = dispatched_at + timedelta(minutes=travel_min)
                 confirmed_arrival_at = None
-            elif elapsed_min < travel_min:
+
+                # Estado fáctico oficial de YPFB: cisterna cruzó la balanza y salió de planta
                 status = "in_transit"
-                confirmed_arrival_at = None
-            elif travel_min <= elapsed_min < travel_min + 30:
-                status = "delivering"
-                confirmed_arrival_at = None
             else:
-                status = "delivered"
-                confirmed_arrival_at = estimated_arrival_at
+                # La cisterna aún NO ha salido físicamente de la planta por balanza.
+                # Si tiene placa asignada está cargando en planta ('loading'); si no, está en espera ('scheduled').
+                status = "loading" if plate else "scheduled"
 
-            hash_input = f"ypfb_desp_{d_id}_{dispatched_at.isoformat()}_{normalize_text(raw_name)}_{fuel_type_id}_{plate or 'NOPLATE'}_{liters}"
+            # Hash INVARIANTE: No depende de la hora de salida ni de variaciones textuales de la razón social.
+            # Identifica el despacho/cupo físico unívocamente para evitar duplicados en la BD y push notifications repetidas.
+            st_key = f"st_{station_id}" if station_id else f"raw_{clean_brand(raw_name)}"
+            plate_key = f"pl_{plate.strip().upper()}" if plate else "noplate"
+            hash_input = f"ypfb_desp_{d_id}_{scheduled_date_val}_{st_key}_{fuel_type_id}_{plate_key}_{int(liters)}"
             unique_hash = hashlib.md5(hash_input.encode("utf-8")).hexdigest()
-
-            scheduled_date_val = it.get("fecha_despacho_programado") or dispatched_at.astimezone(BOLIVIA_TZ).strftime("%Y-%m-%d")
 
             dispatch_record = {
                 "station_id": station_id,
@@ -560,9 +525,9 @@ async def process_and_transform_records(
                 "license_plate": plate,
                 "has_gps": has_gps,
                 "is_public": True,
-                "scheduled_date": str(scheduled_date_val)[:10] if scheduled_date_val else None,
-                "dispatched_at": dispatched_at.isoformat(),
-                "estimated_arrival_at": estimated_arrival_at.isoformat(),
+                "scheduled_date": scheduled_date_val,
+                "dispatched_at": dispatched_at.isoformat() if dispatched_at else None,
+                "estimated_arrival_at": estimated_arrival_at.isoformat() if estimated_arrival_at else None,
                 "confirmed_arrival_at": confirmed_arrival_at.isoformat() if confirmed_arrival_at else None,
                 "status": status,
                 "source": "ypfb",
@@ -575,61 +540,6 @@ async def process_and_transform_records(
                     "client": it.get("cliente"),
                     "district_name": d_meta.get("nombre"),
                     "unit": it.get("unidad", "L")
-                },
-                "updated_at": now_utc.isoformat()
-            }
-            dispatches.append(dispatch_record)
-
-        for it in programacion_raw:
-            raw_name = (it.get("cliente") or "UNKNOWN").strip()
-            d_id = it.get("_distrito_id", 4)
-            d_meta = CATALOGO_DISTRITOS.get(d_id, {
-                "departamento": "santa_cruz",
-                "plant_lat": -17.8771,
-                "plant_lng": -63.2004
-            })
-
-            station_id, st_dict = matcher.match(raw_name, d_id)
-            department = st_dict.get("department") if st_dict else d_meta.get("departamento", "santa_cruz")
-            if department not in VALID_DEPARTMENTS:
-                department = "santa_cruz"
-
-            prod_raw = it.get("producto") or it.get("familia") or "FUEL"
-            familia = it.get("familia", "")
-            fuel_type_id, _ = map_fuel_type(prod_raw, familia)
-
-            liters = float(it.get("volumen_programado") or 0.0)
-            scheduled_date_val = str(it.get("fecha_programacion") or now_utc.astimezone(BOLIVIA_TZ).strftime("%Y-%m-%d"))[:10]
-
-            canal = (it.get("canal") or "").strip()
-            fam_cod = (it.get("familia_codigo") or "").strip()
-            hash_input = f"ypfb_prog_{d_id}_{scheduled_date_val}_{normalize_text(raw_name)}_{fuel_type_id}_{canal}_{fam_cod}_{liters}"
-            unique_hash = hashlib.md5(hash_input.encode("utf-8")).hexdigest()
-
-            dispatch_record = {
-                "station_id": station_id,
-                "raw_station_name": raw_name,
-                "department": department,
-                "district_id": d_id,
-                "fuel_type_id": fuel_type_id,
-                "raw_product_name": prod_raw,
-                "volume_liters": liters if liters > 0 else None,
-                "license_plate": None,
-                "has_gps": False,
-                "is_public": True,
-                "scheduled_date": scheduled_date_val,
-                "dispatched_at": None,
-                "estimated_arrival_at": None,
-                "confirmed_arrival_at": None,
-                "status": "scheduled",
-                "source": "ypfb",
-                "unique_hash": unique_hash,
-                "planned_route_polyline": None,
-                "actual_route_polyline": None,
-                "metadata": {
-                    "family": familia,
-                    "channel": it.get("canal"),
-                    "district_name": d_meta.get("nombre")
                 },
                 "updated_at": now_utc.isoformat()
             }
@@ -699,7 +609,6 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
 async def run_ypfb_ingestion_async(
     db: Client,
     dias_atras: int = 0,
-    incluir_prog: bool = True,
     enable_osrm: bool = True,
     dry_run: bool = False
 ) -> dict:
@@ -710,7 +619,7 @@ async def run_ypfb_ingestion_async(
 
     print("\n" + "=" * 75)
     rango_str = f"Solo Hoy ({fecha_hasta})" if dias_atras == 0 else f"{fecha_desde} a {fecha_hasta}"
-    print(f"🚀 INGESTIÓN YPFB/KYROS -> SURTIVEO | Rango: {rango_str}")
+    print(f"🚀 INGESTIÓN YPFB/KYROS -> SURTIVEO (SOLO DESPACHOS) | Rango: {rango_str}")
     print("=" * 75)
 
     print("[1/5] Cargando catálogo de estaciones físicas desde Supabase...")
@@ -733,25 +642,22 @@ async def run_ypfb_ingestion_async(
         distritos_activos = [d for d in distritos_raw if d.get("tiene_datos")]
         print(f"  -> {len(distritos_activos)} distritos comerciales con datos activos.")
 
-        print(f"[3/5] Extrayendo despachos y programación (Semáforo: {MAX_CONCURRENT_KYROS} hilos)...")
+        print(f"[3/5] Extrayendo despachos físicos (Semáforo: {MAX_CONCURRENT_KYROS} hilos)...")
         tasks = [
-            fetch_district_data(session, semaphore, d, fecha_desde, fecha_hasta, incluir_prog)
+            fetch_district_data(session, semaphore, d, fecha_desde, fecha_hasta)
             for d in distritos_activos
         ]
         results = await asyncio.gather(*tasks)
 
     all_despachos = []
-    all_programacion = []
-    for desp_list, prog_list in results:
+    for desp_list in results:
         all_despachos.extend(desp_list)
-        all_programacion.extend(prog_list)
 
-    print(f"  -> Despachos efectivos extraídos: {len(all_despachos)}")
-    print(f"  -> Nominaciones programadas extraídas: {len(all_programacion)}")
+    print(f"  -> Despachos efectivos con cisterna extraídos: {len(all_despachos)}")
 
     print("[4/5] Mapeando estaciones, calculando estados físicos y polylines...")
     dispatches = await process_and_transform_records(
-        all_despachos, all_programacion, matcher, osrm_cache, enable_osrm
+        all_despachos, matcher, osrm_cache, enable_osrm
     )
 
     matched_count = sum(1 for d in dispatches if d["station_id"] is not None)
@@ -766,11 +672,10 @@ async def run_ypfb_ingestion_async(
     print(f"  -> Emparejamiento:")
     print(f"       * Vinculados a estación física: {matched_count}")
     print(f"       * Sin vincular (station_id NULL): {unmapped_count}")
-    print(f"  -> Estados físicos calculados:")
-    print(f"       * Programado (scheduled): {status_stats['scheduled']}")
-    print(f"       * En tránsito (in_transit): {status_stats['in_transit']}")
-    print(f"       * Descargando (delivering): {status_stats['delivering']}")
-    print(f"       * Entregado (delivered):   {status_stats['delivered']}")
+    print(f"  -> Estados físicos oficiales (YPFB / Balanza):")
+    print(f"       * Programado / Cuota (scheduled):  {status_stats['scheduled']}")
+    print(f"       * Cargando en planta (loading):    {status_stats['loading']}")
+    print(f"       * En tránsito / Ruta (in_transit): {status_stats['in_transit']}")
 
     upserted_count = 0
     if not dry_run:
@@ -796,7 +701,6 @@ async def run_ypfb_ingestion_async(
 def run_ypfb_ingestion(
     db: Client | None = None,
     dias_atras: int = 0,
-    incluir_prog: bool = True,
     enable_osrm: bool = True,
     dry_run: bool = False
 ) -> dict:
@@ -806,27 +710,24 @@ def run_ypfb_ingestion(
         db = create_client(SUPABASE_URL, SUPABASE_KEY)
 
     return asyncio.run(
-        run_ypfb_ingestion_async(db, dias_atras, incluir_prog, enable_osrm, dry_run)
+        run_ypfb_ingestion_async(db, dias_atras, enable_osrm, dry_run)
     )
 
 def main():
-    parser = argparse.ArgumentParser(description="Ingestor de Despachos y Cisternas YPFB / Kyros para Surtiveo")
+    parser = argparse.ArgumentParser(description="Ingestor de Despachos y Cisternas YPFB / Kyros para Surtiveo (Solo Despachos Reales)")
     parser.add_argument("--dias", type=int, default=0, help="Número de días hacia atrás a consultar (default: 0 = solo hoy)")
     parser.add_argument("--solo-hoy", action="store_true", help="Consultar únicamente el día de hoy")
-    parser.add_argument("--sin-programacion", action="store_true", help="Omitir reporte de programación/nominaciones")
     parser.add_argument("--sin-osrm", action="store_true", help="Desactivar generación de rutas polyline OSRM")
     parser.add_argument("--dry-run", action="store_true", help="Ejecutar análisis sin escribir en la base de datos")
 
     args = parser.parse_args()
 
     dias = 0 if args.solo_hoy else args.dias
-    incluir_prog = not args.sin_programacion
     enable_osrm = not args.sin_osrm
 
     run_ypfb_ingestion(
         db=None,
         dias_atras=dias,
-        incluir_prog=incluir_prog,
         enable_osrm=enable_osrm,
         dry_run=args.dry_run
     )
