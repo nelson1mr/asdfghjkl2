@@ -3,6 +3,10 @@ name: asdfghjkl action
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ingestion-engine
+  cancel-in-progress: false
+
 jobs:
   run-engine:
     name: Execute Data Ingestion
@@ -25,4 +29,3 @@ jobs:
           gg: ${{ secrets.gg }}
         run: |
           python main.py
-

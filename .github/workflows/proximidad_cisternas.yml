@@ -1,0 +1,27 @@
+name: Proximidad Cisternas Action
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: proximidad-cisternas
+  cancel-in-progress: true
+
+jobs:
+  run-proximity:
+    name: Execute Cistern Proximity Engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: |
+          pip install -r requirements.txt
+      - name: Run Proximity & Geofencing Engine
+        env:
+          V3: ${{ secrets.V3 }}
+          V4: ${{ secrets.V4 }}
+        run: |
+          python verificar_proximidad_cisternas.py
