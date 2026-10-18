@@ -46,6 +46,8 @@ OSRM_TIMEOUT_SECONDS = 2.5
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 OSRM_CACHE_FILE = os.path.join(SCRIPT_DIR, "osrm_routes_cache.json")
 
+TRUCK_TIME_FACTOR = 1.25
+
 # =============================================================================
 # 2. CATÁLOGO DE DISTRITOS KYROS Y COORDENADAS DE PLANTAS DISTRIBUIDORAS
 # =============================================================================
@@ -489,7 +491,7 @@ async def process_and_transform_records(
                         osrm_session, osrm_cache, plant_lat, plant_lng, float(st_lat), float(st_lng)
                     )
                     if osrm_data and osrm_data.get("duration_min"):
-                        travel_min = osrm_data["duration_min"]
+                        travel_min = max(5, int(round(osrm_data["duration_min"] * TRUCK_TIME_FACTOR)))
                         planned_route_polyline = osrm_data.get("polyline")
 
                 # 2. Respaldo por física vial si OSRM no responde o está desactivado
@@ -546,6 +548,41 @@ async def process_and_transform_records(
             dispatches.append(dispatch_record)
 
     return dispatches
+
+#Recomendaciond e claude
+def reclaim_plate_assignments(db: Client, dispatches: list[dict]) -> int:
+    """Si un cupo que existía sin placa recibe placa, reutiliza el hash de la fila original.
+    También recuerda los reclamos previos, para no duplicar en la corrida siguiente."""
+    with_plate = [d for d in dispatches if d.get("license_plate")]
+    if not with_plate:
+        return 0
+    incoming = {d["unique_hash"] for d in dispatches}
+    dates = sorted({d["scheduled_date"] for d in with_plate})
+    res = (db.table("dispatches")
+           .select("unique_hash, district_id, scheduled_date, station_id, raw_station_name, "
+                   "fuel_type_id, volume_liters, license_plate")
+           .in_("scheduled_date", dates).neq("status", "cancelled").limit(5000).execute())
+
+    def k(r):
+        return (r["district_id"], str(r["scheduled_date"])[:10], r["station_id"] or r["raw_station_name"],
+                r["fuel_type_id"], int(float(r["volume_liters"] or 0)))
+
+    by_plate, unplated = {}, defaultdict(list)
+    for r in res.data or []:
+        if r["license_plate"]:
+            by_plate[(k(r), r["license_plate"])] = r["unique_hash"]
+        elif r["unique_hash"] not in incoming:  # si Kyros aún lista la versión sin placa, no se reclama
+            unplated[k(r)].append(r["unique_hash"])
+
+    reclaimed = 0
+    for d in with_plate:
+        existing = by_plate.get((k(d), d["license_plate"]))
+        if existing:
+            d["unique_hash"] = existing  # ya reclamado antes, o es su propio hash
+        elif unplated.get(k(d)):
+            d["unique_hash"] = unplated[k(d)].pop(0)
+            reclaimed += 1
+    return reclaimed
 
 # =============================================================================
 # 8. INSERCIÓN / ACTUALIZACIÓN POR LOTES EN SUPABASE
@@ -679,7 +716,9 @@ async def run_ypfb_ingestion_async(
 
     upserted_count = 0
     if not dry_run:
+        n = reclaim_plate_assignments(db, dispatches)
         print("[5/5] Sincronizando con base de datos 'public.dispatches'...")
+        print(f"  -> {n} cupos reclamados (placa asignada a fila existente).")
         upserted_count = batch_upsert_dispatches(db, dispatches)
     else:
         print("[5/5] MODO DRY-RUN: Inserción en base de datos omitida.")
