@@ -674,7 +674,40 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False) ->
     print("[4/5] Evaluando reglas...")
     decisions: dict[int, Decision] = {}
     transitions = Counter()
+
+    # Identificar despachos viejos superados (la misma placa ya salió en un viaje posterior)
+    by_truck: dict[str, list[dict]] = defaultdict(list)
     for d in dispatches:
+        k = truck_key(d.get("license_plate"))
+        if k and d.get("dispatched_at"):
+            by_truck[k].append(d)
+
+    superseded_ids = set()
+    for k, d_list in by_truck.items():
+        if len(d_list) > 1:
+            # Ordenar por salida más reciente primero
+            d_list.sort(key=lambda x: parse_ts(x.get("dispatched_at")) or now, reverse=True)
+            latest_time = parse_ts(d_list[0].get("dispatched_at"))
+            for old_d in d_list[1:]:
+                old_time = parse_ts(old_d.get("dispatched_at"))
+                # Si salió con más de 90 min de diferencia respecto al viaje más nuevo,
+                # físicamente ya completó y vació el tanque del viaje anterior.
+                if old_time and latest_time and minutes(latest_time - old_time) > 90.0:
+                    superseded_ids.add(old_d["id"])
+
+    for d in dispatches:
+        # Si el camión ya tiene un viaje posterior, cerramos este viaje viejo directamente
+        if d["id"] in superseded_ids:
+            dec = Decision()
+            eta_val = parse_ts(d.get("estimated_arrival_at")) or now
+            _deliver(dec, eta_val, "inferred", "superseded_by_newer_dispatch",
+                     "viaje previo de la cisterna; ya inició un despacho posterior", now)
+            decisions[d["id"]] = dec
+            transitions["delivered"] += 1
+            st_name = (stations.get(d.get("station_id")) or {}).get("name") or "sin estación"
+            print(f"  • #{d['id']} [{d.get('license_plate') or 'S/P'}] -> {st_name}: {dec.note}")
+            continue
+
         key = truck_key(d.get("license_plate"))
         try:
             dec = evaluate(d, stations.get(d.get("station_id")),
