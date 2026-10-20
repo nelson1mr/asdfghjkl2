@@ -1117,7 +1117,11 @@
   "-16.5740,-68.1861->-16.5742,-67.7315": {
     "polyline": "hbddBhrd_Lzn@gEai@`AgTqdAd_A}p@tg@evA{Ssp@}@khAib@aq@}YdK}QkKuEsf@yb@qVyF{a@pPsf@mPcGcDmj@kOlWgDaZ{n@}Neg@tFlJqhEwrAksCz[{Er\\of@sJiMnh@{uAoc@{}ArYel@{LiIzPab@aNpPh@{Lci@s@d@sj@ePhJzNso@n|@|AnTuZqf@fImLsQ}_A{Mv|@mO~Ygg@ya@yi@n{@lB|e@mbArT_BwLeB{C{dAnNnCfu@mh@gb@wXoEky@oZkc@sg@mJjcAk[`[qvAhBwb@}[fFzm@emBjDkzBiEiVcHnb@_Aeo@`]kRfXkhAwPxa@qMk|BbLy~@kXjIzKsVq\\ieA|P_QwPfIhZwc@kWys@tMu[qDue@zZ_NrIu[b[`a@hNoeA",
     "duration_min": 101,
-    "distance_km": 83.96
+    "distance_km": 83.96,
+    "station_id": 1843,
+    "station_name": "NEW PETROL BOLIVIA SUCURSAL 2",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T14:31:42.806835+00:00"
   },
   "-16.5740,-68.1861->-16.5294,-68.1958": {
     "polyline": "hbddBhrd_LT{@dn@kCgcAxB}Hg@}yAge@mCBwp@}Om@sEcLrN}AHDxAg\\tg@mBdAQnBaTzY?hAs^j^",
@@ -2415,7 +2419,11 @@
   "-17.8771,-63.2004->-17.4032,-63.8723": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@cbBvs@_CdbH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@bkAg^nxDczBlc@ofBrdFkj@fsHiEj`Frn@jqBkXd`C",
     "duration_min": 132,
-    "distance_km": 141.14
+    "distance_km": 141.14,
+    "station_id": 893,
+    "station_name": "ESTACION DE SERVICIO COCA",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T14:31:42.816874+00:00"
   },
   "-17.8771,-63.2004->-17.7484,-62.9677": {
     "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFwCuk@mJsX_yAwsBgn@o\\mwBkRo`AgjDyZqkBlCqgBgFk~BjSsgAkS{_Cso@i}DxLeLoL_v@cK^wd@cqC",
@@ -3294,7 +3302,11 @@
   "-16.5740,-68.1861->-16.5475,-68.2020": {
     "polyline": "hbddBhrd_LT{@dn@kCifAxBk\\uIeaAf~Cyn@ck@d@uA",
     "duration_min": 7,
-    "distance_km": 6.87
+    "distance_km": 6.87,
+    "station_id": 997,
+    "station_name": "ESTACION DE SERVICIO LAS ROSAS S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T14:31:42.807502+00:00"
   },
   "-16.5740,-68.1861->-16.7265,-68.1856": {
     "polyline": "hbddBhrd_Ll_Oof@reEp`At{CsXjtAoC",
