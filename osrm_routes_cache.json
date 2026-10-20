@@ -218,7 +218,11 @@
   "-17.4506,-66.1238->-18.1763,-64.8894": {
     "polyline": "hgoiBj|qrK|G|]``E_~B`Nmz@zy@mk@zjFeq@nt@qaC|Vw_JugAmzDoDy{FsfAajHltCslHkJcbA~z@a_ApkCswJxu@_Qg^uSn_AnDcy@}h@bOkm@qp@aLhHuz@mx@sNqvB{nIpmBiVzxD~h@xbBmd@ddA_oAraAgcF`|Boh@`yBshEj_CcjAtd@uvBn}EcuDbeB}jCfqEekAjbCv\\`k@ozAdg@eJkg@iBvqBygAbr@erBxWftAda@oDqDkh@zeAwaAi@{jBtd@yw@`SbKjCyjBv~@mcAxa@sgBp`Aoh@q]u]n{CozBbuAp_@~`A{i@_yAufEne@gKhq@js@r}BiGtSwe@|nDci@d~@ccAvuB~LlfGenAx}FebC~dQ_cKyUm[bXs~@u{BuEcJwl@}wAgMuW{g@x^kzCzsDahEvf@c@ap@kRhJyl@_]yStx@ikBkMusBdnAwyA{@{xAbi@omA{w@sw@mMacG_lAvHzIgeAm_@s`@j_@osDs_@_Uv`@uEsrAorC",
     "duration_min": 223,
-    "distance_km": 234.83
+    "distance_km": 234.83,
+    "station_id": 1837,
+    "station_name": "ESTACION DE SERVICIO FRANQUITO",
+    "department": "cochabamba",
+    "updated_at": "2026-10-20T15:31:36.421735+00:00"
   },
   "-17.4506,-66.1238->-17.6036,-66.0328": {
     "polyline": "hgoiBj|qrK|FnC{EVzFtXzrAoy@zHaU~XcTp^aDvh@gS|Lyx@vo@gg@jQyFr_@hFrUgXrh@nBre@}Pna@eD|CfVb[aPfPjQo^j`AiD|XxFlQfMlU~c@|\\f]lGhJu{@pyBa_D~g@aa@`j@krA`vDw|D",
@@ -1834,7 +1838,11 @@
   "-17.8771,-63.2004->-17.0135,-63.2207": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizAmvc@~I{vShvEo`Rf~LgdO{aI{sYzoCgoDkaCgmJrJ",
     "duration_min": 100,
-    "distance_km": 106.73
+    "distance_km": 106.73,
+    "station_id": 884,
+    "station_name": "ESTACIÓN DE SERVICIO CHANE",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T15:31:36.435490+00:00"
   },
   "-17.8771,-63.2004->-17.2913,-63.8451": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@cbBvs@_CdbH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@v|Ao`@pjDuqBnYadAhbB}w@zpFw]zfK_}E_Biw@pwAqoKnW",
