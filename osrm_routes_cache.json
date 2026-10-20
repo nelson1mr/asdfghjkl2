@@ -4050,5 +4050,32 @@
     "duration_min": 367,
     "distance_km": 344.35,
     "updated_at": "2026-10-20T18:01:46.214902+00:00"
+  },
+  "-19.7456,-63.9599->-19.8012,-63.9562": {
+    "station_id": 810,
+    "station_name": "COOPERATIVA INTEGRAL SAN JOSE OBREBRO MONTEAGUDO LTDA.",
+    "department": "chuquisaca",
+    "polyline": "vpowBfhkeKpLk@pVyIvIuQxI{F|FqAxGbCb[B~PcIbDmI`VhLxUiJnk@pVbOzB|_AeAh^mDK`FxQ~@",
+    "duration_min": 15,
+    "distance_km": 7.04,
+    "updated_at": "2026-10-20T18:31:52.173104+00:00"
+  },
+  "-19.7456,-63.9599->-19.7967,-63.9509": {
+    "station_id": 1763,
+    "station_name": "MONTEAGUDO",
+    "department": "chuquisaca",
+    "polyline": "vpowBfhkeKpLk@dG}DjN{CxGmK|@gExI{F|FqAxGbCb[B~PcIdAqF|A{AxDf@fP`KjEmAvD}DrDL`DkBrf@~QzCpCdRdCz|@oARiJbHeNbB{AlGgA",
+    "duration_min": 15,
+    "distance_km": 6.74,
+    "updated_at": "2026-10-20T18:31:52.519695+00:00"
+  },
+  "-17.8771,-63.2004->-16.8098,-63.4763": {
+    "station_id": 1814,
+    "station_name": "SAN PEDRO DEL NORTE (INTERVENIDA)",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizAmvc@~I{vShvEo`Rf~L}fOgbIeqYfpCmrDwaCql[zYg`CliEqmAtmJ_dFxvHasCz|Tkp@jn@a_Bya@",
+    "duration_min": 141,
+    "distance_km": 149.59,
+    "updated_at": "2026-10-20T18:31:52.874954+00:00"
   }
 }
