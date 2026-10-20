@@ -787,7 +787,7 @@ async def run_ypfb_ingestion_async(
 
     print("\n" + "=" * 75)
     rango_str = f"Solo Hoy ({fecha_hasta})" if dias_atras == 0 else f"{fecha_desde} a {fecha_hasta}"
-    print(f"🚀 INGESTIÓN YPFB/KYROS -> SURTIVEO (SOLO DESPACHOS) | Rango: {rango_str}")
+    print(f"INGESTIÓN YPFB/KYROS -> SURTIVEO (SOLO DESPACHOS) | Rango: {rango_str}")
     print("=" * 75)
 
     print("[1/5] Cargando catálogo de estaciones físicas desde Supabase...")
@@ -856,7 +856,7 @@ async def run_ypfb_ingestion_async(
 
     total_time = time.time() - t_start_total
     print("=" * 75)
-    print(f"✨ Proceso completado exitosamente en {total_time:.2f} segundos.")
+    print(f"Proceso completado exitosamente en {total_time:.2f} segundos.")
     print("=" * 75 + "\n")
 
     return {
