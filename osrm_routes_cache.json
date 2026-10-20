@@ -2412,7 +2412,11 @@
   "-17.8771,-63.2004->-17.7484,-62.9677": {
     "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFwCuk@mJsX_yAwsBgn@o\\mwBkRo`AgjDyZqkBlCqgBgFk~BjSsgAkS{_Cso@i}DxLeLoL_v@cK^wd@cqC",
     "duration_min": 36,
-    "distance_km": 33.95
+    "distance_km": 33.95,
+    "station_id": 927,
+    "station_name": "ESTACION DE SERVICIO EL GASOMETRO S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T05:31:52.313363+00:00"
   },
   "-17.8771,-63.2004->-17.8270,-63.2250": {
     "polyline": "p{alB|ov`K]pAwBu@iYAqa@jh@wOvTFvA}ArBib@`b@eOdUcr@ob@uNt[kgA~z@}LkP",
@@ -2770,7 +2774,11 @@
   "-17.8771,-63.2004->-18.1212,-63.9595": {
     "polyline": "p{alB|ov`K_^XodEttFfqGfmHfzAf_IliIb{AlyCdlAb}BtpBz|F|jCt_HbgGxbBbOlcEfeBx{EbxFtg@hzAyJ~dAbvB|aDex@bvBecAtJ`GdiAcaBnlD}n@tMMfl@}vAz\\xVj}Cbq@ty@sb@fRj@dnBfjAxToT~Uhn@`p@uI|i@fq@tOyTvWfq@zJRti@|}Aq`@dFf}@xf@gk@gAtyAd_AbLxBh^eYlmBiaD`|FmHbmAvu@tqAcYf^rp@jlEmoAzuC_@nvAnXrP}r@pk@fSlx@szA|TclDxcE",
     "duration_min": 134,
-    "distance_km": 132.7
+    "distance_km": 132.7,
+    "station_id": 1131,
+    "station_name": "ESTACION DE SERVICIO VALLES CRUCEÑOS",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T05:31:52.313319+00:00"
   },
   "-17.8771,-63.2004->-17.3524,-63.2497": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}No_JfYu}HppCg~IleAcsK|jI",
@@ -3362,7 +3370,11 @@
   "-17.8771,-63.2004->-18.0811,-63.4483": {
     "polyline": "p{alB|ov`K_^XodEttFfqGfmHpm@n~Atk@v_F`oA~Phr@zc@ts@_BjqCfg@rgA`p@xpAb[b}BtpBz|F|jCfiBbmBj}Dn{C",
     "duration_min": 45,
-    "distance_km": 43.27
+    "distance_km": 43.27,
+    "station_id": 1212,
+    "station_name": "PARTICIPACIONES E INVERSIONES EN GAS S.A.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T05:31:52.313410+00:00"
   },
   "-11.0037,-66.0483->-11.0048,-66.0463": {
     "station_id": 1827,
