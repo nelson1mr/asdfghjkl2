@@ -664,7 +664,11 @@
   "-17.4506,-66.1238->-17.3603,-66.1727": {
     "polyline": "hgoiBj|qrKdFzDgiAw@wEnCcRuBge@`U{P|N_t@NyDiY}FsEkl@nEmSnJeSrWwSbO}e@fIqJpNgL|EmPdAoQzG}FuBam@~DiWwCyRfl@eC~m@qHfd@}Khb@sUlVjFhA",
     "duration_min": 16,
-    "distance_km": 14.14
+    "distance_km": 14.14,
+    "station_id": 1095,
+    "station_name": "ESTACION DE SERVICIO SEÑOR SANTIAGO SUCURSAL 1",
+    "department": "cochabamba",
+    "updated_at": "2026-10-20T21:16:47.780145+00:00"
   },
   "-17.4506,-66.1238->-17.3861,-66.1001": {
     "polyline": "hgoiBj|qrKdFzDgiAw@wEnCkO{BwKiNqaAdFqA_`@eUyRoEuKsR{JkEgIuJeyAeE~CaM^}Q`Kkq@tKk`@gEgFrZcd@oI~C_K",
@@ -2644,7 +2648,11 @@
   "-17.8771,-63.2004->-17.7977,-63.2034": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@mr@rm@cy@e_@_Vxc@qWzZ{c@~Ymo@~RyCoCcKgz@uCaFvRmE",
     "duration_min": 16,
-    "distance_km": 11.57
+    "distance_km": 11.57,
+    "station_id": 1205,
+    "station_name": "LAS PALMAS S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T21:16:47.806985+00:00"
   },
   "-17.8771,-63.2004->-15.9054,-63.1807": {
     "polyline": "p{alB|ov`KunQrkBqpDiaGmrFizA{{d@nW}wVgsV{}R_Lod@{mEg_Gk{@ogI_gg@csc@}of@}qQdtDyaP}uA{zg@gjSmpJhcI}}K~xS|e@hgJ}`L~oN{iAzzHk}M`}FyyEnbIk_`@zmTyzJheAab`@|mV",
