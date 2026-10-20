@@ -2,7 +2,11 @@
   "-11.0037,-66.0483->-11.4869,-67.2439": {
     "polyline": "vbdbAr`crKv@~m@lgG_w@rqCj_Ad_MpmIpFdzC~kAlgBppF`cB|tCuiA~pDrOziMptHf{HzeA|rAbaFv~Df|Dl{I`lC|nJ_nBxwBf_Om~CxqFtx@xjHf~BdwDtiCbcBiWj_BiwDzzFzjAdqGmhAxhDlnA`uRmeF~lIfaAjnDm`@ntHp`Bj~A~a@viBrl@|gHs_@hi@pHhuAlsAvkAfs@nBrw@plA{q@lwD_}AhhC{I~rLqwDlwEbVddAupAdoBqf@~nChGdhDsjCjwB",
     "duration_min": 181,
-    "distance_km": 191.62
+    "distance_km": 191.62,
+    "station_id": 1164,
+    "station_name": "ESTACION DE SERVICIOS PETRORIBER S.R.L.",
+    "department": "pando",
+    "updated_at": "2026-10-20T20:16:54.003935+00:00"
   },
   "-11.0037,-66.0483->-11.0300,-66.0582": {
     "polyline": "vbdbAr`crKVdAbFd@iEpj@n|CwWPjDc@j@",
@@ -2243,7 +2247,11 @@
   "-17.8771,-63.2004->-17.6556,-62.7218": {
     "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFeOieA_yAwsBgn@o\\mwBkR{|AszGgAccFjSsgA_dAe~H|LqJoLkw@gKV}fA}`GkeMgyZkm@qfMoQa|@uYcQ",
     "duration_min": 64,
-    "distance_km": 62.65
+    "distance_km": 62.65,
+    "station_id": 1051,
+    "station_name": "ESTACION DE SERVICIO PETRO VAL S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T20:16:54.030687+00:00"
   },
   "-17.8771,-63.2004->-17.7524,-63.1634": {
     "polyline": "p{alB|ov`K_^XmPxRcsDoh@mr@rm@cy@e_@sm@x~@yy@pe@ar@tL{hBsAchAabAix@c\\oMwWaYa{AhNorB",
@@ -3444,7 +3452,11 @@
   "-17.8771,-63.2004->-17.2455,-62.9941": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizAyvXyNadKhg@yvFysGcxG}iEgu@icBwpDeoD}kAiXgqDp[onEwmAamDh~@sf@unEskDmgAsrA`KiDcZ",
     "duration_min": 87,
-    "distance_km": 84.41
+    "distance_km": 84.41,
+    "station_id": 934,
+    "station_name": "ESTACION DE SERVICIO EL TAJIBO OKINAWA",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T20:16:54.030160+00:00"
   },
   "-17.8771,-63.2004->-18.5029,-64.0994": {
     "polyline": "p{alB|ov`K_^XodEttFfqGfmHfzAf_IliIb{AlyCdlAb}BtpBz|F|jCt_HbgGxbBbOlcEfeBx{EbxFtg@hzAyJ~dAbvB|aDex@bvBecAtJ`GdiAcaBnlD}n@tMMfl@_wAp]zVt|Cbq@ty@sb@fRj@dnBfjAxToT~Uhn@`p@uI|i@fq@tOyTvWfq@zJRti@|}Aq`@dFf}@xf@gk@s@vzAvaAzNqX|hCiaD`|FmHbmAvu@tqAcYf^rp@jlEmoAzuC_@nvAnXrP}r@pk@fSlx@szA|T{rD`iEigNfgEyg@|k@wpBrJyyEtsCcHf~@hrA`lB[dpFddAjBbjBnlBxcBaPr|@n{AbeAjL`|@qa@l`C~r@pXnjKbc@zdAtjDt}B`yH}~ChyA{On{Aln@`Sai@|kAo@ruAmiCdgDwoAbzFal@nkE~rAfuC}{@fk@{t@~`BnLb^ov@fcGqrBpq@uDxvAxv@dt@iRxdDglCbeBkW",
