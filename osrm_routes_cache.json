@@ -209,7 +209,11 @@
   "-17.4506,-66.1238->-17.5603,-65.9367": {
     "polyline": "hgoiBj|qrK|FnC{EVzFtXzrAoy@zHaU~XcTp^aDvh@gS`Nmz@zy@mk@vf@hDrUgXrh@nBre@}P`tAyKnZqUvm@eoD`EkcAmN__@hQkaAfD_uA}R{jBav@_oBiAg~A``@wJz`BmsAxh@y}@",
     "duration_min": 32,
-    "distance_km": 29.85
+    "distance_km": 29.85,
+    "station_id": 1048,
+    "station_name": "ESTACION DE SERVICIO PAREDES VALLEJOS",
+    "department": "cochabamba",
+    "updated_at": "2026-10-20T15:01:47.807950+00:00"
   },
   "-17.4506,-66.1238->-18.1763,-64.8894": {
     "polyline": "hgoiBj|qrK|G|]``E_~B`Nmz@zy@mk@zjFeq@nt@qaC|Vw_JugAmzDoDy{FsfAajHltCslHkJcbA~z@a_ApkCswJxu@_Qg^uSn_AnDcy@}h@bOkm@qp@aLhHuz@mx@sNqvB{nIpmBiVzxD~h@xbBmd@ddA_oAraAgcF`|Boh@`yBshEj_CcjAtd@uvBn}EcuDbeB}jCfqEekAjbCv\\`k@ozAdg@eJkg@iBvqBygAbr@erBxWftAda@oDqDkh@zeAwaAi@{jBtd@yw@`SbKjCyjBv~@mcAxa@sgBp`Aoh@q]u]n{CozBbuAp_@~`A{i@_yAufEne@gKhq@js@r}BiGtSwe@|nDci@d~@ccAvuB~LlfGenAx}FebC~dQ_cKyUm[bXs~@u{BuEcJwl@}wAgMuW{g@x^kzCzsDahEvf@c@ap@kRhJyl@_]yStx@ikBkMusBdnAwyA{@{xAbi@omA{w@sw@mMacG_lAvHzIgeAm_@s`@j_@osDs_@_Uv`@uEsrAorC",
@@ -336,7 +340,11 @@
   "-17.4506,-66.1238->-17.4337,-65.7226": {
     "polyline": "hgoiBj|qrK|G|]vvBudBhhAiX`Nmz@zy@mk@vf@hDrUgXfj@bBv}Bw^|SqQro@yqD`EkcAmN__@nVmyCkQidBky@g}BgDe{F{lBy`NoCa{G_q@kzAmpAma@mM}WjTk{@qy@rB{M{RlDgf@kYsi@}kAvJfBycAmz@qq@_HokDiiC|W",
     "duration_min": 60,
-    "distance_km": 60.15
+    "distance_km": 60.15,
+    "station_id": 1114,
+    "station_name": "ESTACION DE SERVICIO TIRAQUE",
+    "department": "cochabamba",
+    "updated_at": "2026-10-20T15:01:47.807761+00:00"
   },
   "-17.4506,-66.1238->-18.1971,-65.1788": {
     "polyline": "hgoiBj|qrK|G|]``E_~B`Nmz@zy@mk@zjFeq@nt@qaC|Vw_JugAmzDoDy{FsfAajHltCslHkJcbA~z@a_ApkCswJxu@_Qg^uSn_AnDcy@}h@bOkm@qp@aLhHuz@mx@sNqvB{nIpmBiVzxD~h@xbBmd@ddA_oAraAgcF`|Boh@`yBshEj_CcjAtd@uvBn}EcuDbeB}jCfqEekAjbCv\\`k@ozAdg@eJkg@iBvqBygAbr@erBxWftAda@oDqDkh@zeAwaAi@{jBtd@yw@`SbKjCyjBv~@mcAxa@sgBp`Aoh@q]u]n{CozBbuAp_@~`A{i@_yAufEne@gKhq@js@r}BiGtSwe@|nDci@d~@ccAvuB~LlfGenAvkK{{ErrEwfDl~DwvAbd@cj@}Uc[~]yw@",
@@ -350,7 +358,11 @@
   "-17.4506,-66.1238->-17.5319,-65.9707": {
     "polyline": "hgoiBj|qrK|FnC{EVzFtXlWaTlz@md@zHaU~XcTp^aDvh@gSlCgErIet@tVsKlNsRvReKzH}@z\\fF`D_CjCwLdLoF`Uw@pRfDre@}Pl~@mLrTRnJmD~NcPda@_nBpKe`A`EkcA}KqRoAmKhQkaAR}x@pCc]eC}i@uN{}@av@_oBcD}m@tAsq@{Clv@",
     "duration_min": 28,
-    "distance_km": 26.64
+    "distance_km": 26.64,
+    "station_id": 856,
+    "station_name": "ESTACION DE SERVICIO ARISPE",
+    "department": "cochabamba",
+    "updated_at": "2026-10-20T15:01:47.807781+00:00"
   },
   "-17.4506,-66.1238->-17.3576,-66.1839": {
     "polyline": "hgoiBj|qrKdFzDgiAw@wEnCyRmBsr@j`@iTlWF|DyZvYo]zN{^pBwn@f^gSlCnAh\\}dAjLuc@|[asAfVaOxW]pk@yFjX{KxNm\\tN",
