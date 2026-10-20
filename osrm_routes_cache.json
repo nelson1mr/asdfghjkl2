@@ -1122,7 +1122,11 @@
   "-16.5740,-68.1861->-16.4560,-68.0998": {
     "polyline": "hbddBhrd_Lzn@gEemApA}yAge@efEg`A{_@{_@dPa]mZmSpAcEsX{G}b@fM`VkTaJrAfFuDg]w^_BwNiRvGoo@oBaD}Go_A|\\uC{FbYke@{EmOtP{NcIaHxFoSeJ_N{MvDuYoGcF{ImM~AgFwNe\\gKsFaQgVwDnG}MiKub@_o@maA",
     "duration_min": 24,
-    "distance_km": 24.55
+    "distance_km": 24.55,
+    "station_id": 1184,
+    "station_name": "GAS-MAY S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T20:46:51.189015+00:00"
   },
   "-16.5740,-68.1861->-16.4871,-68.1722": {
     "polyline": "hbddBhrd_Lzn@gEemApA}yAge@_jG}vAaKzNu`@m_@uH}@x@uAlAtA_W~lAafAwTiGjD",
@@ -2745,7 +2749,11 @@
   "-17.8771,-63.2004->-18.1234,-63.9573": {
     "polyline": "p{alB|ov`K_^XodEttFfqGfmHfzAf_IliIb{AlyCdlAb}BtpBz|F|jCt_HbgGxbBbOlcEfeBx{EbxFtg@hzAyJ~dAbvB|aDex@bvBecAtJ`GdiAcaBnlD}n@tMMfl@}vAz\\xVj}Cbq@ty@sb@fRj@dnBfjAxToT~Uhn@`p@uI|i@fq@tOyTvWfq@zJRti@|}Aq`@dFf}@xf@gk@gAtyAd_AbLxBh^eYlmBiaD`|FmHbmAvu@tqAcYf^rp@jlEmoAzuC_@nvAnXrP}r@pk@fSlx@szA|Tk~CxvD",
     "duration_min": 134,
-    "distance_km": 132.36
+    "distance_km": 132.36,
+    "station_id": 1133,
+    "station_name": "ESTACION DE SERVICIO VELEZ",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T20:46:51.576534+00:00"
   },
   "-17.8771,-63.2004->-17.7176,-62.8985": {
     "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFwCuk@mJsX_yAwsBgn@o\\mwBkRabA_oDyYsjB~CwcBgFk~BjSsgAkS{_Cso@i}D|LqJoLkw@gKVibAqvFkaD_jI",
@@ -4101,5 +4109,23 @@
     "duration_min": 141,
     "distance_km": 149.59,
     "updated_at": "2026-10-20T18:31:52.874954+00:00"
+  },
+  "-17.4506,-66.1238->-17.6119,-66.0240": {
+    "station_id": 1198,
+    "station_name": "INVERSIONES VALLE SUR S.A.",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|FnC{EVzFtXzrAoy@zHaU~XcTp^aDvh@gS|Lyx@vo@gg@jQyFr_@hFrUgXrh@nBre@}Pna@eD|CfVb[aPfPjQo^j`AiD|XxFlQfMlU~c@|\\f]lGhJu{@pyBa_D~g@aa@`j@krA`rEexE|HuUvMcD",
+    "duration_min": 29,
+    "distance_km": 29.41,
+    "updated_at": "2026-10-20T20:46:51.179876+00:00"
+  },
+  "-17.9357,-67.1146->-18.5938,-66.9238": {
+    "station_id": 959,
+    "station_name": "ESTACION DE SERVICIO GRAN PODER",
+    "department": "oruro",
+    "polyline": "z~mlBtcsxK`tB_x@pCay@riB{Jnu@ojGbbDybAleIcqEvnEpY~sKkuCn{@zY_M`pBjdB`m@teT_lCfld@olDjqLigBdoGe}C",
+    "duration_min": 79,
+    "distance_km": 83.78,
+    "updated_at": "2026-10-20T20:46:51.547132+00:00"
   }
 }
