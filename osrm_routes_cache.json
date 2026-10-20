@@ -3494,7 +3494,11 @@
   "-17.9357,-67.1146->-16.7020,-67.1707": {
     "polyline": "z~mlBtcsxKust@r}P}uDzgCgzFfyJ}cFtbO{tUnx[ikHozFgsAiaCxVerAsaCql@dq@sgDs}QaqMsxLhn@sxEys@efBlgAkfI}`Ck|Ai|CqxCtIyiC{pBin@lr@u{BgkBwh@pn@hTauAifC_jI{yEwiC_YahCmvBtSpf@iiBonE`Cpm@_pCg|B|n@sR~jAml@i{Cev@x}EacBvd@`UfeAgaBo`@i`Ep~CqpA}LzWcwBcfDv|BqeBei@zNep@m_Axi@R{vAacBxmBy`@wrBkmCcn@",
     "duration_min": 353,
-    "distance_km": 250.21
+    "distance_km": 250.21,
+    "station_id": 1842,
+    "station_name": "ESTACION DE SERVICIOS \"MILUZ\" S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T22:46:45.309308+00:00"
   },
   "-21.5669,-64.6661->-21.5231,-64.1733": {
     "polyline": "|bsbC|`uiK{K_xEihBc|GoVkd@sh@}WeoB}MdXu^aSsmBnLqeAyrAsu@aQmr@m_@sRcdA~Bck@_Zi_@e}@mqA}WuiA}t@n@s\\}cAkeAwWg{@{U_Guk@yjBmE}tA{XkNr[myB{XoMnTePoHmQxKq_@x{AaeAnFyg@t|AagBge@oqAnWkBmAeh@db@m]sYocApa@sUhj@@d\\cx@rXkNcHqh@jh@ol@xGy`Ahi@oy@hL_bBlW}s@si@gw@nScWlH{uAfm@qk@}HwXbj@s[~x@_vAzT{eA`WiUWoy@}X_AtXeG",
