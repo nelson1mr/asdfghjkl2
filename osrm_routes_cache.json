@@ -2579,7 +2579,11 @@
   "-17.8771,-63.2004->-16.6693,-63.8677": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizAmvc@~I{vShvEgdRdaM_CdbH`iGbgQpsGrye@bnFb{F~_@`iD{_@r`EuqBnYadAhbBuvAvxR_}E_Biw@pwAwbLlFqe@xy@e|CfCgOny@__Inb@aCjfFeoCveBs~RvGcRkcDwsIkSoyFrhEefFpJkg@{lPatYio@mdEycD{fRnpK",
     "duration_min": 260,
-    "distance_km": 242.49
+    "distance_km": 242.49,
+    "station_id": 1227,
+    "station_name": "SAN JOAQUIN I SRL",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T12:46:55.296697+00:00"
   },
   "-17.8771,-63.2004->-17.6368,-62.7041": {
     "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFeOieA_yAwsBgn@o\\mwBkRi|AyvGyA}fFjSsgA_dAe~HxLeLurAwsGgsMm|[m_AwsPwu@{DuxAqiA",
