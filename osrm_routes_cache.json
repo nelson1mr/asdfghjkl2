@@ -1895,7 +1895,11 @@
   "-17.8771,-63.2004->-16.6180,-62.5082": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizA{{d@nW}wVgsVe~FfBonEwmAeoDn}@od@{mEg_Gk{@ogI_gg@cgBoGqbSun[snLo}I_qGfHwxHtpDs}O_uAw`b@u~QefDz@",
     "duration_min": 184,
-    "distance_km": 184.91
+    "distance_km": 184.91,
+    "station_id": 986,
+    "station_name": "ESTACIÓN DE SERVICIO LA CUEVA",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T19:01:42.456436+00:00"
   },
   "-17.8771,-63.2004->-17.5042,-63.1702": {
     "polyline": "p{alB|ov`K_^XmPxRcsDoh@mr@rm@cy@e_@sm@x~@yy@pe@_zCpJidCs`B{`@qoAoB_nAq`Gg|AuhX{Lq`JbZmsBhp@",
