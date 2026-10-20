@@ -2526,7 +2526,11 @@
   "-17.8771,-63.2004->-17.2409,-62.1719": {
     "polyline": "p{alB|ov`Kmo@rSmnEcp@hDmw@s}@aFeiBazDufD{o@{|AszGbQwkHqcAcbKesAe`GkeMgyZm_AwsPwu@{Dy_DssCyuE}gBni@_vMesA_h_@bkBorU~NysLsYaoHyiP~iAyQylDis@y\\avArjDs|Lzz@cv]k~LDpd@{nBbFjF`uB",
     "duration_min": 183,
-    "distance_km": 171.54
+    "distance_km": 171.54,
+    "station_id": 1820,
+    "station_name": "ESTACION DE SERVICIO TIERRAS BAJAS S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T06:01:28.092899+00:00"
   },
   "-17.8771,-63.2004->-16.1270,-62.0296": {
     "polyline": "p{alB|ov`KunQrkBqpDiaGmrFizA{{d@nW}wVgsVw_ScMsb@wlEg_Gk{@ogI_gg@ogd@g|f@q}Pn`EyaP}uAq|a@w}QoiU}lEskWbzFwjXqOtO_eb@avHeoUwhI}xHmoHcyY",
@@ -2568,7 +2572,11 @@
   "-17.8771,-63.2004->-17.6368,-62.7041": {
     "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFeOieA_yAwsBgn@o\\mwBkRi|AyvGyA}fFjSsgA_dAe~HxLeLurAwsGgsMm|[m_AwsPwu@{DuxAqiA",
     "duration_min": 68,
-    "distance_km": 65.85
+    "distance_km": 65.85,
+    "station_id": 1190,
+    "station_name": "GOTEON S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T06:01:28.092872+00:00"
   },
   "-17.8771,-63.2004->-17.8035,-63.1638": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@iZsFhDmw@s}@aFwCuk@aJ}Wiw@_iAyB{HmCf@yCdNo\\pP{CScCuF",
