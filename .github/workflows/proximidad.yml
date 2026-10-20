@@ -13,11 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - uses: actions/cache@v4
-        with:
-          path: osrm_routes_cache.json
-          key: osrm-${{ github.run_id }}
-          restore-keys: osrm-
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
