@@ -1860,7 +1860,11 @@
   "-17.8771,-63.2004->-16.9144,-62.6173": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizA{{d@nW}wVgsVe~FfBonEwmA_pD`}@uc@mmEg_Gk{@ydImbg@yiBaLqbSun[ohM{fJcwFrQwcHtfD",
     "duration_min": 151,
-    "distance_km": 148.93
+    "distance_km": 148.93,
+    "station_id": 1248,
+    "station_name": "SURTIDOR ACIPA-SJ S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T17:16:43.273369+00:00"
   },
   "-17.8771,-63.2004->-17.7926,-63.1277": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@iZsFhDmw@s}@aFwCuk@mJsXkv@ogAkCuIyDkAuRoY}P_Naa@eRov@yG`@w[xFyOfGyqA",
@@ -1874,7 +1878,11 @@
   "-17.8771,-63.2004->-18.4785,-64.1134": {
     "polyline": "p{alB|ov`K_^XodEttFfqGfmHfzAf_IliIb{AlyCdlAb}BtpBz|F|jCt_HbgGxbBbOlcEfeBx{EbxFtg@hzAyJ~dAbvB|aDex@bvBecAtJ`GdiAcaBnlD}n@tMMfl@_wAp]zVt|Cbq@ty@sb@fRj@dnBfjAxToT~Uhn@`p@uI|i@fq@tOyTvWfq@zJRti@|}Aq`@dFf}@xf@gk@s@vzAvaAzNqX|hCiaD`|FmHbmAvu@tqAcYf^rp@jlEmoAzuC_@nvAnXrP}r@pk@fSlx@szA|T{rD`iEigNfgEyg@|k@wpBrJyyEtsCcHf~@hrA`lBaAjnFjeAdDbjBnlBxcBaPr|@n{AbeAjL`|@qa@l`C~r@pXnjKbc@zdAtjDt}B`yH}~ChyA{On{Aln@`Sai@|kAo@ruAmiCfuDctA`lFug@nkE~rAfuC}{@fk@{t@~`BnLb^ov@vbGkrB`r@{DvxAvv@hfD_aB",
     "duration_min": 233,
-    "distance_km": 235.25
+    "distance_km": 235.25,
+    "station_id": 807,
+    "station_name": "COOPERATIVA DE SERVICIOS PUBLICOS DE AGUA POTABLE Y ALCANTARILLADO \"MONTES CLAROS\" R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T17:16:43.273560+00:00"
   },
   "-17.8771,-63.2004->-16.6180,-62.5082": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizA{{d@nW}wVgsVe~FfBonEwmAeoDn}@od@{mEg_Gk{@ogI_gg@cgBoGqbSun[snLo}I_qGfHwxHtpDs}O_uAw`b@u~QefDz@",
@@ -3431,7 +3439,11 @@
   "-21.5669,-64.6661->-21.5231,-64.1733": {
     "polyline": "|bsbC|`uiK{K_xEihBc|GoVkd@sh@}WeoB}MdXu^aSsmBnLqeAyrAsu@aQmr@m_@sRcdA~Bck@_Zi_@e}@mqA}WuiA}t@n@s\\}cAkeAwWg{@{U_Guk@yjBmE}tA{XkNr[myB{XoMnTePoHmQxKq_@x{AaeAnFyg@t|AagBge@oqAnWkBmAeh@db@m]sYocApa@sUhj@@d\\cx@rXkNcHqh@jh@ol@xGy`Ahi@oy@hL_bBlW}s@si@gw@nScWlH{uAfm@qk@}HwXbj@s[~x@_vAzT{eA`WiUWoy@}X_AtXeG",
     "duration_min": 63,
-    "distance_km": 73.21
+    "distance_km": 73.21,
+    "station_id": 1108,
+    "station_name": "ESTACION DE SERVICIO TELPEL",
+    "department": "tarija",
+    "updated_at": "2026-10-20T17:16:43.280644+00:00"
   },
   "-21.5669,-64.6661->-20.8225,-64.9481": {
     "polyline": "|bsbC|`uiKwgCjkGyeDnaCmn@vtBahCdbAm~Hgl@aMlx@moBrzA{tAkXkVrqCm]kTsWzq@qDnfDwx@fqAzg@~mAqs@~o@dCz~@jq@pUt_A~_DyQvk@zn@zg@m}Al`@uXvcEfUtqDwwDlxEnCbo@ryAviAmTInHbg@eq@e@yCboAvnAfjCmg@aDgb@|~AmyDn\\avBb{@_A~jAsb@jl@}^mNe~AdxCik@lJok@jqH_h@bp@k{CsC_Prz@eme@zh@ykIzy@a`Ug@kBaqAdjBilBxWmvA}{AswDyvBowAsMwdAumCuyA{V}lDkq@gBm[cm@rh@suAwgB{sHblAseL",
@@ -4008,5 +4020,14 @@
     "duration_min": 226,
     "distance_km": 237.67,
     "updated_at": "2026-10-20T16:31:41.428007+00:00"
+  },
+  "-20.4556,-66.8132->-19.5472,-66.8528": {
+    "station_id": 1832,
+    "station_name": "HOTEL DE SAL PLAYA BLANCA - SUCURSAL COROMA",
+    "department": "potosi",
+    "polyline": "bdz{BhpxvKxg@pp@ix@zcAerQtaM_aTp`ImfMg\\aaIg_BwdGetGoxMkaF}oI~\\ueBfeAedDmtAybG|}@wmGypHmgGcrB{sEzi@ueKuxEu_Nf|DufKbzH",
+    "duration_min": 113,
+    "distance_km": 120.27,
+    "updated_at": "2026-10-20T17:16:44.364162+00:00"
   }
 }
