@@ -219,7 +219,11 @@
   "-17.4506,-66.1238->-17.6036,-66.0328": {
     "polyline": "hgoiBj|qrK|FnC{EVzFtXzrAoy@zHaU~XcTp^aDvh@gS|Lyx@vo@gg@jQyFr_@hFrUgXrh@nBre@}Pna@eD|CfVb[aPfPjQo^j`AiD|XxFlQfMlU~c@|\\f]lGhJu{@pyBa_D~g@aa@`j@krA`vDw|D",
     "duration_min": 28,
-    "distance_km": 28.0
+    "distance_km": 28.0,
+    "station_id": 1044,
+    "station_name": "ESTACION DE SERVICIO PAPU S.R.L.",
+    "department": "cochabamba",
+    "updated_at": "2026-10-20T14:01:33.628772+00:00"
   },
   "-17.4506,-66.1238->-17.3919,-66.2087": {
     "polyline": "hgoiBj|qrK|FnC{EV`FtW_UzWiYvl@uPhRieAtm@cFlHhFb}@aR~Ta_@xBsdAeLaV|p@bLdLmMfKuMrVaSnNOhV}o@cNcGpxC",
@@ -3380,7 +3384,11 @@
   "-21.5669,-64.6661->-20.8225,-64.9481": {
     "polyline": "|bsbC|`uiKwgCjkGyeDnaCmn@vtBahCdbAm~Hgl@aMlx@moBrzA{tAkXkVrqCm]kTsWzq@qDnfDwx@fqAzg@~mAqs@~o@dCz~@jq@pUt_A~_DyQvk@zn@zg@m}Al`@uXvcEfUtqDwwDlxEnCbo@ryAviAmTInHbg@eq@e@yCboAvnAfjCmg@aDgb@|~AmyDn\\avBb{@_A~jAsb@jl@}^mNe~AdxCik@lJok@jqH_h@bp@k{CsC_Prz@eme@zh@ykIzy@a`Ug@kBaqAdjBilBxWmvA}{AswDyvBowAsMwdAumCuyA{V}lDkq@gBm[cm@rh@suAwgB{sHblAseL",
     "duration_min": 170,
-    "distance_km": 178.42
+    "distance_km": 178.42,
+    "station_id": 1269,
+    "station_name": "TEODOCIO LLANOS",
+    "department": "chuquisaca",
+    "updated_at": "2026-10-20T14:01:34.584016+00:00"
   },
   "-16.5740,-68.1861->-16.5493,-68.2047": {
     "polyline": "hbddBhrd_LT{@dn@kCifAxBk\\uIeaAf~Cmb@}_@w@bAl@h@",
@@ -3930,5 +3938,14 @@
     "duration_min": 7,
     "distance_km": 3.38,
     "updated_at": "2026-10-20T03:31:52.410983+00:00"
+  },
+  "-17.8771,-63.2004->-17.8150,-63.2125": {
+    "station_id": 1752,
+    "station_name": "ESTACION DE SERVICIO CUARTO ANILLO",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@mr@rm@cy@e_@_Vxc@qWzZzSvY",
+    "duration_min": 13,
+    "distance_km": 8.75,
+    "updated_at": "2026-10-20T14:01:34.576410+00:00"
   }
 }
