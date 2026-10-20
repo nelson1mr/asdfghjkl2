@@ -122,7 +122,11 @@
   "-19.0800,-65.2217->-19.3124,-64.2990": {
     "polyline": "nimsBvtamKbVxUxlAsqAv}EyVdd@ky@dp@jNy@}]x`AkFbn@u}A~t@~Hz|BqhAhr@ckBij@ktCcp@u_@bFinAi}AkuCdLkoCl{@s\\`GoqAs^{KpK_hAuaAweBnR{vAg`@{b@yhAfE_y@ezAhk@ed@{XiVp\\sq@xiA{v@imAwLffCwvAgTmo@zi@gaAcb@kiCikDyhEe{A`_@gVe]qaBri@iDkXceBqO`TitAan@mMpMemBsf@eSgMs}@a_A~EvN{_B_zBas@dQ}eBo[ct@~o@yg@sVob@zaBunAxI{_AzdBqhC~xDivAmAa|@{l@mv@trAorCfCsdBcn@oaAlWwbCi`@ky@jj@w[DsaAnqD}y@bqAmpBu`BgyAl@w^mqAum@zs@mbBD}jCnzA_x@nq@|KpwB_bDvnJcaBlmAmkBxkBm_@lmBuqBjSqu@{c@mfB|ZouAyQwoAlc@wz@_n@fHgIwk@|Usx@b}@`Dzp@guBsGi_A",
     "duration_min": 159,
-    "distance_km": 167.5
+    "distance_km": 167.5,
+    "station_id": 870,
+    "station_name": "ESTACION DE SERVICIO BUEN RETIRO",
+    "department": "chuquisaca",
+    "updated_at": "2026-10-20T19:31:42.968764+00:00"
   },
   "-19.0800,-65.2217->-19.1253,-65.2627": {
     "polyline": "nimsBvtamKf@vGmBxChM[~FbFxGbOw@dPpH~GwS~`@ik@pNu]jOn]dEjR~_@|L`L~Iv\\yJxJ{AvGoNtFqz@uGuHhBeDnGyCqB_[~P}It@qD|EaGqG{AhE`FhSvK~Dc@|FuEfCfInUtS{Fpk@o@fH|A|IkG|HNbHyEpRcBhL}JtMhIxb@oEnUtEnCwBxd@wAnfAfAvQgIjCmKhVuMxPyDvH~IhI{EtGI",
@@ -2997,7 +3001,11 @@
   "-17.8771,-63.2004->-15.9122,-63.2139": {
     "polyline": "p{alB|ov`KunQrkBqpDiaGmrFizA{{d@nW}wVgsV{}R_Lod@{mEg_Gk{@ogI_gg@csc@}of@}qQdtDyaP}uA{zg@gjSmpJhcI}}K~xS|e@hgJ}`L~oN{iAzzHqlFt~@}tKb{M{pa@~pUy|JrfAoe]h{R}_BrrI",
     "duration_min": 304,
-    "distance_km": 307.51
+    "distance_km": 307.51,
+    "station_id": 1816,
+    "station_name": "GUARAYOS",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T19:31:42.990860+00:00"
   },
   "-17.8771,-63.2004->-18.2751,-63.1250": {
     "polyline": "p{alB|ov`KlKsb@ntB|r@rdDjiHfoDdLl|Aw}BmR_oFfhB{h@jmRp|@va]kwA`pOjhAwRybPkdF}C",
