@@ -962,7 +962,11 @@
   "-16.5740,-68.1861->-16.4956,-68.1309": {
     "polyline": "hbddBhrd_Lzn@gEemApA}yAge@efEg`A{_@{_@dPa]mZmSpAcE}Bn@uTkI}\\vF_EnEhFsLvNwFaJrAfFuDyEJwVs_@fCkA}E{KaCbAMyK`G}UiPqTqc@a[cBp@",
     "duration_min": 18,
-    "distance_km": 15.51
+    "distance_km": 15.51,
+    "station_id": 1180,
+    "station_name": "GAS CENTRO S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T21:46:47.249013+00:00"
   },
   "-16.5740,-68.1861->-16.6818,-68.1887": {
     "polyline": "hbddBhrd_LnbOof@`}Cpu@",
@@ -4135,5 +4139,14 @@
     "duration_min": 79,
     "distance_km": 83.78,
     "updated_at": "2026-10-20T20:46:51.547132+00:00"
+  },
+  "-16.5740,-68.1861->-16.1931,-67.7259": {
+    "station_id": 1125,
+    "station_name": "ESTACION DE SERVICIO UCHUMACHI",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofB{_@{_@dPa]{WqYsX{G}b@fM`VkTaJrA_Yet@{gAuB{cAtYrc@ijAsCe`@_gA_UibAyr@yBsq@qiAmqBkrBcyAif@_bBkf@_g@ubFaxAagA~[mjEmm@w|@r^{WgoAm[hBa[l]`Sqs@gIcTcUwAfUqJpX_q@p^}eBeE_n@`d@q`BwXwf@vHgd@aT{e@fEkbAwpAizBq`@grC}U_\\}{@oVqj@kw@xS{pDod@{SsHaaAtZmxAwUnJ{qAkg@cN~VpGbOc^hW}yA`Py{Bef@}Wuv@}JfUzM~lAed@wcBvQeZcDs`@i@`b@u`@bSbLfOqLxh@vOr@dFpYeF`fAmEqlAgm@nD^qh@bPuMcZ_RvEuc@bTaOoY{f@pLekBei@``BtUaxAsc@keAq@meA_YycAxDfwAyZ{yCyT_XnxAcIbXoXni@pH}h@}^sn@~OagAe}@",
+    "duration_min": 128,
+    "distance_km": 121.51,
+    "updated_at": "2026-10-20T21:46:48.073219+00:00"
   }
 }
