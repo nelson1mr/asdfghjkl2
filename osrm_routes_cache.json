@@ -1819,7 +1819,11 @@
   "-17.8771,-63.2004->-17.2913,-63.8451": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@cbBvs@_CdbH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@v|Ao`@pjDuqBnYadAhbB}w@zpFw]zfK_}E_Biw@pwAqoKnW",
     "duration_min": 137,
-    "distance_km": 149.3
+    "distance_km": 149.3,
+    "station_id": 794,
+    "station_name": "COMERCIALIZADORA DE HIDROCARBUROS ABJ S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T11:01:40.225811+00:00"
   },
   "-17.8771,-63.2004->-16.9144,-62.6173": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizA{{d@nW}wVgsVe~FfBonEwmA_pD`}@uc@mmEg_Gk{@ydImbg@yiBaLqbSun[ohM{fJcwFrQwcHtfD",
