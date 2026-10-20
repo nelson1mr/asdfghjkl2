@@ -1334,7 +1334,11 @@
   "-16.5740,-68.1861->-15.5586,-67.3448": {
     "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBj@gaJshB{[s_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{nAicKadJ_{E_tEhWi|@e}AcyF{z@atBicGhv@avBg~@pa@ogC__BqtAsnEocEa|BkdCxc@}mEi{@jVox@c`CxAuhBpgBe^gf@moCbrAwcAwxCjj@kxBsrCcsC{uDxd@acEo`CghEl_BmpC{cC}d@tkAyeEym@`ZgjB_r@gFegAwaGqfEogA{cDscEy`Brq@mlAae@yaAkiBtMeoD",
     "duration_min": 240,
-    "distance_km": 245.67
+    "distance_km": 245.67,
+    "station_id": 1030,
+    "station_name": "ESTACION DE SERVICIO \"NETANEL\"",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T18:01:46.215050+00:00"
   },
   "-16.5740,-68.1861->-16.5217,-68.1573": {
     "polyline": "hbddBhrd_Lzn@gEojAfBs|A}e@eu@yOm@sEtB_CgZwg@okAmn@cq@sT",
@@ -4037,5 +4041,14 @@
     "duration_min": 113,
     "distance_km": 120.27,
     "updated_at": "2026-10-20T17:16:44.364162+00:00"
+  },
+  "-16.5740,-68.1861->-17.3976,-66.2860": {
+    "station_id": 1214,
+    "station_name": "PETROCEL S.R.L.",
+    "department": "cochabamba",
+    "polyline": "hbddBhrd_LnbOof@heEp`ArcTcaA|mh@stTdyNmgJpgJmoKj}KssBf~Fk_Gn|Ugkg@pgCgnRhsXun_@hfM{{Yz{Do|GxfCoyAlhB_ub@{VahGq}Cyf@wx@uoElhCybDhm@w{EcxBk|ElkJowOwTmuAqkDWneGgfL_@mzGx_BsiDohA}eEl|@u_AqzAa|CzOexB}kCmtB`cBsuA~@mgBsaIlWjJuxC`gDsoEoxBfThc@ycBqyA}rB{uCh@nr@csCkmAqmAydDhWaTcaByk@h{@svKqkCsnGdl@kzK{h@u|AabAhDq`F",
+    "duration_min": 367,
+    "distance_km": 344.35,
+    "updated_at": "2026-10-20T18:01:46.214902+00:00"
   }
 }
