@@ -3415,7 +3415,11 @@
   "-16.5740,-68.1861->-16.7265,-68.1856": {
     "polyline": "hbddBhrd_Ll_Oof@reEp`At{CsXjtAoC",
     "duration_min": 16,
-    "distance_km": 17.15
+    "distance_km": 17.15,
+    "station_id": 882,
+    "station_name": "ESTACION DE SERVICIO CHALLAPAMPA S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T23:16:43.259631+00:00"
   },
   "-16.5740,-68.1861->-16.5103,-68.2701": {
     "polyline": "hbddBhrd_Lxm@gD~AjCkF~Sc]|m@a~AjlB{GgDpF~Ek\\d_@aPvIquAh_@ayAxQ{rBnEgr@yBnkAjxF",
@@ -4156,5 +4160,23 @@
     "duration_min": 128,
     "distance_km": 121.51,
     "updated_at": "2026-10-20T21:46:48.073219+00:00"
+  },
+  "-17.8771,-63.2004->-17.5523,-64.3148": {
+    "station_id": 1804,
+    "station_name": "COMARAPA",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@{bB~t@gB|`H`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@bkAg^nxDczBlc@ofBrdFkj@fsHiEj`Frn@jqB_[zvIwzApeH{B|pBwcCx|I~I`cAmuBt~HrbGv`FliAhEwFzq@vlB`bBydDtaG",
+    "duration_min": 201,
+    "distance_km": 182.26,
+    "updated_at": "2026-10-20T23:16:44.283573+00:00"
+  },
+  "-14.8432,-64.9091->-14.8293,-64.8920": {
+    "station_id": 1153,
+    "station_name": "ESTACION DE SERVICIOS EL OASIS",
+    "department": "beni",
+    "polyline": "f_ryAltdkKoASaAiAgBMfAw\\oX{AHsAuEs@_DoDiAYiU_AmAqLcJwl@_CwEe@rARh@",
+    "duration_min": 5,
+    "distance_km": 3.14,
+    "updated_at": "2026-10-20T23:16:44.629727+00:00"
   }
 }
