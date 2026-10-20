@@ -2493,7 +2493,11 @@
   "-17.8771,-63.2004->-17.7187,-63.1626": {
     "polyline": "p{alB|ov`K_^XmPxRcsDoh@mr@rm@cy@e_@sm@x~@yy@pe@ar@tL}fBcAajAqbAgy@a]{`@qoAoB_nAidEwkA",
     "duration_min": 23,
-    "distance_km": 21.79
+    "distance_km": 21.79,
+    "station_id": 1004,
+    "station_name": "ESTACIÓN DE SERVICIO LOS COYUYOS",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T06:31:29.145067+00:00"
   },
   "-17.8771,-63.2004->-17.0621,-62.6360": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizAyvXyNadKhg@yvFysGcxG}iEgu@icBwpDeoD}kAiXgqDp[onEwmAaqDj|@sb@wlEskDmgAsrA`KydImbg@yiBaLcmGq~KcgCi`BedA_dDsqF}aH",
@@ -2521,7 +2525,11 @@
   "-17.8771,-63.2004->-17.5169,-63.1643": {
     "polyline": "p{alB|ov`K_^XmPxRcsDoh@mr@rm@cy@e_@sm@x~@yy@pe@csCtKekCwaB{`@qoAoB_nAmrFizAyvXyNsfKbh@",
     "duration_min": 44,
-    "distance_km": 44.27
+    "distance_km": 44.27,
+    "station_id": 1613,
+    "station_name": "D-GAS S.A. SUCURSAL SANTA CRUZ",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T06:31:29.145047+00:00"
   },
   "-17.8771,-63.2004->-17.2409,-62.1719": {
     "polyline": "p{alB|ov`Kmo@rSmnEcp@hDmw@s}@aFeiBazDufD{o@{|AszGbQwkHqcAcbKesAe`GkeMgyZm_AwsPwu@{Dy_DssCyuE}gBni@_vMesA_h_@bkBorU~NysLsYaoHyiP~iAyQylDis@y\\avArjDs|Lzz@cv]k~LDpd@{nBbFjF`uB",
