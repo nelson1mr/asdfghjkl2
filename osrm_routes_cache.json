@@ -1837,7 +1837,11 @@
   "-17.8771,-63.2004->-16.9599,-63.2214": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizAmvc@~I{vShvEo`Rf~L}fOgbIeqYfpCgoDkaCs|TpP",
     "duration_min": 106,
-    "distance_km": 112.67
+    "distance_km": 112.67,
+    "station_id": 1010,
+    "station_name": "ESTACIÓN DE SERVICIO MACONDO",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T17:31:40.913318+00:00"
   },
   "-17.8771,-63.2004->-17.0135,-63.2207": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizAmvc@~I{vShvEo`Rf~LgdO{aI{sYzoCgoDkaCgmJrJ",
@@ -2685,7 +2689,11 @@
   "-17.8771,-63.2004->-17.6050,-62.6810": {
     "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFeOieA_yAwsBgn@o\\mwBkR{|AszGgAccFjSsgA_dAe~H|LqJoLkw@gKV}fA}`GkeMgyZm_AwsPwu@{Da}CsqCu`AmRc_Agt@",
     "duration_min": 72,
-    "distance_km": 70.3
+    "distance_km": 70.3,
+    "station_id": 1150,
+    "station_name": "ESTACION DE SERVICIOS DANA S.R.L",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T17:31:40.913150+00:00"
   },
   "-17.8771,-63.2004->-18.7875,-63.3142": {
     "polyline": "p{alB|ov`K|`ChOrdDjiHnaD`LdjBs}BmR_oF`nBgi@pgR||@va]kwAlyeAvpGnvMh`B`bVvhM",
