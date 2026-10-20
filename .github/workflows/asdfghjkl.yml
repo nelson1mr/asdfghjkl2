@@ -12,6 +12,8 @@ jobs:
     name: Execute Data Ingestion
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,3 +32,13 @@ jobs:
           gg: ${{ secrets.gg }}
         run: |
           python main.py
+      - name: Commit and push updated OSRM cache
+        run: |
+          git config user.name "surtibot"
+          git config user.email "surtibot@surtiveo.com"
+          git add osrm_routes_cache.json
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(cache): update osrm routes cache [skip ci]"
+            git pull --rebase origin main || git pull --rebase
+            git push origin main
+          fi

@@ -38,15 +38,31 @@ SUPABASE_KEY = os.getenv("V4") or os.getenv("SUPABASE_KEY") or os.getenv("SUPABA
 KYROS_BASE_URL = "https://nominac.kyros-tech.com/api"
 OSRM_BASE_URL = "http://router.project-osrm.org/route/v1/driving"
 
-PAGE_SIZE = 200
-BATCH_SIZE = 100
-MAX_CONCURRENT_KYROS = 3
-OSRM_TIMEOUT_SECONDS = 2.5
+PAGE_SIZE = 200                          # Cantidad de items por página al consultar la API de Kyros
+BATCH_SIZE = 100                         # Tamaño de lote para inserciones masivas en Supabase
+MAX_CONCURRENT_KYROS = 3                 # Máximo de conexiones simultáneas a Kyros para no saturar el servidor
+
+# Parámetros de conexión y límites OSRM
+OSRM_TIMEOUT_SECONDS = 7.5               # tiempo de espera por petición a OSRM antes de reintentar o caer a fallback
+OSRM_MAX_RETRIES = 1                     # definir cuántas veces reintentar OSRM si da timeout o error de red
+OSRM_RETRY_DELAY_SECONDS = 1.5           # pausa en segundos antes de reintentar una ruta fallida en OSRM
+OSRM_REQUEST_DELAY_SECONDS = 0.20        # pausa entre peticiones OSRM consecutivas evitando disparar rate limits (429)
+OSRM_USER_AGENT = "SurtiveoRoutingEngine/1.0 (surtibot@surtiveo.com)" # cabecera User-Agent requerida por la API de OSRM
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 OSRM_CACHE_FILE = os.path.join(SCRIPT_DIR, "osrm_routes_cache.json")
 
-TRUCK_TIME_FACTOR = 1.25
+# Factores de velocidad y tiempos para cisternas de combustible (20kL - 24kL)
+TRUCK_TIME_FACTOR = 1.45                 # ajustar la velocidad de la cisterna sobre el tiempo de auto de OSRM (1.45 = 45% más lento)
+PLANT_EXIT_BUFFER_MINUTES = 15           # sumar minutos fijos por precintado, revisión de guías y salida de balanza al portón
+MIN_TRAVEL_MINUTES = 10                  # tiempo mínimo de viaje en minutos que puede tener cualquier despacho
+
+# Parámetros del fallback geodésico (Haversine) si OSRM no responde
+HAVERSINE_CURVATURE_LLANO = 1.35         # factor de curvatura vial en departamentos llanos (Santa Cruz, Beni, Pando)
+HAVERSINE_CURVATURE_MONTANA = 1.80       # factor de curvatura vial en departamentos montañosos y cordillera
+HAVERSINE_SPEED_URBANO_KMH = 20.0        # velocidad promedio en km/h dentro del radio urbano (distancia <= 15 km)
+HAVERSINE_SPEED_LLANO_KMH = 45.0         # velocidad promedio en carretera abierta en departamentos llanos
+HAVERSINE_SPEED_MONTANA_KMH = 35.0       # velocidad promedio en carretera sinuosa de montaña o serranía
 
 # =============================================================================
 # 2. CATÁLOGO DE DISTRITOS KYROS Y COORDENADAS DE PLANTAS DISTRIBUIDORAS
@@ -205,26 +221,40 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     a = math.sin(dlat / 2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2)**2
     return 2.0 * R * math.asin(math.sqrt(a))
 
-def estimate_travel_minutes(plant_lat: float | None, plant_lng: float | None, st_lat: float | None, st_lng: float | None, is_provincia: bool) -> int:
+DEPARTAMENTOS_MONTANA = {"la_paz", "cochabamba", "potosi", "chuquisaca", "oruro", "tarija"}
+
+def estimate_travel_minutes(
+    plant_lat: float | None,
+    plant_lng: float | None,
+    st_lat: float | None,
+    st_lng: float | None,
+    is_provincia: bool,
+    department: str | None = None
+) -> int:
     """
     Fallback físico de tiempo de viaje (cuando OSRM no responde):
-    Calcula distancia Haversine con factor de curvatura vial (35% más por trazado de carreteras)
-    y velocidad media según ámbito.
+    Calcula distancia Haversine con factor de curvatura vial según topografía (llano vs montaña)
+    y velocidad media calibrada para cisternas de 20k-24k L más buffer de salida de planta.
     ESTRICTAMENTE tiempo de transporte físico hasta la llegada al surtidor (SIN sumar descarga).
     """
     if plant_lat is not None and plant_lng is not None and st_lat is not None and st_lng is not None:
         try:
             dist_linea_recta_km = haversine_km(plant_lat, plant_lng, float(st_lat), float(st_lng))
-            dist_vial_km = dist_linea_recta_km * 1.35
+            es_montana = (department or "").lower() in DEPARTAMENTOS_MONTANA
+            curvatura = HAVERSINE_CURVATURE_MONTANA if es_montana else HAVERSINE_CURVATURE_LLANO
+            dist_vial_km = dist_linea_recta_km * curvatura
+
             if dist_vial_km <= 15:
-                # Tráfico urbano pesado: ~25 km/h promedio
-                return max(5, int(round((dist_vial_km / 25.0) * 60.0)))
+                # Tráfico urbano pesado
+                dur_min = int(round((dist_vial_km / HAVERSINE_SPEED_URBANO_KMH) * 60.0))
             else:
-                # Carretera interprovincial: ~55 km/h promedio
-                return max(15, int(round((dist_vial_km / 55.0) * 60.0)))
+                velocidad = HAVERSINE_SPEED_MONTANA_KMH if es_montana else HAVERSINE_SPEED_LLANO_KMH
+                dur_min = int(round((dist_vial_km / velocidad) * 60.0))
+
+            return max(MIN_TRAVEL_MINUTES, dur_min + PLANT_EXIT_BUFFER_MINUTES)
         except Exception:
             pass
-    return 60 if is_provincia else 30
+    return 90 if is_provincia else 35
 
 # =============================================================================
 # 4. GESTIÓN DE CACHÉ LOCAL DE RUTAS Y TIEMPOS OSRM ($0)
@@ -251,7 +281,7 @@ class OSRMCache:
     def save(self):
         try:
             with open(self.cache_file, "w", encoding="utf-8") as f:
-                json.dump(self.routes, f, ensure_ascii=False)
+                json.dump(self.routes, f, ensure_ascii=False, indent=2)
         except Exception:
             pass
 
@@ -261,12 +291,30 @@ class OSRMCache:
     def get(self, plat: float, plng: float, dlat: float, dlng: float) -> dict | None:
         return self.routes.get(self.get_key(plat, plng, dlat, dlng))
 
-    def set(self, plat: float, plng: float, dlat: float, dlng: float, polyline: str, duration_min: int, distance_km: float):
-        self.routes[self.get_key(plat, plng, dlat, dlng)] = {
+    def set(
+        self,
+        plat: float,
+        plng: float,
+        dlat: float,
+        dlng: float,
+        polyline: str,
+        duration_min: int,
+        distance_km: float,
+        station_id: int | None = None,
+        station_name: str | None = None,
+        department: str | None = None
+    ):
+        key = self.get_key(plat, plng, dlat, dlng)
+        entry = {
+            "station_id": station_id,
+            "station_name": station_name,
+            "department": department,
             "polyline": polyline,
             "duration_min": duration_min,
-            "distance_km": distance_km
+            "distance_km": distance_km,
+            "updated_at": datetime.now(timezone.utc).isoformat()
         }
+        self.routes[key] = entry
 
 async def fetch_osrm_route(
     session: aiohttp.ClientSession,
@@ -274,40 +322,72 @@ async def fetch_osrm_route(
     plat: float,
     plng: float,
     dlat: float,
-    dlng: float
+    dlng: float,
+    station_id: int | None = None,
+    station_name: str | None = None,
+    department: str | None = None
 ) -> dict | None:
     """
     Consulta OSRM para obtener la distancia real de asfalto, duración de viaje y polilínea.
     Caché en disco permanente ($0 costo y cero peticiones repetidas).
     """
     cached = osrm_cache.get(plat, plng, dlat, dlng)
-    if cached and cached.get("duration_min") is not None:
+    if cached and cached.get("duration_min") is not None and cached.get("polyline"):
+        # Enriquecer la entrada en caché si le faltaba station_id / station_name
+        modified = False
+        if station_id is not None and not cached.get("station_id"):
+            cached["station_id"] = station_id
+            modified = True
+        if station_name and not cached.get("station_name"):
+            cached["station_name"] = station_name
+            modified = True
+        if department and not cached.get("department"):
+            cached["department"] = department
+            modified = True
+        if modified and not cached.get("updated_at"):
+            cached["updated_at"] = datetime.now(timezone.utc).isoformat()
         return cached
 
     url = f"{OSRM_BASE_URL}/{plng:.5f},{plat:.5f};{dlng:.5f},{dlat:.5f}?overview=simplified&geometries=polyline"
-    try:
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=OSRM_TIMEOUT_SECONDS)) as resp:
-            if resp.status == 200:
-                data = await resp.json()
-                routes = data.get("routes", [])
-                if routes and "geometry" in routes[0]:
-                    r = routes[0]
-                    poly = r["geometry"]
-                    dur_sec = float(r.get("duration", 0.0))
-                    dist_meters = float(r.get("distance", 0.0))
-                    
-                    # Tiempo físico de viaje directo (minutos) sin recargos
-                    dur_min = max(5, int(round(dur_sec / 60.0)))
-                    dist_km = round(dist_meters / 1000.0, 2)
+    headers = {"User-Agent": OSRM_USER_AGENT}
 
-                    osrm_cache.set(plat, plng, dlat, dlng, poly, dur_min, dist_km)
-                    return {
-                        "polyline": poly,
-                        "duration_min": dur_min,
-                        "distance_km": dist_km
-                    }
-    except Exception:
-        pass
+    for attempt in range(1 + OSRM_MAX_RETRIES):
+        try:
+            if OSRM_REQUEST_DELAY_SECONDS > 0:
+                await asyncio.sleep(OSRM_REQUEST_DELAY_SECONDS)
+
+            async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=OSRM_TIMEOUT_SECONDS)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    routes = data.get("routes", [])
+                    if routes and "geometry" in routes[0]:
+                        r = routes[0]
+                        poly = r["geometry"]
+                        dur_sec = float(r.get("duration", 0.0))
+                        dist_meters = float(r.get("distance", 0.0))
+
+                        # Tiempo físico puro OSRM (minutos de automóvil liviano) sin recargos
+                        dur_min = max(5, int(round(dur_sec / 60.0)))
+                        dist_km = round(dist_meters / 1000.0, 2)
+
+                        osrm_cache.set(
+                            plat, plng, dlat, dlng,
+                            polyline=poly,
+                            duration_min=dur_min,
+                            distance_km=dist_km,
+                            station_id=station_id,
+                            station_name=station_name,
+                            department=department
+                        )
+                        return {
+                            "polyline": poly,
+                            "duration_min": dur_min,
+                            "distance_km": dist_km
+                        }
+        except Exception:
+            if attempt < OSRM_MAX_RETRIES:
+                await asyncio.sleep(OSRM_RETRY_DELAY_SECONDS)
+
     return None
 
 # =============================================================================
@@ -477,26 +557,44 @@ async def process_and_transform_records(
             planned_route_polyline = None
             estimated_arrival_at = None
             confirmed_arrival_at = None
+            eta_source = None
+            eta_travel_min = None
+            route_distance_km = None
 
             if has_departed and dispatched_at:
                 st_lat = st_dict.get("latitude") if st_dict else None
                 st_lng = st_dict.get("longitude") if st_dict else None
                 plant_lat = d_meta.get("plant_lat")
                 plant_lng = d_meta.get("plant_lng")
+                canonical_name = st_dict.get("name") if st_dict else None
 
                 # 1. Obtener ruta OSRM con distancia y duración real de viaje (SOLO para ETA referencial y polilínea)
                 travel_min = None
                 if enable_osrm and plant_lat and plant_lng and st_lat and st_lng:
                     osrm_data = await fetch_osrm_route(
-                        osrm_session, osrm_cache, plant_lat, plant_lng, float(st_lat), float(st_lng)
+                        osrm_session,
+                        osrm_cache,
+                        plant_lat,
+                        plant_lng,
+                        float(st_lat),
+                        float(st_lng),
+                        station_id=station_id,
+                        station_name=canonical_name,
+                        department=department
                     )
                     if osrm_data and osrm_data.get("duration_min"):
-                        travel_min = max(5, int(round(osrm_data["duration_min"] * TRUCK_TIME_FACTOR)))
+                        # OSRM calcula tiempo de automóvil liviano -> aplicamos TRUCK_TIME_FACTOR y sumamos PLANT_EXIT_BUFFER_MINUTES
+                        travel_min = max(MIN_TRAVEL_MINUTES, int(round(osrm_data["duration_min"] * TRUCK_TIME_FACTOR)) + PLANT_EXIT_BUFFER_MINUTES)
                         planned_route_polyline = osrm_data.get("polyline")
+                        route_distance_km = osrm_data.get("distance_km")
+                        eta_source = "osrm"
 
                 # 2. Respaldo por física vial si OSRM no responde o está desactivado
                 if travel_min is None:
-                    travel_min = estimate_travel_minutes(plant_lat, plant_lng, st_lat, st_lng, is_provincia)
+                    travel_min = estimate_travel_minutes(plant_lat, plant_lng, st_lat, st_lng, is_provincia, department=department)
+                    eta_source = "haversine"
+
+                eta_travel_min = travel_min
 
                 # ETA referencial para informar al usuario (NO determina el estado físico)
                 estimated_arrival_at = dispatched_at + timedelta(minutes=travel_min)
@@ -515,6 +613,20 @@ async def process_and_transform_records(
             plate_key = f"pl_{plate.strip().upper()}" if plate else "noplate"
             hash_input = f"ypfb_desp_{d_id}_{scheduled_date_val}_{st_key}_{fuel_type_id}_{plate_key}_{int(liters)}"
             unique_hash = hashlib.md5(hash_input.encode("utf-8")).hexdigest()
+
+            metadata_dict = {
+                "family": familia,
+                "family_code": it.get("familia_codigo"),
+                "client": it.get("cliente"),
+                "district_name": d_meta.get("nombre"),
+                "unit": it.get("unidad", "L")
+            }
+            if eta_source:
+                metadata_dict["eta_source"] = eta_source
+            if eta_travel_min is not None:
+                metadata_dict["eta_travel_min"] = eta_travel_min
+            if route_distance_km is not None:
+                metadata_dict["route_distance_km"] = route_distance_km
 
             dispatch_record = {
                 "station_id": station_id,
@@ -536,13 +648,7 @@ async def process_and_transform_records(
                 "unique_hash": unique_hash,
                 "planned_route_polyline": planned_route_polyline,
                 "actual_route_polyline": None,
-                "metadata": {
-                    "family": familia,
-                    "family_code": it.get("familia_codigo"),
-                    "client": it.get("cliente"),
-                    "district_name": d_meta.get("nombre"),
-                    "unit": it.get("unidad", "L")
-                },
+                "metadata": metadata_dict,
                 "updated_at": now_utc.isoformat()
             }
             dispatches.append(dispatch_record)
@@ -606,6 +712,31 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
     dups_removed = len(dispatches) - total_records
     if dups_removed > 0:
         print(f"  [DEDUP] Se consolidaron {dups_removed} registros duplicados de Kyros en memoria.")
+
+    # 2. Consultar registros existentes para no retroceder estados terminales y preservar telemetría de radar
+    hashes = [d["unique_hash"] for d in unique_dispatches]
+    existing_map = {}
+    for i in range(0, len(hashes), 500):
+        chunk = hashes[i:i + 500]
+        try:
+            res = db.table("dispatches").select("unique_hash, status, confirmed_arrival_at, metadata").in_("unique_hash", chunk).execute()
+            for r in res.data or []:
+                existing_map[r["unique_hash"]] = r
+        except Exception as e:
+            print(f"  [WARN] No se pudo consultar registros previos para proteger estados: {e}")
+
+    for d in unique_dispatches:
+        ex = existing_map.get(d["unique_hash"])
+        if ex:
+            # Preservar estados terminales si ya llegó o descargó según el radar GPS de proximidad
+            if ex.get("status") in ("delivering", "delivered"):
+                d["status"] = ex["status"]
+            if ex.get("confirmed_arrival_at"):
+                d["confirmed_arrival_at"] = ex["confirmed_arrival_at"]
+            # Preservar telemetría y campos agregados por el radar GPS en metadata
+            ex_meta = ex.get("metadata")
+            if isinstance(ex_meta, dict):
+                d["metadata"] = {**ex_meta, **d["metadata"]}
 
     upserted_count = 0
     t_start = time.time()
