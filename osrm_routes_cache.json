@@ -1120,7 +1120,11 @@
   "-16.5740,-68.1861->-16.4764,-67.4538": {
     "polyline": "hbddBhrd_Lzn@gEemApAcaHofBqg@oxAq|@jD`VkTad@qq@wlC~U~^okBijCyhAkmAadDkrBcyAumA_jC{cFgxA{eAd\\uhEom@y`Ah^qU{nAgx@t_@xSor@m_@sUzn@y}@l}@ovFy]gvDwpAizBen@kpD`l@fiAaL_eBds@yTq_ApSalAqy@hYgmDyd@{|At`AcjAiIfVrq@ge@|{BtDjbBgl@lnAoyAfWqsCip@qjAhGip@xd@q`AvwA}MgEkVtaAc[ndAkxB}x@y|E~cAciCiAwxB`U|Hir@cxCkm@{k@jn@oi@mdAlEo@ue@uv@qUrJkr@sf@cXhZ_o@qh@}_@pr@{d@c[iUnm@gyAsBacAvqB_[uwAmUgCycA~eB_lAiq@eRd|AqgB_eAom@rf@qDcLyc@xyCig@xeCvG`f@ugBnyAggBj]pu@{h@jfAv_AQ",
     "duration_min": 180,
-    "distance_km": 163.21
+    "distance_km": 163.21,
+    "station_id": 1187,
+    "station_name": "GASOLCAMP S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T23:46:46.178229+00:00"
   },
   "-16.5740,-68.1861->-16.4963,-68.1279": {
     "polyline": "hbddBhrd_Lzn@gEemApA}yAge@efEg`A{_@{_@dPa]mZmSpAcE}Bn@uTkI}\\vFcEhElFmLvNwFaJrAfFuDyEJwVs_@fCkA}E{KaCbAMyK`G}UoCiFkp@ii@wEZhGaQ",
@@ -1271,7 +1275,11 @@
   "-16.5740,-68.1861->-14.7254,-68.4152": {
     "polyline": "hbddBhrd_LoaCb|EweLlo@c|B|uMooZjdW{{DlnTukj@`}YevYrmD`GluSqzIpa[asJ`_Lyc^hdT_lE}nJeyK`h@cdGg{DepFjdGy_JuI}kM}eH}lJth@onAejBwgFphC{`LouExQk~TrrD_rGpbDetXo`DejCbaA_lIwnLgkZbHauFi_Kd{BenEooDi`Bf~By[qqEeaPw_BgnDutEobNv}HskI{iFe}KQ",
     "duration_min": 486,
-    "distance_km": 407.31
+    "distance_km": 407.31,
+    "station_id": 1201,
+    "station_name": "ITURRALDE S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T23:46:45.574534+00:00"
   },
   "-16.5740,-68.1861->-16.5720,-68.1734": {
     "polyline": "hbddBhrd_LT{@jm@kBX_@O[YAwg@~AWeBa@{@Lc@p@i@FcArAaFAc@UE}AxB]GZeDcAw@Cm@d@u@YoAk@s@YJEx@]f@aBHs@v@i@A_AeAJo@z@gAjAsC|@uEMg@g@g@yCgBsAyADo@g@uEcBsCa@{AMm@Dw@vB{F",
@@ -1299,7 +1307,11 @@
   "-16.5740,-68.1861->-15.7455,-67.4977": {
     "polyline": "hbddBhrd_Lzn@gEemApAcaHofBqg@oxAq|@jD`VkTad@qq@wlC~U~^okBijCyhAkmAadDkrBcyAumA_jCubFaxAagA~[mjEmm@w|@r^{WgoAow@v`@`Sqs@k_@{Vxn@q|@l}@ovFy]gvDwpAizBq`@grCm~B{kBxS{pDod@{SsHaaAtZmxAshB{[ud@l_A}yA`Py{Bef@}Wuv@|AfcBed@wcBrLy{@_b@dv@jPf}CoFomAgm@nD|DasGei@``BtUaxAqeBgjHoqA{B}{AeoBstD}fB_tEhWkuAa{@`Xca@wq@xXumAaqAa`@|SsvAqWatBicGoBsfAxy@mn@g~@pa@ogC__BqtAsnEi}AaSeeB_hBkdCxc@qnBucAk~AjGjVox@__@|Wc`BcUuhBpgBe^gf@moCbrAwt@ua@vMut@w\\k`Ajj@kxBw_@wr@uaAwObGc]mv@cp@_vAfPuq@w_@am@|s@mZ{s@yf@lKi_C_xAkfBld@",
     "duration_min": 197,
-    "distance_km": 199.41
+    "distance_km": 199.41,
+    "station_id": 880,
+    "station_name": "ESTACION DE SERVICIO CARRASCO S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T23:46:46.177790+00:00"
   },
   "-16.5740,-68.1861->-16.5063,-68.2577": {
     "polyline": "hbddBhrd_Lxm@gD~AjCkF~Sc]|m@a~AjlB{GgDpF~Ek\\d_@aPvIquAh_@ayAxQ{rBnEgr@yBfr@dkD",
@@ -2416,7 +2428,11 @@
   "-17.8771,-63.2004->-17.4034,-63.8681": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@cbBvs@_CdbH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@bkAg^nxDczBlc@ofBrdFkj@fsHiEj`Frn@jqBkVveB",
     "duration_min": 132,
-    "distance_km": 140.68
+    "distance_km": 140.68,
+    "station_id": 1078,
+    "station_name": "ESTACION DE SERVICIO SAN JOSE DE YAPACANI S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T23:46:46.515786+00:00"
   },
   "-17.8771,-63.2004->-17.7685,-63.2077": {
     "polyline": "p{alB|ov`K_^XmPxRcsDoh@mr@rm@cy@e_@{[nk@ch@xd@ki@zUck@zI{hBsAwu@is@",
@@ -4178,5 +4194,77 @@
     "duration_min": 5,
     "distance_km": 3.14,
     "updated_at": "2026-10-20T23:16:44.629727+00:00"
+  },
+  "-16.5740,-68.1861->-16.7183,-68.1862": {
+    "station_id": 952,
+    "station_name": "ESTACIÓN DE SERVICIO FULL TANK DE AMILCAR DIPP MERCADO",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Ll_Oof@reEp`Af~DcY",
+    "duration_min": 16,
+    "distance_km": 16.26,
+    "updated_at": "2026-10-20T23:46:45.275300+00:00"
+  },
+  "-16.5740,-68.1861->-16.1634,-67.7220": {
+    "station_id": 863,
+    "station_name": "ESTACION DE SERVICIO BALLIVIANSANTABARBARA",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofB{_@{_@dPa]{WqYsX{G}b@fM`VkTaJrA_Yet@{gAuB{cAtYrc@ijAsCe`@_gA_UibAyr@yBsq@qiAmqBkrBcyAif@_bBkf@_g@ubFaxAagA~[mjEmm@w|@r^{WgoAm[hBa[l]`Sqs@gIcTcUwAfUqJpX_q@p^}eBeE_n@`d@q`BwXwf@vHgd@aT{e@fEkbAwpAizBq`@grC}U_\\}{@oVqj@kw@xS{pDod@{SsHaaAtZmxAwUnJ{qAkg@cN~VpGbOc^hW}yA`Py{Bef@}Wuv@}JfUzM~lAed@wcBvQeZcDs`@i@`b@u`@bSbLfOqLxh@vOr@dFpYcE~fAoFomAgm@nD^qh@bPuMcZ_RvEuc@bTaOoY{f@pLekBei@``BtUaxAsc@keAq@meA_YycAxDfwAa[uzC{R_WwmAaAe^gk@y]_D}q@{kA",
+    "duration_min": 119,
+    "distance_km": 117.54,
+    "updated_at": "2026-10-20T23:46:45.574399+00:00"
+  },
+  "-16.5740,-68.1861->-16.4759,-68.2717": {
+    "station_id": 821,
+    "station_name": "EDUARDO YUPANQUI QUISPE",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxp@[od@|bAa~AjlB{GgDpF~Emm@|i@quAh_@ayAxQ}tBnEe_CeHg{@lhG",
+    "duration_min": 19,
+    "distance_km": 18.78,
+    "updated_at": "2026-10-20T23:46:45.871911+00:00"
+  },
+  "-16.5740,-68.1861->-14.0798,-66.7948": {
+    "station_id": 1229,
+    "station_name": "SANTA ROSA PERLA DEL BENI S.R.L.",
+    "department": "beni",
+    "polyline": "hbddBhrd_LiaQgoF~^okBwzK_sMieSkxB|`Bo`KqpGuqPj@gaJ__Kgi@|AfcBqVq`DsPltE{hDi_SopZw|Iw|@kzJy`NciKa}LemAixGlsC_lDgfLka]gaB}hBa_KazP{}Gm|EsvYm|CibEmvBz\\mj@urFqdMyuE}iNaeN}fLt~AyjHg}CuZykEgoIjk@s{FgyJ_`AsiLujYkxUcsPyqE_iNt`@qhE~rCswPyq@ivPxlHipH}HsyQs`BiiK}cF}|OtgBsjXkfEckHxiHkiDml@",
+    "duration_min": 520,
+    "distance_km": 482.77,
+    "updated_at": "2026-10-20T23:46:46.177673+00:00"
+  },
+  "-17.9357,-67.1146->-16.9753,-67.2100": {
+    "station_id": 1841,
+    "station_name": "ESTACION DE SERVICIOS \"QUIME\" S.R.L.",
+    "department": "la_paz",
+    "polyline": "z~mlBtcsxKust@r}P}uDzgCgzFfyJ}cFtbO{tUnx[ikHozFgsAiaCxVerAsaCql@dq@sgDs}QaqMsu[t\\{c@ysAeiC}I{vAoxCezC|HyiC{pBin@lr@u{BgkBwh@pn@hTauAmrDsgJ",
+    "duration_min": 164,
+    "distance_km": 160.71,
+    "updated_at": "2026-10-20T23:46:46.486547+00:00"
+  },
+  "-14.8432,-64.9091->-14.8250,-64.9056": {
+    "station_id": 835,
+    "station_name": "EMPRESA RIVERO CARBURANTES LUBRICANTES Y GAS \"ERCALUG\"",
+    "department": "beni",
+    "polyline": "f_ryAltdkKoASaAiAgBMNsEiGAwm@kEwa@aBC^aHMyDcBRc@o@k@",
+    "duration_min": 5,
+    "distance_km": 2.23,
+    "updated_at": "2026-10-20T23:46:46.826102+00:00"
+  },
+  "-14.8432,-64.9091->-14.8263,-64.8740": {
+    "station_id": 1096,
+    "station_name": "ESTACION DE SERVICIO SERGIO FREDDY IRIARTE MERCADO-PAITITI",
+    "department": "beni",
+    "polyline": "f_ryAltdkKoASaAiAgBMfAw\\oX{AHsAuEs@_DoDiAYiU_AmAqLcJwl@oHmOuKua@sBa}@hA]A]",
+    "duration_min": 6,
+    "distance_km": 5.02,
+    "updated_at": "2026-10-20T23:46:47.122305+00:00"
+  },
+  "-14.8432,-64.9091->-14.8283,-64.8885": {
+    "station_id": 1168,
+    "station_name": "ESTACION DE SERVICIOS SERGIO FREDDY IRIARTE MERCADO",
+    "department": "beni",
+    "polyline": "f_ryAltdkKoASaAiAgBMfAw\\oX{AHsAuEs@_DoDiAYiU_AmAqLcJwl@oHmOuAqEh@m@",
+    "duration_min": 5,
+    "distance_km": 3.41,
+    "updated_at": "2026-10-20T23:46:47.418204+00:00"
   }
 }
