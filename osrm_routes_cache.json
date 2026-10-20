@@ -1097,7 +1097,11 @@
   "-16.5740,-68.1861->-15.7546,-69.0673": {
     "polyline": "hbddBhrd_Lxp@[isD~|EsoDbr@cuFuAc|B|uMobHn`F_lQzbPiqC~eJqi@lgI_mGr~DgsOtjHrCv`@udB~{A_`Dzu@kgIb|DmhK~mBuqBcCgbJhkApRr~CicAjyDfx@hhCvFpiDm}CxwMmoBbhD}cA~~Di]~HpUru@emAvmBedBbv@xItg@i`Az\\mJ~t@ekBbmBksLhrH",
     "duration_min": 138,
-    "distance_km": 150.7
+    "distance_km": 150.7,
+    "station_id": 1236,
+    "station_name": "SOCIEDAD PERLA ANDINA S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-20T22:16:42.825081+00:00"
   },
   "-16.5740,-68.1861->-15.6513,-67.2593": {
     "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBPwbJygBkZs_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{mAibK{cJo{EeuExVi|@e}AauG}pAc`BgeHh~@a~@g~@pa@ogC__BozAgtEq}DmvBynA|h@ybGa`AbTgy@{wKrvCwcAwxCjj@kxBsrCcsC{uDxd@acEo`CghEl_BmpC{cC}d@tkAyeEym@`ZgjB_r@gFegAwaGa}AMudGutEbhAenF{uCghE~oCsfNrlGhk@",
