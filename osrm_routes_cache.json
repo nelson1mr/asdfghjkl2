@@ -520,7 +520,11 @@
   "-17.4506,-66.1238->-17.2161,-66.5428": {
     "polyline": "hgoiBj|qrKbG|\\io@reAc~AljAhFb}@aR~TudBkHaV|p@bLdLep@jr@OhVu]yG|DjpEaVrrASx}Fr_@xkImkElpEwVn_@bKjOm_@|CwGjc@aW~CwElKxL~AsQ~Fd_@zAecAxUhGrMgh@jKwIbW|gB{Pmn@fh@f@qNuUfHas@fpA{^t@ajAd{AhQ_BkqApkA|G|Q_j@dCa@lq@m\\`EvCfL_z@}OeG~cAq^`NvAzQyd@bo@vEja@pV_HcFhS_v@|s@iBbh@wDmm@yQtWu[fpBqqAr{@yzB`WwI`Uqg@rJ`qBnFm]n]itAb[qFdo@oPnF",
     "duration_min": 103,
-    "distance_km": 84.0
+    "distance_km": 84.0,
+    "station_id": 1761,
+    "station_name": "ESTACIÓN DE SERVICIO VALLESANTIVAÑEZ S.R.L.",
+    "department": "cochabamba",
+    "updated_at": "2026-10-20T16:01:39.944538+00:00"
   },
   "-17.4506,-66.1238->-17.3843,-66.3602": {
     "polyline": "hgoiBj|qrK|FnC{EV`FtWio@reAc~AljAhFb}@aR~Ta_@xBsdAeLaV|p@bLdLep@jr@OhVu]yG|DjpEaVrrASvbEtHju@uHtC|QbiH|Ll`@knApjA__@bs@yCtQbKht@tOrL",
@@ -1889,7 +1893,11 @@
   "-17.8771,-63.2004->-17.8009,-63.1277": {
     "polyline": "p{alB|ov`K{ReM`QkW{eBuk@sdFkmE{AuFfXy_@_s@}t@cQ}DdBcq@giAuC",
     "duration_min": 18,
-    "distance_km": 13.16
+    "distance_km": 13.16,
+    "station_id": 914,
+    "station_name": "ESTACIÓN DE SERVICIO DICOR S.R.L",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T16:01:39.959357+00:00"
   },
   "-17.8771,-63.2004->-17.8120,-63.1446": {
     "polyline": "p{alB|ov`K{ReM`QkW{eBuk@sdFkmE_BmE}H\\s`@mi@i@vIiCYvAuJ",
