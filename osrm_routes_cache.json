@@ -1956,7 +1956,11 @@
   "-17.8771,-63.2004->-17.7929,-63.1940": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@mr@rm@wx@g_@mY~g@kShSktAi}AwMxFeQ`@",
     "duration_min": 16,
-    "distance_km": 10.93
+    "distance_km": 10.93,
+    "station_id": 801,
+    "station_name": "GENEX II",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T16:31:41.437329+00:00"
   },
   "-17.8771,-63.2004->-17.8503,-63.1823": {
     "polyline": "p{alB|ov`KT{@{DoB[bAyL}I`QkWmmCk|@KgA",
@@ -2011,7 +2015,11 @@
   "-17.8771,-63.2004->-17.5300,-63.1620": {
     "polyline": "p{alB|ov`K_^XmPxRcsDoh@mr@rm@cy@e_@sm@x~@yy@pe@csCtKekCwaB{`@qoAoB_nAmrFizAyvXyNqxIbY{k@~NfoAcN",
     "duration_min": 46,
-    "distance_km": 45.75
+    "distance_km": 45.75,
+    "station_id": 1038,
+    "station_name": "ESTACIÓN DE SERVICIO ORTIZ S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T16:31:41.436822+00:00"
   },
   "-17.8771,-63.2004->-17.1098,-63.2358": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CcmFcyAc|X_PubJpZqsHboCg~IleAaiJ|rHkyAxHewCv_C}hImgDe_EuxCehFze@izCiLqsKb~A",
@@ -2297,7 +2305,11 @@
   "-17.8771,-63.2004->-17.7844,-63.2043": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@mr@rm@cy@e_@{[nk@ch@xd@ki@zUck@zIeq@o@kCegAaFeA",
     "duration_min": 16,
-    "distance_km": 12.62
+    "distance_km": 12.62,
+    "station_id": 920,
+    "station_name": "ESTACION DE SERVICIO EL ARROYO S.R.L",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-20T16:31:41.436992+00:00"
   },
   "-17.8771,-63.2004->-17.8321,-63.2316": {
     "polyline": "p{alB|ov`K]pAwBu@iYAqa@jh@mUv^i_@l^y`A~xAab@tj@kBAoc@ih@zA|E",
@@ -3987,5 +3999,14 @@
     "duration_min": 13,
     "distance_km": 8.75,
     "updated_at": "2026-10-20T14:01:34.576410+00:00"
+  },
+  "-17.4506,-66.1238->-18.1724,-64.8644": {
+    "station_id": 1034,
+    "station_name": "ESTACION DE SERVICIO OMEREQUE",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|G|]``E_~B`Nmz@zy@mk@zjFeq@nt@qaC|Vw_JugAmzDoDy{FsfAajHltCslHkJcbA~z@a_ApkCswJxu@_Qg^uSn_AnDcy@}h@bOkm@qp@aLhHuz@mx@sNqvB{nIpmBiVzxD~h@xbBmd@ddA_oAraAgcF`|Boh@`yBshEj_CcjAtd@uvBn}EcuDbeB}jCfqEekAjbCv\\`k@ozAdg@eJkg@iBvqBygAbr@erBxWftAda@oDqDkh@zeAwaAi@{jBtd@yw@`SbKjCyjBv~@mcAxa@sgBp`Aoh@q]u]n{CozBbuAp_@~`A{i@_yAufEne@gKhq@js@r}BiGtSwe@|nDci@d~@ccAvuB~LlfGenAx}FebC~dQ_cKyUm[bXs~@u{BuEcJwl@}wAgMuW{g@x^kzCzsDahEvf@c@ap@kRhJyl@_]yStx@ikBkMusBdnAwyA{@{xAbi@omA{w@sw@mMacG_lAvHzIgeAm_@s`@j_@osDs_@_Uv`@uEyeAcrAuh@}|E",
+    "duration_min": 226,
+    "distance_km": 237.67,
+    "updated_at": "2026-10-20T16:31:41.428007+00:00"
   }
 }
