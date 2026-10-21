@@ -4400,5 +4400,14 @@
     "duration_min": 325,
     "distance_km": 336.07,
     "updated_at": "2026-10-21T03:46:45.460593+00:00"
+  },
+  "-17.8771,-63.2004->-19.7803,-63.1824": {
+    "station_id": 1250,
+    "station_name": "SURTIDOR CHARAGUA",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`K`iMvfIxeE{wKdup@uXjfsA|eJvym@by^f`GavAguAm`C|cC_lDpnT{kHryj@arGp~Db}E~aImWpdI}lIbqD~nCraDumCjuKd^lvm@}nH",
+    "duration_min": 250,
+    "distance_km": 249.6,
+    "updated_at": "2026-10-21T13:16:41.175267+00:00"
   }
 }
