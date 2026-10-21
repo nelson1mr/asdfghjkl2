@@ -4470,5 +4470,23 @@
     "duration_min": 251,
     "distance_km": 229.14,
     "updated_at": "2026-10-21T21:02:09.585484+00:00"
+  },
+  "-17.8771,-63.2004->-17.2375,-63.2164": {
+    "station_id": 1247,
+    "station_name": "BIOPETROL SAAVEDRA",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@k~Axp@adIehDuyDsyC",
+    "duration_min": 76,
+    "distance_km": 80.78,
+    "updated_at": "2026-10-21T22:16:40.721716+00:00"
+  },
+  "-17.8771,-63.2004->-17.8001,-63.1955": {
+    "station_id": 1753,
+    "station_name": "SURTIDOR EL PARI",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@mr@rm@wx@g_@mY~g@kShSsuAe}A|KhQ",
+    "duration_min": 16,
+    "distance_km": 10.74,
+    "updated_at": "2026-10-21T22:16:41.042805+00:00"
   }
 }
