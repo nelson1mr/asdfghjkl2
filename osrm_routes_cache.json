@@ -2120,7 +2120,11 @@
   "-17.8771,-63.2004->-17.3401,-63.2705": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCmcJdhAapKtjI`b@t}@wlBd`A",
     "duration_min": 67,
-    "distance_km": 68.64
+    "distance_km": 68.64,
+    "station_id": 1018,
+    "station_name": "ESTACIÓN DE SERVICIO MIRANDA",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-21T03:01:45.054726+00:00"
   },
   "-17.8771,-63.2004->-17.8163,-63.1831": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@kc@kBkTwEjCax@aFtAq`BaN",
@@ -2229,7 +2233,11 @@
   "-17.8771,-63.2004->-17.7886,-63.1944": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@mr@rm@wx@g_@mY~g@kShSktAi}AwMxF{l@zB",
     "duration_min": 16,
-    "distance_km": 11.43
+    "distance_km": 11.43,
+    "station_id": 1127,
+    "station_name": "ESTACION DE SERVICIO URBARI S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-21T03:01:45.054664+00:00"
   },
   "-17.8771,-63.2004->-17.8524,-63.2549": {
     "polyline": "p{alB|ov`K]pAwBu@iYAqa@jh@mUv^i_@l^y`A~xAki@br@^l@dD{Ch{AzfBmApA`@`@",
@@ -2730,7 +2738,11 @@
   "-17.8771,-63.2004->-17.3179,-63.2851": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NogJfZuuHpoCmcJdhA{cJdpH}yC|o@zApg@kbB`t@aD|eB",
     "duration_min": 70,
-    "distance_km": 71.93
+    "distance_km": 71.93,
+    "station_id": 1262,
+    "station_name": "ESTACION DE SERVICIO TORRIAYALA S.R.L",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-21T03:01:45.054815+00:00"
   },
   "-17.8771,-63.2004->-17.3616,-63.4104": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBkwCbK}fCeaBae@a_DutFkzAoyKsP}zVn\\uuHpoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@_cBju@cBp`HlgGfbQbcAh`Hi|@mpG",
@@ -4340,5 +4352,14 @@
     "duration_min": 263,
     "distance_km": 248.3,
     "updated_at": "2026-10-21T00:46:44.177758+00:00"
+  },
+  "-16.5740,-68.1861->-16.1233,-67.1953": {
+    "station_id": 1015,
+    "station_name": "ESTACION DE SERVICIO MEJIA S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofBqg@oxAq|@jD`VkTad@qq@wlC~U~^okBijCyhAkmAadDkrBcyAumA_jCubFaxAagA~[mjEmm@w|@r^{WgoAyx@t^jToq@k_@{Vxn@q|@l}@ovFy]gvDwpAizBen@kpD`l@fiAaL_eBds@yTq_ApSalAqy@hYgmDyd@{|At`AcjAiIfVrq@ge@|{BtDjbBgl@lnAoyAfWqsCip@qjAhGip@xd@q`AvwA}MgEkVtaAc[ndAkxB}x@y|E~cAciCiAwxB`U|Hir@cxCkm@{k@jn@oi@mdAlEo@ue@uv@qUrJkr@sf@cXhZ_o@sh@ua@rr@cc@c[iUnm@gyAsBacAvqB_[uwAmUiCqcA|cBwfAen@y^v}@sc@`Huw@olB}@ia@{NnCuf@o_BxRt`@apB_kBzLSkgAwxG}}Dqn@}vBarAsxA{N_}@rp@ksAeQkdBl`AgkCdz@mt@dAu_B}oBc|AnUmiBw]m|@wqA{w@{m@vIiiCex@qrGgjFxRgxDthAoyCqv@aDoqAnp@qj@mTcxAnq@_a@lz@gxBbMzQfNcZfc@wnCr_@yX~a@",
+    "duration_min": 284,
+    "distance_km": 218.74,
+    "updated_at": "2026-10-21T03:01:45.036413+00:00"
   }
 }
