@@ -52,7 +52,11 @@
   "-11.0037,-66.0483->-11.5294,-66.2888": {
     "polyline": "vbdbAr`crKv@~m@lgG_w@rqCj_Ad_MpmIpFdzC~kAlgBppF`cB|tCuiA~pDrOziMptHf{HzeA|rAbaFv~Df|Dl{I`lCbtJm|B",
     "duration_min": 69,
-    "distance_km": 72.65
+    "distance_km": 72.65,
+    "station_id": 827,
+    "station_name": "EL TRIANGULO ORIENTAL S.R.L.",
+    "department": "beni",
+    "updated_at": "2026-10-21T19:31:45.708310+00:00"
   },
   "-22.7258,-64.3517->-22.7342,-64.3352": {
     "polyline": "tuuiCvxwgKnBmAzCmDkBaEvA{C~AeByBkL`VyFnKsNeUeUfTqO~F_DvHoFF[]KkEzCq@UOR",
