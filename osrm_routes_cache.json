@@ -1106,7 +1106,11 @@
   "-16.5740,-68.1861->-15.6513,-67.2593": {
     "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBPwbJygBkZs_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{mAibK{cJo{EeuExVi|@e}AauG}pAc`BgeHh~@a~@g~@pa@ogC__BozAgtEq}DmvBynA|h@ybGa`AbTgy@{wKrvCwcAwxCjj@kxBsrCcsC{uDxd@acEo`CghEl_BmpC{cC}d@tkAyeEym@`ZgjB_r@gFegAwaGa}AMudGutEbhAenF{uCghE~oCsfNrlGhk@",
     "duration_min": 305,
-    "distance_km": 262.8
+    "distance_km": 262.8,
+    "station_id": 1011,
+    "station_name": "ESTACIÓN DE SERVICIO \"MADAGASCAR\" S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-21T01:17:25.055155+00:00"
   },
   "-16.5740,-68.1861->-16.5111,-68.2721": {
     "polyline": "hbddBhrd_Lxm@gD~AjCkF~Sc]|m@a~AjlB{GgDpF~Ek\\d_@aPvIquAh_@ayAxQ{rBnEgr@yBbpApeG",
@@ -2799,7 +2803,11 @@
   "-17.8771,-63.2004->-17.3534,-63.2510": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}No_JfYu}HppCg~IleAemKrrI",
     "duration_min": 64,
-    "distance_km": 65.33
+    "distance_km": 65.33,
+    "station_id": 1097,
+    "station_name": "ESTACIÓN DE SERVICIO \"S.J.\"SRL",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-21T01:17:25.073691+00:00"
   },
   "-17.8771,-63.2004->-17.3826,-62.5779": {
     "polyline": "p{alB|ov`Kmo@rSmnEcp@hDmw@s}@aFeiBazDufD{o@{|AszGbQwkHqcAcbKesAe`GkeMgyZm_AwsPwu@{Da}CsqC_zCwwAulNsaDiqQqdH}sGkkD",
