@@ -4422,5 +4422,14 @@
     "duration_min": 183,
     "distance_km": 183.24,
     "updated_at": "2026-10-21T16:01:48.287661+00:00"
+  },
+  "-17.4506,-66.1238->-17.5684,-65.7763": {
+    "station_id": 854,
+    "station_name": "ESTACION DE SERVICIO ARANI",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|G|]vvBudBhhAiX`Nmz@zy@mk@vf@hDrUgXhdDgZb[}Vvm@orDlDu~@mN__@rT_rD_QgpAqv@kqBoDy{FsfAajHltCslHkJcbA~z@a_AldBylG",
+    "duration_min": 48,
+    "distance_km": 47.14,
+    "updated_at": "2026-10-21T17:16:47.341582+00:00"
   }
 }
