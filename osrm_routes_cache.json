@@ -2944,7 +2944,11 @@
   "-17.8771,-63.2004->-17.3529,-63.3825": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBkwCbK}fCeaBae@a_DutFkzAoyKsP}zVn\\uuHpoC}xIjcAknJ~tHkyAxHi`A`g@rBrf@{bB~t@gB|`HvxDjxKh]~J",
     "duration_min": 80,
-    "distance_km": 83.66
+    "distance_km": 83.66,
+    "station_id": 1003,
+    "station_name": "ESTACION DE SERVICIO LOS BIBOSIS S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-21T00:16:34.930333+00:00"
   },
   "-17.8771,-63.2004->-18.0039,-63.3888": {
     "polyline": "p{alB|ov`K_^XodEttFdEmB`kGtpHpm@n~Abi@p|E~NbJraA`Ihr@zc@ts@_B~sChh@~dA~n@vtAp]roBhgB~kAdi@",
@@ -3468,7 +3472,11 @@
   "-17.9357,-67.1146->-17.5902,-67.5033": {
     "polyline": "z~mlBtcsxKust@r}PqjEr{CseFneJiaFr~NebEp~G{fFzlFjl@uu@zN~s@v`MzjEvgCrhB",
     "duration_min": 80,
-    "distance_km": 80.3
+    "distance_km": 80.3,
+    "station_id": 946,
+    "station_name": "ESTACION DE SERVICIO EUCALIPTUS S.R.L.",
+    "department": "oruro",
+    "updated_at": "2026-10-21T00:16:34.578114+00:00"
   },
   "-17.8771,-63.2004->-19.7913,-63.2003": {
     "polyline": "p{alB|ov`K`iMvfIxeE{wKdup@uXjfsA|eJvym@by^f`GavAguAm`C|cC_lDjrT{lHxuj@aqGp~Db}E~aImWpdI}lIbqD~nCx_DimCbcZ_j@r`\\i`GtnDljC",
@@ -4266,5 +4274,50 @@
     "duration_min": 5,
     "distance_km": 3.41,
     "updated_at": "2026-10-20T23:46:47.418204+00:00"
+  },
+  "-16.5740,-68.1861->-13.7794,-68.1272": {
+    "station_id": 1175,
+    "station_name": "ESTACION DE SERVICO SAYHOGAS S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_LiaQgoF~^okBwzK_sMieSkxB|`Bo`KqpGuqPj@gaJ__Kgi@|AfcBqVq`DsPltE{hDi_SopZw|Iw|@kzJy`NciKa}LemAixGlsC_lDgfLka]gaB}hBa_KazP{}Gm|EsvYm|CibEmvBz\\mj@urFqdMyuE}iNaeNcrQxPocEcgHuegArmQcv~@|yk@exS~lw@i{f@r_`@yiFtsMmse@|hVwiQxrV|q@jpHciPunG",
+    "duration_min": 568,
+    "distance_km": 553.48,
+    "updated_at": "2026-10-21T00:16:34.237663+00:00"
+  },
+  "-16.5740,-68.1861->-14.8656,-66.7445": {
+    "station_id": 1825,
+    "station_name": " ESTACION DE SERVICIO \"IRIARTE SAN BORJA\"",
+    "department": "beni",
+    "polyline": "hbddBhrd_LiaQgoF~^okBwzK_sMieSkxB|`Bo`KqpGuqPj@gaJ__Kgi@|AfcBqVq`DsPltE{hDi_SopZw|Iw|@kzJy`NciKa}LemAixGlsC_lDgfLka]gaB}hBa_KazP{}Ga}E_xYy{C}`EmvBz\\wqFcoLyoDv[w|RcyPqaJr{ByjHg}CuZykEgoIjk@s{FgyJ{fAkrLywXchU_wOylCsqAogC",
+    "duration_min": 371,
+    "distance_km": 384.56,
+    "updated_at": "2026-10-21T00:16:34.572826+00:00"
+  },
+  "-17.8771,-63.2004->-16.8938,-63.3111": {
+    "station_id": 845,
+    "station_name": "ESTACION DE SERVICIO AGUAI  S.R.L.",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizAmvc@~I{vShvEo`Rf~L}fOgbIeqYfpCmrDwaCci[dYucCbjEcgAx{I",
+    "duration_min": 119,
+    "distance_km": 126.85,
+    "updated_at": "2026-10-21T00:16:34.930162+00:00"
+  },
+  "-17.8771,-63.2004->-17.3972,-63.9265": {
+    "station_id": 1084,
+    "station_name": "ESTACIÓN DE SERVICIO SAN SALVADOR",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@kbB`t@wBzaH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@bkAg^nxDczBlc@cgBfgFkp@jnOxn@xwBg}@hpM",
+    "duration_min": 137,
+    "distance_km": 147.01,
+    "updated_at": "2026-10-21T00:16:35.258660+00:00"
+  },
+  "-14.8432,-64.9091->-14.8468,-64.9052": {
+    "station_id": 1822,
+    "station_name": "POMPEYA",
+    "department": "beni",
+    "polyline": "f_ryAltdkKy@GUKaAiAgBMfAc\\h\\dBCd@XB",
+    "duration_min": 5,
+    "distance_km": 1.22,
+    "updated_at": "2026-10-21T00:16:35.591066+00:00"
   }
 }
