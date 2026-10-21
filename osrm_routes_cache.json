@@ -1251,7 +1251,11 @@
   "-16.5740,-68.1861->-16.2126,-68.6888": {
     "polyline": "hbddBhrd_Lxp@[od@|bAymC`yCsoDbr@cuFuAubAv`Imx@dtC_mDz_DotBr_AilJ~sIewBh|AkhBfsBumAnxC_e@bxCwZtp@qRlnGcR|s@umAp}@quAbg@mjBf{Aa~JxcFzHxbBjwCvyCwLxa@vJ~bB}R`bC",
     "duration_min": 75,
-    "distance_km": 79.65
+    "distance_km": 79.65,
+    "station_id": 1188,
+    "station_name": "GASOLINERA HUATAJATA S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-21T03:46:45.105892+00:00"
   },
   "-16.5740,-68.1861->-16.5266,-68.1118": {
     "polyline": "hbddBhrd_Lzn@gEojAfBs|A}e@su@mPtA_IaZqg@pKeDlFg\\_KoKyGo@uHoGcQy[cOaIjC}DgCoAvAmOk\\cIhSxDcOeLmDcNlL`KtNs@uImFgDsL~HyCyFaEvF}AoIqDdHqD{DqD|IqB{K{HpK_HiI}Gh@qIyIwGoGUsBkItB{B|IzCxAeCiN_IdAoBaGsFwVRmM_WcDWZ{JsCvEwFeH`\\q_@jD~AtEsD",
@@ -4361,5 +4365,32 @@
     "duration_min": 284,
     "distance_km": 218.74,
     "updated_at": "2026-10-21T03:01:45.036413+00:00"
+  },
+  "-16.5740,-68.1861->-16.1268,-67.1926": {
+    "station_id": 909,
+    "station_name": "ESTACION DE SERVICIO \"DARTAÑAN\"",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofBqg@oxAq|@jD`VkTad@qq@wlC~U~^okBijCyhAkmAadDkrBcyAumA_jCubFaxAagA~[mjEmm@w|@r^{WgoAyx@t^jToq@k_@{Vxn@q|@l}@ovFy]gvDwpAizBen@kpD`l@fiAaL_eBds@yTq_ApSalAqy@hYgmDyd@{|At`AcjAiIfVrq@ge@|{BtDjbBgl@lnAoyAfWqsCip@qjAhGip@xd@q`AvwA}MgEkVtaAc[ndAkxB}x@y|E~cAciCiAwxB`U|Hir@cxCkm@{k@jn@oi@mdAlEo@ue@uv@qUrJkr@sf@cXhZ_o@sh@ua@rr@cc@c[iUnm@gyAsBacAvqB_[uwAmUiCqcA|cBwfAen@y^v}@sc@`Huw@olB}@ia@{NnCuf@o_BxRt`@apB_kBzLSkgAwxG}}Dqn@}vBarAsxA{N_}@rp@ksAeQkdBl`AgkCdz@mt@dAu_B}oBc|AnUmiBw]m|@wqA{w@{m@vIiiCex@qrGgjFxRgxDthAoyCqv@aDoqAnp@qj@mTcxAnq@_a@lz@gxBbMzQfNcZfc@usCvo@",
+    "duration_min": 283,
+    "distance_km": 218.19,
+    "updated_at": "2026-10-21T03:46:44.758040+00:00"
+  },
+  "-16.5740,-68.1861->-17.4356,-67.5219": {
+    "station_id": 907,
+    "station_name": "ESTACION DE SERVICIO CRUCE LURIBAY S.R.L. E.S.C.L. S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_LnbOof@heEp`ArcTcaA|mh@stTdyNmgJpgJmoKprKojB`iGohGn|Ugkg@bdCkgRbfHgdL_]dm@",
+    "duration_min": 126,
+    "distance_km": 132.82,
+    "updated_at": "2026-10-21T03:46:45.105719+00:00"
+  },
+  "-16.5740,-68.1861->-15.1497,-67.0345": {
+    "station_id": 862,
+    "station_name": "ESTACION DE SERVICIO BALLIVIAN",
+    "department": "beni",
+    "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBPwbJygBkZs_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{mAibK{cJo{EeuExVi|@e}AauG}pAc`BgeHh~@a~@g~@pa@ogC__BozAgtEq}DmvBynA|h@ybGa`AbTgy@{wKrvCwcAwxCjj@kxBsrCcsC{uDxd@acEo`CghEl_BmpC{cC}d@tkAyeEym@`ZgjB_r@gFhEo}BiwAanCw|Du|@{cDscEkmBpp@aiBcmAcv@uxLglBiaBux@_|HmoByJkk@cuDei@xgAglA}i@eg@knF{~D}nBuIyoAyoDv[e{Hw_KatGeuAvXedAgeA_]smBvfAydCmm@cmBhbByjHg}CuZykEkgIvs@",
+    "duration_min": 325,
+    "distance_km": 336.07,
+    "updated_at": "2026-10-21T03:46:45.460593+00:00"
   }
 }
