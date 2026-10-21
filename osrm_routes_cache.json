@@ -2751,7 +2751,11 @@
   "-17.8771,-63.2004->-17.3616,-63.4104": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBkwCbK}fCeaBae@a_DutFkzAoyKsP}zVn\\uuHpoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@_cBju@cBp`HlgGfbQbcAh`Hi|@mpG",
     "duration_min": 92,
-    "distance_km": 96.05
+    "distance_km": 96.05,
+    "station_id": 1086,
+    "station_name": "ESTACION DE SERVICIO \"SAN SILVESTRE\"",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-21T04:48:00.602309+00:00"
   },
   "-17.8771,-63.2004->-17.1274,-63.2303": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CcmFcyAc|X_PubJpZqsHboCg~IleAaiJ|rHkyAxHewCv_C}hImgDe_EuxCehFze@izCiLufHh|@",
