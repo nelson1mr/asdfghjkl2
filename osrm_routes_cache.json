@@ -3062,7 +3062,11 @@
   "-17.8771,-63.2004->-17.4031,-63.9061": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@kbB`t@wBzaH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@bkAg^nxDczBlc@cgBfgFkp@jnO|n@~tBmXzsI",
     "duration_min": 137,
-    "distance_km": 145.22
+    "distance_km": 145.22,
+    "station_id": 965,
+    "station_name": "ESTACION DE SERVICIO ICHILO S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-21T05:16:33.542400+00:00"
   },
   "-17.8771,-63.2004->-16.4088,-63.8599": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizAmvc@~I{vShvEo`Rf~L}fOgbIeqYfpCmrDwaCql[zYg`CliEqmAtmJ_dFxvHqvC|bUc{]dcZmgBpoDckG|a@qtCjuDk_JhzEi|Cv@hh@vyFuwJ`wB}PbkC{`FftEmj@bxD",
