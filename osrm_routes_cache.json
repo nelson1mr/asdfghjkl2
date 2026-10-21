@@ -125,7 +125,11 @@
   "-19.0800,-65.2217->-19.1222,-64.7017": {
     "polyline": "nimsBvtamKeApLhXfHpr@}d@uGs[|a@aOlyAnDjs@{d@|nApGhYsMzIwj@dp@jNy@}]x`AkFbIqp@~c@cl@~t@~Hz|BqhAdr@giBej@gvCcp@u_@bFinAuU_CsYeh@{WovAcSuPfTco@iSua@fKq|@l{@s\\`GoqAs^{KpK_hAuaAweBtAo~@xOkWg`@{b@yhAfEoN}^oXuHrCw[sTyShk@ed@{XiVp\\sq@xiA{v@oHyMma@pJka@oIffCwvAv@oV_V}W|[wJ|Lou@cb@kiCo}@{wAcVuIkHu]ilAqfAe{A`_@gVe]qaBri@iDkXq_AhDqd@{TmG}Zb\\oz@mm@mJdYe_AiLmp@{e@}Q`Fkj@sToQmJdOgE_Nwk@dFbNu`Bs]nCy{Agy@rQgdBs[ms@rGc[ng@kLqUkJa@cWji@cOQ}R`x@sj@xI{_AzdBqhCff@eBjrAa{@`~@gU",
     "duration_min": 95,
-    "distance_km": 98.74
+    "distance_km": 98.74,
+    "station_id": 1026,
+    "station_name": "ESTACIÓN DE SERVICIO MURILLO",
+    "department": "chuquisaca",
+    "updated_at": "2026-10-21T20:16:44.083107+00:00"
   },
   "-19.0800,-65.2217->-19.3124,-64.2990": {
     "polyline": "nimsBvtamKbVxUxlAsqAv}EyVdd@ky@dp@jNy@}]x`AkFbn@u}A~t@~Hz|BqhAhr@ckBij@ktCcp@u_@bFinAi}AkuCdLkoCl{@s\\`GoqAs^{KpK_hAuaAweBnR{vAg`@{b@yhAfE_y@ezAhk@ed@{XiVp\\sq@xiA{v@imAwLffCwvAgTmo@zi@gaAcb@kiCikDyhEe{A`_@gVe]qaBri@iDkXceBqO`TitAan@mMpMemBsf@eSgMs}@a_A~EvN{_B_zBas@dQ}eBo[ct@~o@yg@sVob@zaBunAxI{_AzdBqhC~xDivAmAa|@{l@mv@trAorCfCsdBcn@oaAlWwbCi`@ky@jj@w[DsaAnqD}y@bqAmpBu`BgyAl@w^mqAum@zs@mbBD}jCnzA_x@nq@|KpwB_bDvnJcaBlmAmkBxkBm_@lmBuqBjSqu@{c@mfB|ZouAyQwoAlc@wz@_n@fHgIwk@|Usx@b}@`Dzp@guBsGi_A",
@@ -1232,7 +1236,11 @@
   "-16.5740,-68.1861->-16.5691,-69.0292": {
     "polyline": "hbddBhrd_Lxp@[isD~|EsoDbr@cfDtAtsDztN_MheCnh@~vKrp@pi@~xC`gNhxB|qEmm@dcEpsBnnD{cE~{Hju@hdIig@|pGjrAh}IjcCdlJpEdfCqUn{L{oGjgRpv@gPpg@nY",
     "duration_min": 101,
-    "distance_km": 106.04
+    "distance_km": 106.04,
+    "station_id": 1152,
+    "station_name": "ESTACION DE SERVICIOS DESAGUADERO S.R.L.",
+    "department": "la_paz",
+    "updated_at": "2026-10-21T20:16:44.433172+00:00"
   },
   "-16.5740,-68.1861->-16.5219,-68.1152": {
     "polyline": "hbddBhrd_Lzn@gEemApA}yAge@efEg`A{_@{_@xWoe@|Wo~@w]y@rMcFgGi@tGsL}@kDyGoAuBtDiDaAsCvBlAgFaED`IyQ_\\hXqBaHxCeUaFeJrDwEhA}NxMmUyGsKpFaDbCtDpEAYiDtEhCmCcVaIw@kHiLkDc\\nKsCmNkAjVoDhPzB",
@@ -4435,5 +4443,23 @@
     "duration_min": 48,
     "distance_km": 47.14,
     "updated_at": "2026-10-21T17:16:47.341582+00:00"
+  },
+  "-19.0800,-65.2217->-19.1317,-64.3208": {
+    "station_id": 1135,
+    "station_name": "ESTACION DE SERVICIO VILLA SERRANO",
+    "department": "chuquisaca",
+    "polyline": "nimsBvtamKbVxUxlAsqAv}EyVdd@ky@dp@jNy@}]x`AkFbn@u}A~t@~Hz|BqhAhr@ckBij@ktCcp@u_@bFinAi}AkuCdLkoCl{@s\\`GoqAs^{KpK_hAuaAweBnR{vAg`@{b@yhAfE_y@ezAhk@ed@{XiVp\\sq@xiA{v@imAwLffCwvAgTmo@zi@gaAcb@kiCikDyhEe{A`_@gVe]qaBri@iDkXceBqOtSmvAmm@mJdYe_Aes@kcA`Fkj@asAcIbNu`BmzBwt@rQgdBs[ms@bp@oh@sVob@zaBunAxI{_AzdBqhC~xDivAmAa|@{l@mv@trAorCfCsdBcn@oaAlWwbCi`@ky@jj@w[DsaAnqD}y@bqAmpBu`BgyAl@w^mqAum@zs@mbB}LulBrf@ax@nsBgPjvAw{CogCqh@}Hqk@sm@iI`a@_f@s~A_`EhfAq[lAo`BluAqgDwuCgoEfUs]imBeP",
+    "duration_min": 168,
+    "distance_km": 165.27,
+    "updated_at": "2026-10-21T20:16:44.082832+00:00"
+  },
+  "-16.5740,-68.1861->-15.3155,-68.2237": {
+    "station_id": 1840,
+    "station_name": "ESTACION DE SERVICIO PETROMAPIRI S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBj@gaJshB{[s_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{nAicKadJ_{E_tEhWi|@e}AcyF{z@atBicGhv@avBg~@pa@ogC__BqtAsnEocEa|BkdCxc@}mEi{@jVox@c`CxAuhBpgBe^gf@moCbrAoeAuwCy{Eb`OosI`zGinEuFwdFdtBwtHzgKeuBrHecAbiC}bSnbMllA~~AowBpyCR`eHisCdoC~W|mAexA~bBpvAbuDm\\d{Bg~C|sCjbB`kCsvAfzBsRn}FkuEuBy{B|jCi{BzLb_@ljGet@vMvEj_BcaHsv@",
+    "duration_min": 395,
+    "distance_km": 344.99,
+    "updated_at": "2026-10-21T20:16:44.432579+00:00"
   }
 }
