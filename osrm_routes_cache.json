@@ -2804,7 +2804,11 @@
   "-17.8771,-63.2004->-17.3826,-62.5779": {
     "polyline": "p{alB|ov`Kmo@rSmnEcp@hDmw@s}@aFeiBazDufD{o@{|AszGbQwkHqcAcbKesAe`GkeMgyZm_AwsPwu@{Da}CsqC_zCwwAulNsaDiqQqdH}sGkkD",
     "duration_min": 98,
-    "distance_km": 97.33
+    "distance_km": 97.33,
+    "station_id": 993,
+    "station_name": "ESTACION DE SERVICIO LAS CONCHAS S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-21T00:46:44.220687+00:00"
   },
   "-17.8771,-63.2004->-17.4560,-63.6680": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@cbBvs@_CdbH`iGbgQfoE|sWbdA`gMbrF`nGh~@z[hIjkA",
@@ -4319,5 +4323,14 @@
     "duration_min": 5,
     "distance_km": 1.22,
     "updated_at": "2026-10-21T00:16:35.591066+00:00"
+  },
+  "-16.5740,-68.1861->-15.5014,-67.8791": {
+    "station_id": 787,
+    "station_name": "CARBURANTES SAN MIGUEL",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBPwbJygBkZs_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{mAibKaeJ_|E_tEhWi|@e}AcyF{z@atBicGhv@avBg~@pa@ogC__BqtAsnEocEa|BkdCxc@}mEi{@jVox@c`CxAuhBpgBe^gf@moCbrAagA_wCycEtjN}iJxnHmqEuE}sHdsDmbFzgIeuBrHecAbiCw`JbyGsoEhfA{sAxiBxpA~nAsp@zbA",
+    "duration_min": 263,
+    "distance_km": 248.3,
+    "updated_at": "2026-10-21T00:46:44.177758+00:00"
   }
 }
