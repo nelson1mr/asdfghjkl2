@@ -3224,7 +3224,11 @@
   "-21.5669,-64.6661->-20.7302,-64.8851": {
     "polyline": "|bsbC|`uiK_~IrcOahCdbAm~Hgl@o}B`tC{tAkXmxCzhPhsC`lIm}Al`@mBlvJwwDlxEb~AzyB}aAvtBrnApkCqjApyA_pHbxAoAnkAanEpaEyk@frHweEhk@_Djx@kefA`dBj_CwvGcbF}tIumCuyA{V}lDymAkp@rh@suAwgB{sHpmDkpSckCa}DsfEcmAymIjlB",
     "duration_min": 194,
-    "distance_km": 197.79
+    "distance_km": 197.79,
+    "station_id": 1093,
+    "station_name": "ESTACION DE SERVICIO SEÑOR DE QUISQUIRA",
+    "department": "chuquisaca",
+    "updated_at": "2026-10-21T16:01:48.298869+00:00"
   },
   "-21.4679,-65.7169->-21.4465,-65.7132": {
     "polyline": "h|_bCtfbpKmEfCyM|Eye@eAeJgAun@mL_HFoAaCoAeGY?h@o@",
@@ -4409,5 +4413,14 @@
     "duration_min": 250,
     "distance_km": 249.6,
     "updated_at": "2026-10-21T13:16:41.175267+00:00"
+  },
+  "-16.5740,-68.1861->-15.8298,-67.5782": {
+    "station_id": 1774,
+    "station_name": "ESTACION DE SERVICIO CARANAVI",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofBqg@oxAq|@jD`VkTad@qq@wlC~U~^okBijCyhAkmAadDkrBcyAumA_jCubFaxAagA~[mjEmm@w|@r^{WgoAow@v`@`Sqs@k_@{Vxn@q|@l}@ovFy]gvDwpAizBq`@grCm~B{kBxS{pDod@{SsHaaAtZmxAshB{[ud@l_A}yA`Py{Bef@}Wuv@|AfcBed@wcBrLy{@_b@dv@jPf}CoFomAgm@nD|DasGei@``BtUaxAqeBgjHoqA{B}{AeoBstD}fB_tEhWkuAa{@`Xca@wq@xXumAaqAa`@|SsvAqWatBicGoBsfAxy@mn@g~@pa@ogC__BqtAsnEi}AaSeeB_hBkdCxc@qnBucAk~AjGjVox@__@|Wc`BcUuhBpgBe^gf@moCbrAwt@ua@vMut@o^i_Asx@bpD",
+    "duration_min": 183,
+    "distance_km": 183.24,
+    "updated_at": "2026-10-21T16:01:48.287661+00:00"
   }
 }
