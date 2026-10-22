@@ -4604,5 +4604,14 @@
     "duration_min": 240,
     "distance_km": 245.23,
     "updated_at": "2026-10-22T20:01:52.579919+00:00"
+  },
+  "-16.5740,-68.1861->-15.3181,-68.2238": {
+    "station_id": 958,
+    "station_name": "ESTACION DE SERVICIO GERENCIA AYMARA S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBj@gaJshB{[s_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{nAicKadJ_{E_tEhWi|@e}AcyF{z@atBicGhv@avBg~@pa@ogC__BqtAsnEocEa|BkdCxc@}mEi{@jVox@c`CxAuhBpgBe^gf@moCbrAoeAuwCy{Eb`OosI`zGinEuFwdFdtBwtHzgKeuBrHecAbiC}bSnbMllA~~AowBpyCR`eHisCdoC~W|mAexA~bBpvAbuDm\\d{Bg~C|sCjbB`kCsvAfzBsRn}FkuEuBy{B|jCi{BzLb_@ljGet@vMvEj_B_sGuu@",
+    "duration_min": 394,
+    "distance_km": 344.7,
+    "updated_at": "2026-10-22T21:31:55.177635+00:00"
   }
 }
