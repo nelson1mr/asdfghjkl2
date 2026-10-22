@@ -4568,5 +4568,14 @@
     "duration_min": 5,
     "distance_km": 5.26,
     "updated_at": "2026-10-22T04:31:32.490293+00:00"
+  },
+  "-17.8771,-63.2004->-17.4004,-63.8207": {
+    "station_id": 1159,
+    "station_name": "ESTACION DE SERVICIOS JATUMPAMPA S.R.L.",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@cbBvs@_CdbH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBdi@tfA{_@r`EuqBnYadAhbB}w@zpFuZn|I",
+    "duration_min": 127,
+    "distance_km": 135.4,
+    "updated_at": "2026-10-22T13:46:49.104259+00:00"
   }
 }
