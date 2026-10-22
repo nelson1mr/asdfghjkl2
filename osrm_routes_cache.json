@@ -4488,5 +4488,59 @@
     "duration_min": 16,
     "distance_km": 10.74,
     "updated_at": "2026-10-21T22:16:41.042805+00:00"
+  },
+  "-17.8442,-60.7306->-15.9106,-61.4324": {
+    "station_id": 925,
+    "station_name": "ESTACIÓN DE SERVICIO \"EL CHIQUITANO\"",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJukeBcdK{kEiaK{eMb_AqdOueGg}GdeF_f\\s^_xRrsKoyHzIm}HhqHuTnpLw|HngDpzAt|Yq|BdvCw|]tkA_`R{uFy{FvDa|J|mF}~Xq|@i|XbxUvHfdHu_Wjfb@otDbbOjeAfsC",
+    "duration_min": 286,
+    "distance_km": 291.56,
+    "updated_at": "2026-10-22T02:31:44.449331+00:00"
+  },
+  "-17.8442,-60.7306->-16.3895,-60.9446": {
+    "station_id": 1257,
+    "station_name": "SURTIDOR GUAPOMO S.R.L",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJcq@|~@ove@geGab}@y}D{kEiaKigB}d@q}I`eBm}D}z@u`C{yCsgEco@qkA~uComElnA{iSswAcwGrv@_tI|mGwiH`gCudHfBgiBzhAkpBzdEqvBjm@iTfoLmzHpcDpzAt|Yq|BdvCg{Bjv@o`ZhT_|QguFemEza@l]}vA",
+    "duration_min": 195,
+    "distance_km": 206.38,
+    "updated_at": "2026-10-22T02:31:44.808651+00:00"
+  },
+  "-17.8442,-60.7306->-18.3389,-59.7669": {
+    "station_id": 793,
+    "station_name": "CIRO ROMERO ESTRADA",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJn\\exDxzCuyJd^s}Y{UkpBtf@upAmd@o|Gt}@_~Cp|N{sPtgD}uGn^u_FhaIcgHvrDw}Kr]czCp|Ekd@zMjf@z`A?plAwc@zdAggDkf@}hAbd@qdBbxCiXpuEgyC|[kpAzhAa`@~H}wAlbByvBfAscGbxBwkGlWo~Bjs@acB|{C_kBdtEyrG",
+    "duration_min": 123,
+    "distance_km": 130.29,
+    "updated_at": "2026-10-22T02:31:45.167812+00:00"
+  },
+  "-17.8442,-60.7306->-17.8279,-60.7745": {
+    "station_id": 866,
+    "station_name": "ESTACION DE SERVICIO BIANCA",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJq@bLeA?oQfH_AjAiBvUeBjbAuAfSkXnoA}FhPwN|XmHhN_B?",
+    "duration_min": 5,
+    "distance_km": 5.21,
+    "updated_at": "2026-10-22T02:31:45.525288+00:00"
+  },
+  "-17.8442,-60.7306->-16.3674,-60.9713": {
+    "station_id": 1165,
+    "station_name": "ESTACIÓN DE SERVICIOS SAN IGNACIO DE VELASCO",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJcq@|~@ove@geGab}@y}D{kEiaKigB}d@q}I`eBm}D}z@u`C{yCmdE{n@wnAvuComElnAulSqwAixG|w@_pH~yF_gIrxCauHhG_pEvmG{pBbe@uTnpLw|HngDtzAd{VseAhzEirDvsAqsSr]}sLymA_xJkpDy{FvDyw@nkB",
+    "duration_min": 197,
+    "distance_km": 207.82,
+    "updated_at": "2026-10-22T02:31:45.884692+00:00"
+  },
+  "-17.8442,-60.7306->-18.9848,-57.7930": {
+    "station_id": 1216,
+    "station_name": "PUERTO S.R.L.",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJhxD{rPtfAyym@rh_@_wi@jqE{xPzzJwa@rbAwvInuM_eHtnHm|\\dsOwwOzll@}sxB~~By{Wt`KyzNnc@ahPhmYimb@n`AahSv~^krfAcz@a}hA",
+    "duration_min": 313,
+    "distance_km": 361.93,
+    "updated_at": "2026-10-22T02:31:46.246831+00:00"
   }
 }
