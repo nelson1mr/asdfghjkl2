@@ -1408,7 +1408,11 @@
   "-16.5740,-68.1861->-16.3715,-63.5772": {
     "polyline": "hbddBhrd_Llmj@ag@|mh@stTbmVcgTtmLi~BnvIktHbcWuui@vkByrPp`q@sefAxnBeb_@g]{zJq}Cyf@wx@uoEvvDq_Ka}Bg~Df}IotNo@yuCulDo@neGgfLp_B}iMovA_xO}kCmtBxdBa_E}aInW~rDkhJseIeaEni@wrDgjm@abGyQaq]kxB_aFpcI}qh@wzEqqOomKvbGyiA{oAkmKbvEgnNxWx}Dq|Cju@elIkkF_sErwAgpEinWgiTamDbwA}oD{`Bkr@qoKznDopOewIugO|Fy}J~yFywG_{BaxFaEsg_@|jFqfj@xjKcrI|uC}wI|yP}oq@brAqvQdzF{cL}vBssLhrAigI~mNmzRphEmiOnyEk}Xlo@gs^wsAiyB}eTix@suMu`PcnIjIskG__DgeDyvR_yIqcKqsc@qt@}|AtuGqca@vs_@qoGld@wzNpsKocN{V{pCohH_|DqKxaHmwH_oHkfRkmG`nEpnArgE",
     "duration_min": 981,
-    "distance_km": 895.11
+    "distance_km": 895.11,
+    "station_id": 1071,
+    "station_name": "ESTACIÓN DE SERVICIO RIO MANIQUI",
+    "department": "beni",
+    "updated_at": "2026-10-22T23:01:38.874352+00:00"
   },
   "-16.5740,-68.1861->-16.5763,-68.1851": {
     "polyline": "hbddBhrd_LT{@jm@kBX_@W]y]fAWcA",
@@ -4613,5 +4617,23 @@
     "duration_min": 394,
     "distance_km": 344.7,
     "updated_at": "2026-10-22T21:31:55.177635+00:00"
+  },
+  "-14.8432,-64.9091->-14.9994,-65.6443": {
+    "station_id": 1027,
+    "station_name": "ESTACION DE SERVICIO MUSERUNA",
+    "department": "beni",
+    "polyline": "f_ryAltdkKqDo_@td@vCblAf}@h}@vbHgOrh@v`@xj@_Pho@nq@~c@m@djAjYzMo}@baDfn@pOnSty@apAjhB?|oAc}Az~BapAvrEn|@|~@cAh`An}Hr_XmSjlF~mBlqH_d@ppAfGpjA~zB|_B~h@dsBsNdhBdv@hpBhl@lz@|oBvl@gH~nAtfAloA`Xx_Cp~BzsBlb@jxC}g@|~@omAz{Jrm@`dA",
+    "duration_min": 95,
+    "distance_km": 94.14,
+    "updated_at": "2026-10-22T23:01:39.840696+00:00"
+  },
+  "-14.8432,-64.9091->-13.0511,-64.6661": {
+    "station_id": 1848,
+    "station_name": "ESTACION DE SERVICIO COELHO CAAMAÑO S.R.L.",
+    "department": "beni",
+    "polyline": "f_ryAltdkKmnv@gjGctFzlBovIm{Fa~y@~mWasPyEekNpuQgvImfEqmCqwHecMmoEifUynCafEmuEu_L~x@ab^e}HarTen_@ybQstE_`DgqJsa_@my@grFfyIteApyD",
+    "duration_min": 307,
+    "distance_km": 247.34,
+    "updated_at": "2026-10-22T23:01:40.165064+00:00"
   }
 }
