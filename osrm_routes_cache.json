@@ -4542,5 +4542,14 @@
     "duration_min": 313,
     "distance_km": 361.93,
     "updated_at": "2026-10-22T02:31:46.246831+00:00"
+  },
+  "-17.8771,-63.2004->-17.8599,-63.2631": {
+    "station_id": 978,
+    "station_name": "ESTACION DE SERVICIO JOSE JALDIN S.R.L.",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`K]pAwBu@iYAqa@jh@mUv^i_@l^y`A~xAki@br@^l@dD{CliCzzC@fA",
+    "duration_min": 13,
+    "distance_km": 9.87,
+    "updated_at": "2026-10-22T03:02:24.193654+00:00"
   }
 }
