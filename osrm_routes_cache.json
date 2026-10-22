@@ -4635,5 +4635,14 @@
     "duration_min": 307,
     "distance_km": 247.34,
     "updated_at": "2026-10-22T23:01:40.165064+00:00"
+  },
+  "-16.5740,-68.1861->-15.6675,-69.1228": {
+    "station_id": 943,
+    "station_name": "ESTACION DE SERVICIO \"ESCOMA\" S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxp@[isD~|EweLlo@c|B|uMooZjdWiqC~eJqi@lgIgaXhjNa`Bv}BkhN~rFevYrmD}w@paJ~_AzrHqzIpa[asJ`_LarOl}KqmL`_F",
+    "duration_min": 152,
+    "distance_km": 162.31,
+    "updated_at": "2026-10-22T23:46:46.562992+00:00"
   }
 }
