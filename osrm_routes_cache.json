@@ -4586,5 +4586,14 @@
     "duration_min": 100,
     "distance_km": 83.96,
     "updated_at": "2026-10-22T17:02:05.410074+00:00"
+  },
+  "-16.5740,-68.1861->-16.5949,-68.9363": {
+    "station_id": 840,
+    "station_name": "ESTACION DE SERVICIO \" LOZA DE ORO \"",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxp@[isD~|EsoDbr@cfDtAtsDztN_MheCnh@~vKrp@pi@~xC`gNhxB|qEmm@dcEpsBnnD}cEpbIlu@v}Hig@|pGjrAh}IbdC|oJm@rbMq]vgD",
+    "duration_min": 89,
+    "distance_km": 93.24,
+    "updated_at": "2026-10-22T18:16:46.290061+00:00"
   }
 }
