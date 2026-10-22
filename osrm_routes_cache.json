@@ -1281,7 +1281,11 @@
   "-16.5740,-68.1861->-14.0800,-66.7949": {
     "polyline": "hbddBhrd_LiaQgoF~^okBwzK_sMieSkxB|`Bo`KqpGuqPj@gaJ__Kgi@|AfcBqVq`DsPltE{hDi_SopZw|Iw|@kzJy`NciKa}LemAixGlsC_lDgfLka]gaB}hBa_KazP{}Gm|EsvYm|CibEmvBz\\mj@urFqdMyuE}iNaeN}fLt~AyjHg}CuZykEgoIjk@s{FgyJ_`AsiLujYkxUcsPyqE_iNt`@qhE~rCswPyq@ivPxlHipH}HsyQs`BiiK}cF}|OtgBsjXkfEckHxiHahD{k@",
     "duration_min": 520,
-    "distance_km": 482.73
+    "distance_km": 482.73,
+    "station_id": 945,
+    "station_name": "ESTACION DE SERVICIO ESPIGA DE ORO",
+    "department": "beni",
+    "updated_at": "2026-10-22T04:31:32.490421+00:00"
   },
   "-16.5740,-68.1861->-16.4808,-68.1854": {
     "polyline": "hbddBhrd_Lzn@gEemApA}yAge@_jG}vAaKzNu`@m_@uH}@x@uAlAtAky@ddE{p@yMgd@}b@xAwA",
@@ -2659,7 +2663,11 @@
   "-17.8771,-63.2004->-16.1283,-62.0294": {
     "polyline": "p{alB|ov`KunQrkBqpDiaGmrFizA{{d@nW}wVgsVw_ScMsb@wlEg_Gk{@ogI_gg@ogd@g|f@q}Pn`EyaP}uAq|a@w}QoiU}lEskWbzFwjXqOtO_eb@avHeoUwhI}xHygHozY",
     "duration_min": 308,
-    "distance_km": 290.7
+    "distance_km": 290.7,
+    "station_id": 955,
+    "station_name": "ESTACION DE SERVICIO GASOCONCE",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-22T04:31:32.494428+00:00"
   },
   "-17.8771,-63.2004->-17.8164,-63.1161": {
     "polyline": "p{alB|ov`K{ReM`QkW{eBuk@sdFkmE{AuFp}@ifAskA{tCgDt@",
@@ -4551,5 +4559,14 @@
     "duration_min": 13,
     "distance_km": 9.87,
     "updated_at": "2026-10-22T03:02:24.193654+00:00"
+  },
+  "-16.5740,-68.1861->-16.6204,-68.1829": {
+    "station_id": 822,
+    "station_name": "EDUARDO YUPANQUI QUISPE SUCURSAL VENTILLA",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_LT{@`|@aDvdFkOk@zA",
+    "duration_min": 5,
+    "distance_km": 5.26,
+    "updated_at": "2026-10-22T04:31:32.490293+00:00"
   }
 }
