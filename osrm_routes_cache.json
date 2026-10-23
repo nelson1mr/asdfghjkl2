@@ -4684,5 +4684,14 @@
     "duration_min": 126,
     "distance_km": 132.72,
     "updated_at": "2026-10-23T17:47:07.449509+00:00"
+  },
+  "-14.8432,-64.9091->-15.0000,-65.6360": {
+    "station_id": 1826,
+    "station_name": "ESTACION DE SERVICIO LAS PALQUITAS",
+    "department": "beni",
+    "polyline": "f_ryAltdkKqDo_@td@vCblAf}@h}@vbHgOrh@v`@xj@_Pho@nq@~c@m@djAjYzMo}@baDfn@pOnSty@apAjhB?|oAc}Az~BapAvrEn|@|~@cAh`An}Hr_XmSjlF~mBlqH_d@ppAfGpjA~zB|_B~h@dsBsNdhBdv@hpBhl@lz@|oBvl@gH~nAtfAloA`Xx_Cp~BzsBlb@jxC}g@|~@aeAvzIvi@tp@",
+    "duration_min": 95,
+    "distance_km": 93.19,
+    "updated_at": "2026-10-23T22:46:47.083241+00:00"
   }
 }
