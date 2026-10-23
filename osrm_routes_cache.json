@@ -4653,5 +4653,14 @@
     "duration_min": 69,
     "distance_km": 69.7,
     "updated_at": "2026-10-23T04:31:48.925396+00:00"
+  },
+  "-16.5740,-68.1861->-16.2954,-68.5360": {
+    "station_id": 864,
+    "station_name": "ESTACION DE SERVICIO BATALLAS S.R.L. E.S.B.A. S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxp@[od@|bAymC`yCsoDbr@cuFuAubAv`Imx@dtC_mDz_DotBr_AilJ~sIewBh|AofBppBqoAd{C_e@bxCwZtp@qRlnGyNji@",
+    "duration_min": 52,
+    "distance_km": 55.17,
+    "updated_at": "2026-10-23T13:16:46.051203+00:00"
   }
 }
