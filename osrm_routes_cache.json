@@ -4644,5 +4644,14 @@
     "duration_min": 152,
     "distance_km": 162.31,
     "updated_at": "2026-10-22T23:46:46.562992+00:00"
+  },
+  "-16.5740,-68.1861->-16.2869,-67.8493": {
+    "station_id": 906,
+    "station_name": "ESTACION DE SERVICIO \"COTA PATA\" S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofB{_@{_@dPa]{WqYsX{G}b@fM`VkTaJrA_Yet@{gAuB{cAtYrc@ijAsCe`@_gA_UibAyr@yBsq@qiAmqBkrBcyAif@_bBkf@_g@ubFaxAagA~[mjEmm@w|@r^{WgoAm[hBa[l]`Sqs@gIcTcUwAfUqJpX_q@p^}eBeE_n@`d@q`BwXwf@vHgd@aT{e@fEkbAwpAizBq`@grC}U_\\}{@oVqj@kw@xS{pDuZeGeF{_@",
+    "duration_min": 69,
+    "distance_km": 69.7,
+    "updated_at": "2026-10-23T04:31:48.925396+00:00"
   }
 }
