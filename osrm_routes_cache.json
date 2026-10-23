@@ -4662,5 +4662,14 @@
     "duration_min": 52,
     "distance_km": 55.17,
     "updated_at": "2026-10-23T13:16:46.051203+00:00"
+  },
+  "-17.8771,-63.2004->-17.7628,-62.9910": {
+    "station_id": 1618,
+    "station_name": "EL GASOMETRO",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFwCuk@mJsX_yAwsBgn@o\\mwBkRabA_oDaZqlBfDyaBgFk~BjSsgAkS{_Cg]{tBl`@o]_@ihA_I_c@",
+    "duration_min": 34,
+    "distance_km": 31.33,
+    "updated_at": "2026-10-23T13:47:23.396768+00:00"
   }
 }
