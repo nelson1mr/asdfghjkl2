@@ -3545,7 +3545,11 @@
   "-17.8771,-63.2004->-19.7913,-63.2003": {
     "polyline": "p{alB|ov`K`iMvfIxeE{wKdup@uXjfsA|eJvym@by^f`GavAguAm`C|cC_lDjrT{lHxuj@aqGp~Db}E~aImWpdI}lIbqD~nCx_DimCbcZ_j@r`\\i`GtnDljC",
     "duration_min": 253,
-    "distance_km": 251.97
+    "distance_km": 251.97,
+    "station_id": 897,
+    "station_name": "ESTACION DE SERVICIO COLINDRES",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-23T14:04:57.421539+00:00"
   },
   "-17.8771,-63.2004->-17.8017,-63.2151": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@mr@rm@cy@e_@_Vxc@qWzZsl@v^ck@hMiAzBpBrA~VuHnCvH}@aH",
