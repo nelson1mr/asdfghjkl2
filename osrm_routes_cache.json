@@ -577,7 +577,11 @@
   "-17.4506,-66.1238->-17.3900,-66.1793": {
     "polyline": "hgoiBj|qrK|FnC{EV`FtW_UzWiYvl@uPhRieAtm@cFlHhFb}@mRhUu^nBsdAeLaV|p@bLdLmMfKiMdVcRrNyeAqT",
     "duration_min": 13,
-    "distance_km": 11.65
+    "distance_km": 11.65,
+    "station_id": 1652,
+    "station_name": "ESTACION DE SERVICIO HIPODROMO S.R.L.",
+    "department": "cochabamba",
+    "updated_at": "2026-10-24T17:16:36.912935+00:00"
   },
   "-17.4506,-66.1238->-17.4000,-66.0438": {
     "polyline": "hgoiBj|qrK|FnCWj@giAw@wEnCkO{BwKiN}{@|BsDfBqA_`@aMgNcGqCoEuKgM{EyGmHoBmFiBqOkBcl@mC{YeE~CaM^gDvBkCuaAcCmI_OaTiHmj@e@}D~@uHkCmCkAcT_Ba~@^uTjG}XBwRlCgJiTeG",
