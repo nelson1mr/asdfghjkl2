@@ -4706,5 +4706,14 @@
     "duration_min": 152,
     "distance_km": 149.32,
     "updated_at": "2026-10-24T01:46:40.254867+00:00"
+  },
+  "-16.5740,-68.1861->-15.6426,-67.4290": {
+    "station_id": 1011,
+    "station_name": "ESTACIÓN DE SERVICIO \"MADAGASCAR\" S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBPwbJygBkZs_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{mAibK{cJo{EeuExVi|@e}AauG}pAc`BgeHh~@a~@g~@pa@ogC__BozAgtEq}DmvBynA|h@ybGa`AbTgy@{wKrvCwcAwxCjj@kxBwqCwrCwvDld@acEo`CghEl_BmpC{cCk\\njAk}Dce@ig@weG}iCabC",
+    "duration_min": 223,
+    "distance_km": 227.32,
+    "updated_at": "2026-10-25T00:46:40.714252+00:00"
   }
 }
