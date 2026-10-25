@@ -4715,5 +4715,14 @@
     "duration_min": 223,
     "distance_km": 227.32,
     "updated_at": "2026-10-25T00:46:40.714252+00:00"
+  },
+  "-16.5740,-68.1861->-16.3925,-67.5357": {
+    "station_id": 964,
+    "station_name": "ESTACION DE SERVICIO HUANCANÉ Y TRANSPORTE S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofB{_@{_@dPa]{WqYsX{G}b@fM`VkTaJrA_Yet@{gAuB{cAtYrc@ijAsCe`@_gA_UibAyr@yBsq@qiAmqBkrBcyAif@_bBkf@_g@ubFaxAagA~[mjEmm@w|@r^{WgoAgy@d]xT_p@gIcTcUwAfUqJpX_q@p^}eBeE_n@`d@q`BwXwf@vHgd@aT{e@fEkbAwpAizBen@kpD`l@fiAaL_eBds@yTq_ApSalAqy@`UskAeM}o@lQuo@yd@{|ArVoq@jRl@tUaYiIfVrq@ge@|{BtDjbBgl@pOak@z}@mm@tRig@pCgkBip@qjAhGip@`YmKvJct@vwA}MgEkVlg@qCfYqVfn@ofBfU{P}x@y|E~cAciCiAwxB`U|Huh@cfAsH_qAkm@{k@EiYpn@eOmdAlEiN}c@xLw@uv@qUrJkr@wPjD@sQ}T{J|RfByKwIdSog@sh@q`@rr@gd@c[iUfXgb@wGo\\~\\oXyBwbA~U~Hdr@iS",
+    "duration_min": 140,
+    "distance_km": 131.77,
+    "updated_at": "2026-10-25T01:16:46.333963+00:00"
   }
 }
