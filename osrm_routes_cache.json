@@ -4733,5 +4733,14 @@
     "duration_min": 328,
     "distance_km": 338.61,
     "updated_at": "2026-10-25T04:01:40.399798+00:00"
+  },
+  "-16.5740,-68.1861->-16.5265,-68.2144": {
+    "station_id": 933,
+    "station_name": "ESTACION DE SERVICIO EL PARAISO S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApA}yAge@eu@yOm@sEaO|Ncu@jmAq{@`{@rd@jbAaTnXyDmC",
+    "duration_min": 11,
+    "distance_km": 10.86,
+    "updated_at": "2026-10-26T23:03:24.612510+00:00"
   }
 }
