@@ -94,8 +94,8 @@ BOLIVIA_BBOX = (-23.5, -9.0, -70.0, -57.0)  # lat_min, lat_max, lng_min, lng_max
 DISPATCH_COLS = (
     "id, station_id, district_id, license_plate, status, volume_liters, has_gps, "
     "dispatched_at, estimated_dispatched_at, travel_duration_minutes, "
-    "discharge_duration_minutes, estimated_arrival_at, confirmed_arrival_at, "
-    "estimated_delivered_at, confirmed_delivered_at, metadata"
+    "discharge_duration_minutes, estimated_arrived_at, arrived_at, "
+    "estimated_delivered_at, delivered_at, metadata"
 )
 HTTP_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) SurtiveoProximity/4.0",
@@ -429,8 +429,8 @@ class Decision:
     new_status: str | None = None
     has_gps: bool | None = None
     dispatched_at: datetime | None = None
-    confirmed_arrival_at: datetime | None = None
-    confirmed_delivered_at: datetime | None = None
+    arrived_at: datetime | None = None
+    delivered_at: datetime | None = None
     patch: dict[str, Any] = field(default_factory=dict)
     note: str = ""
 
@@ -440,8 +440,8 @@ class Decision:
             self.new_status
             or self.has_gps is not None
             or self.dispatched_at
-            or self.confirmed_arrival_at
-            or self.confirmed_delivered_at
+            or self.arrived_at
+            or self.delivered_at
             or self.patch
         )
 
@@ -449,7 +449,7 @@ class Decision:
 # Registra el arribo a la estación (transición a delivering)
 def _arrive(dec: Decision, when: datetime, source: str, reason: str, liters: Any) -> None:
     dec.new_status = "delivering"
-    dec.confirmed_arrival_at = when
+    dec.arrived_at = when
     dec.patch.update({
         "arrived_at": iso(when),
         "arrival_source": source,
@@ -464,9 +464,9 @@ def _arrive(dec: Decision, when: datetime, source: str, reason: str, liters: Any
 # Registra la entrega final de combustible (transición a delivered)
 def _deliver(dec: Decision, arrived: datetime, confidence: str, closed_by: str, reason: str, now: datetime) -> None:
     dec.new_status = "delivered"
-    dec.confirmed_delivered_at = now
-    if not dec.confirmed_arrival_at:
-        dec.confirmed_arrival_at = arrived
+    dec.delivered_at = now
+    if not dec.arrived_at:
+        dec.arrived_at = arrived
     dec.patch.update({
         "delivered_at": iso(now),
         "delivery_confidence": confidence,
@@ -498,7 +498,7 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
     status, liters = d["status"], d.get("volume_liters")
 
     dispatched = parse_ts(d.get("dispatched_at"))
-    eta = parse_ts(d.get("estimated_arrival_at")) or (
+    eta = parse_ts(d.get("estimated_arrived_at")) or (
         dispatched + timedelta(minutes=DEFAULT_TRIP_MIN) if dispatched else now)
     overrun = minutes(now - eta)
     st = station_coords(station)
@@ -619,7 +619,7 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
         if gps_fresh:
             dec.has_gps = True
 
-        arrived = parse_ts(d.get("confirmed_arrival_at")) or parse_ts(meta.get("arrived_at")) or eta
+        arrived = parse_ts(d.get("arrived_at")) or parse_ts(meta.get("arrived_at")) or eta
         # Obtener duración de descarga de la columna o calcularla
         discharge = d.get("discharge_duration_minutes") or estimate_discharge_minutes(liters)
         discharge = max(15, min(90, int(discharge)))
@@ -689,11 +689,11 @@ def persist_decision(db: Client, d: dict, dec: Decision, now: datetime) -> bool:
     if dec.dispatched_at is not None:
         payload["dispatched_at"] = iso(dec.dispatched_at)
     # Actualizar llegada confirmada
-    if dec.confirmed_arrival_at is not None:
-        payload["confirmed_arrival_at"] = iso(dec.confirmed_arrival_at)
+    if dec.arrived_at is not None:
+        payload["arrived_at"] = iso(dec.arrived_at)
     # Actualizar entrega confirmada
-    if dec.confirmed_delivered_at is not None:
-        payload["confirmed_delivered_at"] = iso(dec.confirmed_delivered_at)
+    if dec.delivered_at is not None:
+        payload["delivered_at"] = iso(dec.delivered_at)
 
     # Bloqueo optimista: si otro proceso cambió el status, no se pisa
     res = with_retry(lambda: db.table("dispatches").update(payload)
@@ -728,7 +728,7 @@ def build_radar(dispatches: list[dict], decisions: dict[int, Decision], gps_by_k
     upserts, keep = [], set()
     for key, items in by_truck.items():
         items.sort(key=lambda it: (0 if it[1] == "delivering" else 1,
-                                   parse_ts(it[0].get("estimated_arrival_at")) or now))
+                                   parse_ts(it[0].get("estimated_arrived_at")) or now))
         d = items[0][0]
         gps, prev = gps_by_key.get(key), prev_by_key.get(key)
         if gps and gps.status == "online":
@@ -848,7 +848,7 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False) ->
         # Si el camión ya tiene un viaje posterior, cerramos este viaje viejo directamente
         if d["id"] in superseded_ids:
             dec = Decision()
-            eta_val = parse_ts(d.get("estimated_arrival_at")) or now
+            eta_val = parse_ts(d.get("estimated_arrived_at")) or now
             _deliver(dec, eta_val, "inferred", "superseded_by_newer_dispatch",
                      "viaje previo de la cisterna; ya inició un despacho posterior", now)
             decisions[d["id"]] = dec
