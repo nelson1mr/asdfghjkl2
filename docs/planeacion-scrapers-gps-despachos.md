@@ -68,13 +68,13 @@ flowchart TD
         A1["in_transit (Cisterna en carretera)"] -->|Entra a geocerca < 150m y v < 12 km/h| A2["delivering (En surtidor descargando)"]
         A2 -->|Permanece tiempo de descarga o sale de geocerca| A3["delivered (Combustible entregado)"]
         A2 --> A_Radar[("active_cisterns\n(Actualiza Radar en Vivo)")]
-        A3 --> A_Sella["Sella confirmed_arrival_at = hora_gps\nElimina de active_cisterns"]
+        A3 --> A_Sella["Sella arrived_at = hora_gps\nElimina de active_cisterns"]
     end
     
     subgraph CicloTipoB["Ciclo de Vida Tipo B (Inferencia Cinemática & Volumétrica)"]
-        B1["now < estimated_arrival_at\nEstado: in_transit"] -->|now >= estimated_arrival_at| B2["now < estimated_delivered_at\nEstado: delivering (Descargando)"]
+        B1["now < estimated_arrived_at\nEstado: in_transit"] -->|now >= estimated_arrived_at| B2["now < estimated_delivered_at\nEstado: delivering (Descargando)"]
         B2 -->|now >= estimated_delivered_at| B3["Estado: delivered (Entregado al surtidor)"]
-        B3 --> B_Sella["Sella confirmed_arrival_at = estimated_arrival_at\nmetadata.delivery_confidence = 'inferred'"]
+        B3 --> B_Sella["Sella arrived_at = estimated_arrived_at\nmetadata.delivery_confidence = 'inferred'"]
     end
     
     TipoA --> CicloTipoA
@@ -89,7 +89,7 @@ flowchart TD
   - Se consulta su posición cada 5 minutos mediante la técnica de goteo secuencial.
   - Se actualiza el gemelo digital en `public.active_cisterns` (`latitude`, `longitude`, `speed_kmh`, `heading`, `is_moving`).
   - La llegada se confirma cuando la cisterna entra en la geocerca de la estación ($\le 150\text{ m}$) a baja velocidad ($\le 12\text{ km/h}$).
-  - `confirmed_arrival_at` se sella con el `hora_gps` oficial reportado por el satélite.
+  - `arrived_at` se sella con el `hora_gps` oficial reportado por el satélite.
   - El tiempo de descarga en estación se monitorea; al terminar o alejarse del surtidor, pasa a `delivered` y se retira de `active_cisterns`.
 
 ---
@@ -98,7 +98,7 @@ flowchart TD
 - **Criterio de Asignación**: Cisternas sin GPS o cuya placa no existe en la base de datos de Kyros.
 - **Cálculo de Tiempos**:
   1. **Hora de Salida (`dispatched_at`)**: Si YPFB no reportó hora exacta pero hay placa asignada para hoy, se toma la hora de creación/programación o se estima el horario de turno de planta.
-  2. **Hora Estimada de Llegada (`estimated_arrival_at`)**:
+  2. **Hora Estimada de Llegada (`estimated_arrived_at`)**:
      $$\text{estimated\_arrival\_at} = \text{dispatched\_at} + \text{duración OSRM/Haversine}$$
   3. **Tiempo de Descarga Volumétrica ($\Delta t_{\text{descarga}}$)**:
      El vaciado de tanques de combustible por gravedad y manguera de 3" tiene una velocidad física conocida:
@@ -173,7 +173,7 @@ flowchart LR
    - **Módulo GPS**: Sondeo con goteo (2 concurrentes, 300ms delay, anti-429).
    - **Módulo Inferencia**: Actualización automática de estados por tiempo transcurrido para despachos sin GPS o con GPS offline.
 2. Población y mantenimiento en tiempo real de `public.active_cisterns`.
-3. Sellar `confirmed_arrival_at` y `metadata.delivery_confidence` (`'gps'` vs `'inferred'`).
+3. Sellar `arrived_at` y `metadata.delivery_confidence` (`'gps'` vs `'inferred'`).
 
 ### Fase 4: Configuración de Automatización y Crons
 1. Configurar en `.github/workflows/proximidad.yml` el cron cada 5 minutos:

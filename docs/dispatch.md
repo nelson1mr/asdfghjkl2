@@ -30,7 +30,7 @@ Para reactivar el sistema, se recurrió a la API pública de YPFB provista por K
 4. **Radar Satelital Vacío (`active_cisterns` con 0 filas):**
    - La tabla de gemelo digital nunca se mantenía sincronizada con las cisternas en ruta.
 5. **Carencia de Tiempos de Entrega / Fin de Descarga:**
-   - La tabla `dispatches` solo contemplaba salida y llegada (`dispatched_at`, `estimated_arrival_at`, `confirmed_arrival_at`). No existían columnas nativas para saber cuándo el combustible terminaba de descargarse y estaba listo para la venta, parchándose precariamente dentro de `metadata->>'delivered_at'`.
+   - La tabla `dispatches` solo contemplaba salida y llegada (`dispatched_at`, `estimated_arrived_at`, `arrived_at`). No existían columnas nativas para saber cuándo el combustible terminaba de descargarse y estaba listo para la venta, parchándose precariamente dentro de `metadata->>'delivered_at'`.
 
 ### 1.3. Componentes Sólidos del Sistema Existente que se Preservan
 A pesar de los cuellos de botella temporales y de telemetría, el sistema actual cuenta con componentes de alta ingeniería que se mantienen intactos:
@@ -67,7 +67,7 @@ Para que el sistema sea inmune a fallos humanos de balanza o ausencias de teleme
 
 ```mermaid
 flowchart TD
-    Despacho["Ingesta de Despacho (YPFB SIGOPER)\n(Asignación de Placa y Litros)"] --> CalculoEstimado["CÁLCULO INMEDIATO DE LÍNEA TEMPORAL COMPLETA ($0):\n- estimated_dispatched_at = created_at + tiempo_carga\n- travel_duration_minutes = OSRM/Haversine\n- discharge_duration_minutes = f(litros)\n- estimated_arrival_at = salida + viaje\n- estimated_delivered_at = llegada + descarga\n- has_gps = false (por defecto)"]
+    Despacho["Ingesta de Despacho (YPFB SIGOPER)\n(Asignación de Placa y Litros)"] --> CalculoEstimado["CÁLCULO INMEDIATO DE LÍNEA TEMPORAL COMPLETA ($0):\n- estimated_dispatched_at = created_at + tiempo_carga\n- travel_duration_minutes = OSRM/Haversine\n- discharge_duration_minutes = f(litros)\n- estimated_arrived_at = salida + viaje\n- estimated_delivered_at = llegada + descarga\n- has_gps = false (por defecto)"]
     
     CalculoEstimado --> Monitor["Sondeo del Monitor de Proximidad (Cada 5 min)"]
     Monitor --> CheckGPS{"¿Kyros GPS responde posición\nválida y reciente (<20 min)?"}
@@ -83,7 +83,7 @@ flowchart TD
     end
     
     subgraph CicloTipoB["Ciclo de Vida Tipo B (Inferencia por Cronómetro)"]
-        B_Ruta["now < estimated_arrival_at\n(in_transit)"] -->|now >= estimated_arrival_at| B_Descarga["now < estimated_delivered_at\n(delivering - Descargando)"]
+        B_Ruta["now < estimated_arrived_at\n(in_transit)"] -->|now >= estimated_arrived_at| B_Descarga["now < estimated_delivered_at\n(delivering - Descargando)"]
         B_Descarga -->|now >= estimated_delivered_at| B_Fin["delivered (Entregado al surtidor)"]
     end
     
@@ -101,8 +101,8 @@ flowchart TD
 - **Activación:** Cisternas cuya placa devuelve 404 en Kyros (no tienen hardware GPS).
 - **Línea Temporal Invariante:**
   - `estimated_dispatched_at` = `created_at + tiempo_carga(litros)` (35 min para $\le 10\text{kL}$, 45 min para $> 10\text{kL}$).
-  - `estimated_arrival_at` = `dispatched_at + travel_duration_minutes`.
-  - `estimated_delivered_at` = `estimated_arrival_at + discharge_duration_minutes`.
+  - `estimated_arrived_at` = `dispatched_at + travel_duration_minutes`.
+  - `estimated_delivered_at` = `estimated_arrived_at + discharge_duration_minutes`.
 - **Transición Automática:** Avanza limpiamente por cronómetro físico:
   `loading` $\to$ `in_transit` $\to$ `delivering` $\to$ `delivered`. **Cero despachos congelados.**
 
@@ -143,11 +143,11 @@ stateDiagram-v2
    - Hora de salida confirmada: `dispatched_at`.
 4. **`delivering` (Descargando en Surtidor):**
    - La cisterna llegó físicamente a la estación. Mangueras de 3" conectadas vaciando combustible por gravedad a los tanques subterráneos.
-   - Hora de arribo confirmada: `confirmed_arrival_at`.
+   - Hora de arribo confirmada: `arrived_at`.
    - **Nota de cara al usuario:** En este estado la estación **aún no puede vender**, está vaciando cisternas.
 5. **`delivered` (Entregado / Combustible Disponible):**
    - Fin de la descarga y cierre de manholes. El combustible está en tanques subterráneos listo para ser despachado a los vehículos.
-   - Hora confirmada de entrega: `confirmed_delivered_at`.
+   - Hora confirmada de entrega: `delivered_at`.
 6. **`lost` (Contacto Satelital Interrumpido en Ruta):**
    - **Criterio de Inferencia:** Despacho con `has_gps = true` cuyo satélite dejó de transmitir hace $> 45\text{ min}$, cuya última coordenada quedó a $> 1\text{ km}$ del surtidor, y `now > estimated_delivered_at + 3 horas`.
    - **Causa Real en Bolivia:** Bloqueos de carretera, pinchazos, desperfectos mecánicos o accidentes en zonas sin cobertura.
@@ -175,7 +175,7 @@ Para recalcular las horas estimadas sin realizar llamadas repetidas a OSRM ($0 c
 * **Al confirmarse la salida (`dispatched_at`):**
   $$\text{estimated\_arrival\_at} = \text{dispatched\_at} + \text{travel\_duration\_minutes}$$
   $$\text{estimated\_delivered\_at} = \text{estimated\_arrival\_at} + \text{discharge\_duration\_minutes}$$
-* **Al confirmarse la llegada física (`confirmed_arrival_at`):**
+* **Al confirmarse la llegada física (`arrived_at`):**
   $$\text{estimated\_delivered\_at} = \text{confirmed\_arrival\_at} + \text{discharge_duration\_minutes}$$
 
 ---
@@ -191,7 +191,7 @@ Para recalcular las horas estimadas sin realizar llamadas repetidas a OSRM ($0 c
 Al detenerse la transmisión satelital, se calcula la distancia entre la última coordenada conocida y la estación de servicio:
 - **Si última posición $\le 400\text{ metros}$ de la estación:**
   - **Física:** Norma de seguridad de la ANH exige bajar el corta-corriente de la batería en patio de tanques. La cisterna **SÍ llegó**.
-  - **Acción:** Pasa a `delivering` con `confirmed_arrival_at = hora_ultimo_ping`. Al cumplirse el tiempo de descarga pasa a `delivered`.
+  - **Acción:** Pasa a `delivering` con `arrived_at = hora_ultimo_ping`. Al cumplirse el tiempo de descarga pasa a `delivered`.
 - **Si última posición $> 1\text{ kilómetro}$ de la estación:**
   - **Física:** El camión quedó varado en carretera (bloqueo, pinchazo o accidente). **NO llegó**.
   - **Acción:** Se mantiene en `in_transit` con alerta de *"Señal perdida a X km"*. Si transcurren $> 3\text{ horas}$ post-ETA, pasa a `lost`. Jamás se marca como `delivered`.
@@ -199,7 +199,7 @@ Al detenerse la transmisión satelital, se calcula la distancia entre la última
 ### 6.3. Discrepancia de Horas (GPS vs Balanza):
 Si a las 12:35 el GPS detecta al camión saliendo a carretera (`dispatched_at = 12:35`), y a las 12:45 la API de YPFB reporta que la balanza oficial fue a las 12:30:
 - Se actualiza `dispatched_at = 12:30` (Nivel 1 tiene prioridad sobre Nivel 2).
-- El trigger recalcula `estimated_arrival_at = 12:30 + travel_duration_minutes`.
+- El trigger recalcula `estimated_arrived_at = 12:30 + travel_duration_minutes`.
 - El estado se mantiene en `in_transit` (no retrocede).
 
 ### 6.4. Truth Override (Verdad Física sobre Hipótesis):
@@ -221,7 +221,7 @@ ADD COLUMN IF NOT EXISTS estimated_dispatched_at TIMESTAMPTZ,
 ADD COLUMN IF NOT EXISTS travel_duration_minutes SMALLINT,
 ADD COLUMN IF NOT EXISTS discharge_duration_minutes SMALLINT DEFAULT 60,
 ADD COLUMN IF NOT EXISTS estimated_delivered_at TIMESTAMPTZ,
-ADD COLUMN IF NOT EXISTS confirmed_delivered_at TIMESTAMPTZ;
+ADD COLUMN IF NOT EXISTS delivered_at TIMESTAMPTZ;
 
 -- 3. Índices de Alto Rendimiento (< 1ms en consultas calientes)
 CREATE INDEX IF NOT EXISTS idx_dispatches_active_v2 
@@ -229,7 +229,7 @@ ON public.dispatches (station_id, status)
 WHERE status IN ('scheduled', 'loading', 'in_transit', 'delivering', 'lost');
 
 CREATE INDEX IF NOT EXISTS idx_dispatches_delivered_recent
-ON public.dispatches (confirmed_delivered_at DESC)
+ON public.dispatches (delivered_at DESC)
 WHERE status = 'delivered';
 
 CREATE INDEX IF NOT EXISTS idx_dispatches_dispatched_at 
@@ -254,16 +254,16 @@ BEGIN
     -- Re-anclaje en Cascada ante Cambio de Salida
     IF NEW.dispatched_at IS NOT NULL AND (OLD.dispatched_at IS NULL OR NEW.dispatched_at <> OLD.dispatched_at) THEN
         IF NEW.travel_duration_minutes IS NOT NULL THEN
-            NEW.estimated_arrival_at := NEW.dispatched_at + (NEW.travel_duration_minutes * INTERVAL '1 minute');
+            NEW.estimated_arrived_at := NEW.dispatched_at + (NEW.travel_duration_minutes * INTERVAL '1 minute');
         END IF;
     END IF;
 
     -- Re-anclaje en Cascada ante Llegada Confirmada
-    IF NEW.confirmed_arrival_at IS NOT NULL AND (OLD.confirmed_arrival_at IS NULL OR NEW.confirmed_arrival_at <> OLD.confirmed_arrival_at) THEN
-        NEW.estimated_delivered_at := NEW.confirmed_arrival_at + (COALESCE(NEW.discharge_duration_minutes, 60) * INTERVAL '1 minute');
-    ELSIF NEW.estimated_arrival_at IS NOT NULL AND (OLD.estimated_arrival_at IS NULL OR NEW.estimated_arrival_at <> OLD.estimated_arrival_at) THEN
-        IF NEW.confirmed_arrival_at IS NULL THEN
-            NEW.estimated_delivered_at := NEW.estimated_arrival_at + (COALESCE(NEW.discharge_duration_minutes, 60) * INTERVAL '1 minute');
+    IF NEW.arrived_at IS NOT NULL AND (OLD.arrived_at IS NULL OR NEW.arrived_at <> OLD.arrived_at) THEN
+        NEW.estimated_delivered_at := NEW.arrived_at + (COALESCE(NEW.discharge_duration_minutes, 60) * INTERVAL '1 minute');
+    ELSIF NEW.estimated_arrived_at IS NOT NULL AND (OLD.estimated_arrived_at IS NULL OR NEW.estimated_arrived_at <> OLD.estimated_arrived_at) THEN
+        IF NEW.arrived_at IS NULL THEN
+            NEW.estimated_delivered_at := NEW.estimated_arrived_at + (COALESCE(NEW.discharge_duration_minutes, 60) * INTERVAL '1 minute');
         END IF;
     END IF;
 
@@ -284,8 +284,8 @@ Para resolver los ~249 despachos históricos atascados en `loading` de días pas
 UPDATE public.dispatches
 SET 
     status = 'delivered',
-    confirmed_arrival_at = COALESCE(confirmed_arrival_at, estimated_arrival_at, created_at + INTERVAL '2 hours'),
-    confirmed_delivered_at = COALESCE(confirmed_delivered_at, estimated_delivered_at, created_at + INTERVAL '3 hours'),
+    arrived_at = COALESCE(arrived_at, estimated_arrived_at, created_at + INTERVAL '2 hours'),
+    delivered_at = COALESCE(delivered_at, estimated_delivered_at, created_at + INTERVAL '3 hours'),
     metadata = jsonb_set(
         COALESCE(metadata, '{}'::jsonb),
         '{cleanup_reason}',
@@ -346,7 +346,7 @@ A continuación se detalla la lista completa de tareas a ejecutar en código:
 
 ### Fase 1: Base de Datos y Saneamiento (Supabase)
 - [ ] Ejecutar DDL para agregar el valor `'lost'` al enum `dispatch_status`.
-- [ ] Ejecutar DDL para agregar las 5 columnas simétricas (`estimated_dispatched_at`, `travel_duration_minutes`, `discharge_duration_minutes`, `estimated_delivered_at`, `confirmed_delivered_at`).
+- [ ] Ejecutar DDL para agregar las 5 columnas simétricas (`estimated_dispatched_at`, `travel_duration_minutes`, `discharge_duration_minutes`, `estimated_delivered_at`, `delivered_at`).
 - [ ] Crear el trigger `tg_recompute_dispatch_etas()` en PostgreSQL.
 - [ ] Ejecutar script SQL de saneamiento para pasar a `delivered` o `cancelled` los 204 despachos de días anteriores congelados en `loading`.
 
@@ -354,7 +354,7 @@ A continuación se detalla la lista completa de tareas a ejecutar en código:
 - [ ] Establecer `has_gps = false` por defecto en la ingesta (la activación de GPS se delega al motor de proximidad).
 - [ ] Precalcular `travel_duration_minutes` desde OSRM/Haversine y guardarlo en la columna dedicada.
 - [ ] Precalcular `discharge_duration_minutes` según `volume_liters` ($\le 10\text{kL}$: 35m, $\le 15\text{kL}$: 45m, $\le 24\text{kL}$: 65m, $> 24\text{kL}$: 80m).
-- [ ] Si `fecha_despacho_efectivo_hora` es NULL, fijar `estimated_dispatched_at = created_at + 35m`, calcular `estimated_arrival_at` y `estimated_delivered_at`, e iniciar en `status = 'loading'`.
+- [ ] Si `fecha_despacho_efectivo_hora` es NULL, fijar `estimated_dispatched_at = created_at + 35m`, calcular `estimated_arrived_at` y `estimated_delivered_at`, e iniciar en `status = 'loading'`.
 - [ ] Si `fecha_despacho_efectivo_hora` viene poblada, fijar `dispatched_at` e iniciar directamente en `status = 'in_transit'`.
 
 ### Fase 3: Refactorización de `verificar_proximidad_cisternas.py`
