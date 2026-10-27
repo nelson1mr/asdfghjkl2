@@ -327,7 +327,7 @@ async def fetch_gps(session: aiohttp.ClientSession, breaker: Breaker, key: str, 
 
 
 # Consulta satelital secuencial de camiones únicos con pacing suave (Anti-429)
-async def fetch_all_gps(want: dict[str, list[str]]) -> dict[str, GpsResult]:
+async def fetch_all_gps(want: dict[str, list[str]], verbose: bool = False) -> dict[str, GpsResult]:
     if not want:
         return {}
     breaker = Breaker()
@@ -342,7 +342,14 @@ async def fetch_all_gps(want: dict[str, list[str]]) -> dict[str, GpsResult]:
                 break
             res = await fetch_gps(session, breaker, k, c)
             out[k] = res
-            # Pacing de 500 ms entre cada cisterna para proteger Uvicorn
+            if verbose:
+                if res.status == "online":
+                    print(f"    🛰️  [GPS] {k}: ONLINE ({res.speed:.0f} km/h en {res.lat:.4f}, {res.lng:.4f})")
+                elif res.status == "not_found":
+                    print(f"    ⚪ [GPS] {k}: Sin reporte satelital en Kyros (404)")
+                else:
+                    print(f"    ⚠️  [GPS] {k}: {res.status} ({res.detail})")
+            # Pacing de 1.8 s entre cada cisterna para proteger Kyros (Anti-429)
             await asyncio.sleep(PACING_S)
 
     # Rellenar con error si el breaker omitió placas
@@ -577,8 +584,10 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
                 delayed = overrun >= DELAY_FLAG_AFTER_MIN and dist > DELAY_FAR_M
                 if bool(meta.get("is_delayed")) != delayed:
                     dec.patch["is_delayed"] = delayed
-                    if delayed:
-                        dec.note = f"DEMORADO en carretera a {dist / 1000:.1f} km (ETA+{overrun:.0f} min)"
+                if delayed:
+                    dec.note = f"DEMORADO en carretera a {dist / 1000:.1f} km (ETA+{overrun:.0f} min)"
+                else:
+                    dec.note = f"En ruta: a {dist / 1000:.1f} km a {gps.speed:.0f} km/h (llegada est. en {int(-overrun)} min)"
             return dec
 
         # Regla C: Error transitorio de Kyros en camión con GPS conocido -> esperar
@@ -590,6 +599,8 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
         if not d.get("has_gps") and not gps_known:
             if overrun >= 0:
                 _arrive(dec, eta, "inferred", f"inferred_time_arrival (ETA+{overrun:.0f} min)", liters)
+            else:
+                dec.note = f"En ruta cinemática (ETA: {eta.astimezone(BOLIVIA_TZ).strftime('%H:%M')}, faltan {int(-overrun)} min)"
             return dec
 
         # Regla E: Camión que tenía GPS pero perdió señal en carretera
@@ -808,7 +819,7 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False) ->
             want[key] = plate_candidates(d.get("license_plate"))
 
     print(f"[3/5] Consultando GPS de {len(want)} camiones únicos...")
-    gps_by_key = await fetch_all_gps(want)
+    gps_by_key = await fetch_all_gps(want, verbose=verbose)
     gstats = Counter()
     for g in gps_by_key.values():
         if g.status == "online":
