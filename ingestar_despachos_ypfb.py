@@ -21,6 +21,11 @@ import os
 import re
 import time
 import unicodedata
+import sys
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
 
 import aiohttp
 from dotenv import load_dotenv
@@ -511,6 +516,28 @@ async def fetch_district_data(
     return despachos_raw
 
 # =============================================================================
+# CÁLCULO DE DURACIÓN FÍSICA DE DESCARGA SEGÚN VOLUMEN
+# =============================================================================
+# Calcula minutos de vaciado por gravedad (manguera 3") en base a los litros transportados
+def calculate_discharge_duration_minutes(liters: float | None) -> int:
+    # Si no hay volumen se asigna 60 minutos como estándar
+    if not liters or liters <= 0:
+        return 60
+    # Cisternas chicas <= 10.000 L (descarga rápida)
+    if liters <= 10000:
+        return 35
+    # Cisternas medianas <= 15.000 L
+    elif liters <= 15000:
+        return 45
+    # Cisternas estándar <= 24.000 L
+    elif liters <= 24000:
+        return 65
+    # Cisternas grandes > 24.000 L
+    else:
+        return 80
+
+
+# =============================================================================
 # 7. PROCESAMIENTO Y TRANSFORMACIÓN AL ESQUEMA EN INGLÉS
 # =============================================================================
 async def process_and_transform_records(
@@ -544,7 +571,8 @@ async def process_and_transform_records(
 
             liters = float(it.get("cantidad_despachada") or 0.0)
             plate = (it.get("placa_despacho") or "").strip() or None
-            has_gps = bool(plate)
+            # En ingesta inicia en False; el monitor de proximidad lo activa al recibir GPS válido
+            has_gps = False
             is_provincia = (it.get("ambito") or "").strip().lower() == "provincia"
 
             fecha_hora_efectiva = it.get("fecha_despacho_efectivo_hora")
@@ -554,23 +582,24 @@ async def process_and_transform_records(
             # Fecha programada u operativa (YYYY-MM-DD)
             scheduled_date_val = str(it.get("fecha_despacho_programado") or it.get("fecha_despacho_efectivo") or now_utc.astimezone(BOLIVIA_TZ).strftime("%Y-%m-%d"))[:10]
 
+            # Duración de vaciado según litros
+            discharge_duration_minutes = calculate_discharge_duration_minutes(liters)
+
+            # Obtener coordenadas para calcular la ruta física (incluso en loading)
+            st_lat = st_dict.get("latitude") if st_dict else None
+            st_lng = st_dict.get("longitude") if st_dict else None
+            plant_lat = d_meta.get("plant_lat")
+            plant_lng = d_meta.get("plant_lng")
+            canonical_name = st_dict.get("name") if st_dict else None
+
             planned_route_polyline = None
-            estimated_arrival_at = None
-            confirmed_arrival_at = None
-            eta_source = None
-            eta_travel_min = None
+            travel_min = None
             route_distance_km = None
+            eta_source = None
 
-            if has_departed and dispatched_at:
-                st_lat = st_dict.get("latitude") if st_dict else None
-                st_lng = st_dict.get("longitude") if st_dict else None
-                plant_lat = d_meta.get("plant_lat")
-                plant_lng = d_meta.get("plant_lng")
-                canonical_name = st_dict.get("name") if st_dict else None
-
-                # 1. Obtener ruta OSRM con distancia y duración real de viaje (SOLO para ETA referencial y polilínea)
-                travel_min = None
-                if enable_osrm and plant_lat and plant_lng and st_lat and st_lng:
+            # 1. Calcular duración de viaje invariante (OSRM con fallback Haversine)
+            if plant_lat and plant_lng and st_lat and st_lng:
+                if enable_osrm:
                     osrm_data = await fetch_osrm_route(
                         osrm_session,
                         osrm_cache,
@@ -583,29 +612,46 @@ async def process_and_transform_records(
                         department=department
                     )
                     if osrm_data and osrm_data.get("duration_min"):
-                        # OSRM calcula tiempo de automóvil liviano -> aplicamos TRUCK_TIME_FACTOR y sumamos PLANT_EXIT_BUFFER_MINUTES
+                        # Factor camión 1.45 + buffer balanza 15 min
                         travel_min = max(MIN_TRAVEL_MINUTES, int(round(osrm_data["duration_min"] * TRUCK_TIME_FACTOR)) + PLANT_EXIT_BUFFER_MINUTES)
                         planned_route_polyline = osrm_data.get("polyline")
                         route_distance_km = osrm_data.get("distance_km")
                         eta_source = "osrm"
 
-                # 2. Respaldo por física vial si OSRM no responde o está desactivado
                 if travel_min is None:
                     travel_min = estimate_travel_minutes(plant_lat, plant_lng, st_lat, st_lng, is_provincia, department=department)
                     eta_source = "haversine"
 
-                eta_travel_min = travel_min
+            travel_duration_minutes = travel_min
+            eta_travel_min = travel_min
 
-                # ETA referencial para informar al usuario (NO determina el estado físico)
-                estimated_arrival_at = dispatched_at + timedelta(minutes=travel_min)
-                confirmed_arrival_at = None
-
-                # Estado fáctico oficial de YPFB: cisterna cruzó la balanza y salió de planta
+            # 2. Asignar estados y línea temporal completa según si ya salió o está cargando
+            if has_departed and dispatched_at:
+                # Caso A: Cisterna con salida confirmada por balanza oficial
                 status = "in_transit"
+                estimated_dispatched_at = dispatched_at
+                estimated_arrival_at = dispatched_at + timedelta(minutes=travel_min) if travel_min else None
+                estimated_delivered_at = estimated_arrival_at + timedelta(minutes=discharge_duration_minutes) if estimated_arrival_at else None
+                confirmed_arrival_at = None
+                confirmed_delivered_at = None
+            elif plate:
+                # Caso B: Cisterna asignada cargando en planta (sin balanza aún)
+                status = "loading"
+                # Tiempo estimado de carga en planta según volumen (35m <=10kL, 45m >10kL)
+                load_wait = 35 if liters <= 10000 else 45
+                estimated_dispatched_at = now_utc + timedelta(minutes=load_wait)
+                estimated_arrival_at = estimated_dispatched_at + timedelta(minutes=travel_min) if travel_min else None
+                estimated_delivered_at = estimated_arrival_at + timedelta(minutes=discharge_duration_minutes) if estimated_arrival_at else None
+                confirmed_arrival_at = None
+                confirmed_delivered_at = None
             else:
-                # La cisterna aún NO ha salido físicamente de la planta por balanza.
-                # Si tiene placa asignada está cargando en planta ('loading'); si no, está en espera ('scheduled').
-                status = "loading" if plate else "scheduled"
+                # Caso C: Cupo programado nominado sin placa vehicular asignada
+                status = "scheduled"
+                estimated_dispatched_at = None
+                estimated_arrival_at = None
+                estimated_delivered_at = None
+                confirmed_arrival_at = None
+                confirmed_delivered_at = None
 
             # Hash INVARIANTE: No depende de la hora de salida ni de variaciones textuales de la razón social.
             # Identifica el despacho/cupo físico unívocamente para evitar duplicados en la BD y push notifications repetidas.
@@ -641,8 +687,13 @@ async def process_and_transform_records(
                 "is_public": True,
                 "scheduled_date": scheduled_date_val,
                 "dispatched_at": dispatched_at.isoformat() if dispatched_at else None,
+                "estimated_dispatched_at": estimated_dispatched_at.isoformat() if estimated_dispatched_at else None,
+                "travel_duration_minutes": travel_duration_minutes,
+                "discharge_duration_minutes": discharge_duration_minutes,
                 "estimated_arrival_at": estimated_arrival_at.isoformat() if estimated_arrival_at else None,
                 "confirmed_arrival_at": confirmed_arrival_at.isoformat() if confirmed_arrival_at else None,
+                "estimated_delivered_at": estimated_delivered_at.isoformat() if estimated_delivered_at else None,
+                "confirmed_delivered_at": confirmed_delivered_at.isoformat() if confirmed_delivered_at else None,
                 "status": status,
                 "source": "ypfb",
                 "unique_hash": unique_hash,
@@ -719,7 +770,10 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
     for i in range(0, len(hashes), 500):
         chunk = hashes[i:i + 500]
         try:
-            res = db.table("dispatches").select("unique_hash, status, confirmed_arrival_at, metadata").in_("unique_hash", chunk).execute()
+            # Consultar status, telemetría y confirmaciones existentes
+            res = db.table("dispatches").select(
+                "unique_hash, status, has_gps, dispatched_at, confirmed_arrival_at, confirmed_delivered_at, metadata"
+            ).in_("unique_hash", chunk).execute()
             for r in res.data or []:
                 existing_map[r["unique_hash"]] = r
         except Exception as e:
@@ -728,11 +782,22 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
     for d in unique_dispatches:
         ex = existing_map.get(d["unique_hash"])
         if ex:
-            # Preservar estados terminales si ya llegó o descargó según el radar GPS de proximidad
-            if ex.get("status") in ("delivering", "delivered"):
-                d["status"] = ex["status"]
+            # Proteger monotonía: no retroceder si el monitor de proximidad o la física ya avanzaron el estado
+            if ex.get("status") in ("in_transit", "delivering", "delivered", "lost"):
+                if d["status"] == "loading":
+                    d["status"] = ex["status"]
+                elif ex.get("status") in ("delivering", "delivered"):
+                    d["status"] = ex["status"]
+            # Preservar confirmación satelital has_gps evaluada por el monitor
+            if ex.get("has_gps") is not None:
+                d["has_gps"] = ex["has_gps"]
+            # Preservar fechas de salida, llegada o entrega confirmadas previamente
+            if ex.get("dispatched_at") and not d.get("dispatched_at"):
+                d["dispatched_at"] = ex["dispatched_at"]
             if ex.get("confirmed_arrival_at"):
                 d["confirmed_arrival_at"] = ex["confirmed_arrival_at"]
+            if ex.get("confirmed_delivered_at"):
+                d["confirmed_delivered_at"] = ex["confirmed_delivered_at"]
             # Preservar telemetría y campos agregados por el radar GPS en metadata
             ex_meta = ex.get("metadata")
             if isinstance(ex_meta, dict):

@@ -41,8 +41,8 @@ from dotenv import load_dotenv
 from supabase import Client, create_client
 
 if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
 
 load_dotenv()
 
@@ -50,6 +50,9 @@ SUPABASE_URL = os.getenv("V3") or os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("V4") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 KYROS_GPS_URL = "https://nominac.kyros-tech.com/api/gps/publico"
 BOLIVIA_TZ = timezone(timedelta(hours=-4))
+
+# Catálogo de plantas distribuidoras de YPFB para evaluar salida de planta en loading
+from ingestar_despachos_ypfb import CATALOGO_DISTRITOS
 
 # --- Geocercas ----------------------------------------------------------------
 GEOFENCE_RADIUS_M = 120.0
@@ -61,15 +64,16 @@ DEPARTURE_RADIUS_M = 300.0
 DELAY_FAR_M = 1000.0
 FAR_GUARD_M = 5000.0
 
-# --- GPS ----------------------------------------------------------------------
+# --- GPS y Protección Anti-429 ------------------------------------------------
 GPS_FRESH_MIN = 20.0
 RADAR_KEEP_STALE_MIN = 45.0
-MAX_CONCURRENT_GPS = 8
-PACING_S = 0.10
-HTTP_TIMEOUT_S = 8.0
-HTTP_RETRIES = 2
-GPS_PHASE_BUDGET_S = 120.0
-BREAKER_LIMIT = 12
+MAX_CONCURRENT_GPS = 2              # Concurrencia estricta para no saturar Kyros (Anti-429)
+PACING_S = 1.8                      # Pausa de 1.8 s entre consultas (respeta límite de 30 req/min de Kyros)
+HTTP_TIMEOUT_S = 8.0                # Tiempo máximo de espera por respuesta
+HTTP_RETRIES = 2                    # Reintentos máximos en timeout
+GPS_PHASE_BUDGET_S = 180.0          # Presupuesto total de tiempo para sondeo GPS
+BREAKER_LIMIT = 12                  # Fallos consecutivos antes de pausar
+COOLDOWN_429_SECONDS = 25.0         # Enfriamiento en memoria si Kyros responde 429
 
 # --- Tiempos de respaldo ------------------------------------------------------
 DEFAULT_TRIP_MIN = 60
@@ -81,11 +85,18 @@ DELAY_FLAG_AFTER_MIN = 20
 EXPIRE_ACTIVE_AFTER_H = 72
 EXPIRE_PENDING_AFTER_DAYS = 2
 
-ACTIVE = ("in_transit", "delivering")
+# Estados activos monitoreados en cada corrida del scraper
+ACTIVE = ("loading", "in_transit", "delivering", "lost")
 PAGE_SIZE = 1000
 BOLIVIA_BBOX = (-23.5, -9.0, -70.0, -57.0)  # lat_min, lat_max, lng_min, lng_max
-DISPATCH_COLS = ("id, station_id, license_plate, status, volume_liters, dispatched_at, "
-                 "estimated_arrival_at, confirmed_arrival_at, metadata")
+
+# Columnas consultadas de public.dispatches incluyendo nuevos campos temporales
+DISPATCH_COLS = (
+    "id, station_id, district_id, license_plate, status, volume_liters, has_gps, "
+    "dispatched_at, estimated_dispatched_at, travel_duration_minutes, "
+    "discharge_duration_minutes, estimated_arrival_at, confirmed_arrival_at, "
+    "estimated_delivered_at, confirmed_delivered_at, metadata"
+)
 HTTP_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) SurtiveoProximity/4.0",
     "Accept": "application/json",
@@ -183,29 +194,23 @@ def estimate_discharge_minutes(liters: Any) -> int:
     return 30 if v <= 0 else max(20, min(60, round(v / 500.0)))
 
 
-# --- Placas -------------------------------------------------------------------
-# En BD se guarda la placa cruda de YPFB ("1123-SYU 1"). Para el GPS se usa la clave saneada.
-PLATE_RE = re.compile(r"(\d{3,4})\s*-?\s*([A-Z]{3})")
+# --- Placas y Sanitización ---------------------------------------------------
+# Extrae y normaliza la placa vehicular en mayúsculas sin mutaciones que saturen Kyros
+def clean_plate(raw: Any) -> str | None:
+    if not raw:
+        return None
+    s = str(raw).strip().upper()
+    return s if s else None
 
 
 def plate_candidates(raw: Any) -> list[str]:
-    if not raw:
-        return []
-    s = str(raw).upper().strip()
-    out: list[str] = [s]                     # <-- se incluye la placa sin modificaciciones para buscar
-    m = PLATE_RE.search(s)
-    if m:
-        out += [f"{m.group(1)}-{m.group(2)}", f"{m.group(1)}{m.group(2)}"]
-    cleaned = re.sub(r"[^A-Z0-9-]", "", s)
-    if cleaned:
-        out.append(cleaned)
-    return list(dict.fromkeys(out))
-
+    # Consulta la placa única limpia sin generar múltiples variantes duplicadas
+    p = clean_plate(raw)
+    return [p] if p else []
 
 
 def truck_key(raw: Any) -> str | None:
-    c = plate_candidates(raw)
-    return c[0] if c else None
+    return clean_plate(raw)
 
 
 def with_retry(fn: Callable[[], Any], what: str, tries: int = 3) -> Any:
@@ -280,7 +285,6 @@ async def _query_plate(session: aiohttp.ClientSession, cand: str) -> tuple[str, 
     url = f"{KYROS_GPS_URL}/{quote(cand, safe='')}"
     last = "error"
     for attempt in range(HTTP_RETRIES):
-        await asyncio.sleep(PACING_S)
         try:
             async with session.get(url, timeout=aiohttp.ClientTimeout(total=HTTP_TIMEOUT_S)) as resp:
                 if resp.status == 200:
@@ -288,8 +292,13 @@ async def _query_plate(session: aiohttp.ClientSession, cand: str) -> tuple[str, 
                     return ("online", parsed) if parsed else ("not_found", None)
                 if resp.status == 404:
                     return ("not_found", None)
+                if resp.status in (429, 503):
+                    # Rate limit temporal en la API de Kyros para esta placa específica
+                    print(f"  [RATE-LIMIT] Kyros HTTP {resp.status} en placa {cand}. Continuando...")
+                    await asyncio.sleep(1.0)
+                    return ("error", f"http_{resp.status}")
                 last = f"http_{resp.status}"
-                if resp.status not in (429, 500, 502, 503, 504):
+                if resp.status not in (500, 502, 504):
                     return ("error", last)
                 ra = resp.headers.get("Retry-After", "")
                 await asyncio.sleep(min(float(ra) if ra.isdigit() else 1.5 * (2 ** attempt), 10.0))
@@ -299,39 +308,48 @@ async def _query_plate(session: aiohttp.ClientSession, cand: str) -> tuple[str, 
     return ("error", last)
 
 
-async def fetch_gps(session, sem, breaker: Breaker, key: str, candidates: list[str]) -> GpsResult:
-    async with sem:
-        for cand in candidates:
-            if breaker.open:
-                return GpsResult(key, "error", detail="circuit_open")
-            kind, payload = await _query_plate(session, cand)
-            if kind == "online":
-                breaker.ok()
-                return GpsResult(key, "online", plate_used=cand, **payload)
-            if kind == "error":
+# Consulta los datos satelitales de una placa específica
+async def fetch_gps(session: aiohttp.ClientSession, breaker: Breaker, key: str, candidates: list[str]) -> GpsResult:
+    for cand in candidates:
+        if breaker.open:
+            return GpsResult(key, "error", detail="circuit_open")
+        kind, payload = await _query_plate(session, cand)
+        if kind == "online":
+            breaker.ok()
+            return GpsResult(key, "online", plate_used=cand, **payload)
+        if kind == "error":
+            # Un 429 de placa específica no rompe el circuito de todo el país
+            if payload != "http_429":
                 breaker.fail()
-                return GpsResult(key, "error", detail=payload)
-            breaker.ok()  # 404: Kyros responde; se prueba la siguiente variante de placa
+            return GpsResult(key, "error", detail=payload)
+        breaker.ok()  # 404: Respuesta válida de Kyros indicando que no tiene GPS
     return GpsResult(key, "not_found")
 
 
+# Consulta satelital secuencial de camiones únicos con pacing suave (Anti-429)
 async def fetch_all_gps(want: dict[str, list[str]]) -> dict[str, GpsResult]:
     if not want:
         return {}
-    sem, breaker = asyncio.Semaphore(MAX_CONCURRENT_GPS), Breaker()
-    connector = aiohttp.TCPConnector(limit_per_host=MAX_CONCURRENT_GPS + 2)
-    async with aiohttp.ClientSession(connector=connector, headers=HTTP_HEADERS) as session:
-        tasks = {k: asyncio.create_task(fetch_gps(session, sem, breaker, k, c)) for k, c in want.items()}
-        done, pending = await asyncio.wait(tasks.values(), timeout=GPS_PHASE_BUDGET_S)
-        for t in pending:
-            t.cancel()
-        await asyncio.gather(*pending, return_exceptions=True)
+    breaker = Breaker()
+    connector = aiohttp.TCPConnector(limit_per_host=2)
     out: dict[str, GpsResult] = {}
-    for k, t in tasks.items():
-        if t in done and not t.cancelled() and t.exception() is None:
-            out[k] = t.result()
-        else:
-            out[k] = GpsResult(k, "error", detail="budget_or_exception")
+    items = list(want.items())
+
+    async with aiohttp.ClientSession(connector=connector, headers=HTTP_HEADERS) as session:
+        for k, c in items:
+            if breaker.open:
+                print("  [WARN] Circuit breaker abierto por fallos consecutivos en Kyros.")
+                break
+            res = await fetch_gps(session, breaker, k, c)
+            out[k] = res
+            # Pacing de 500 ms entre cada cisterna para proteger Uvicorn
+            await asyncio.sleep(PACING_S)
+
+    # Rellenar con error si el breaker omitió placas
+    for k, _ in items:
+        if k not in out:
+            out[k] = GpsResult(k, "error", detail="circuit_breaker_skipped")
+
     return out
 
 
@@ -374,12 +392,14 @@ def sweep_expired(db: Client, now: datetime, dry_run: bool) -> int:
     cutoff_pending = (now.astimezone(BOLIVIA_TZ).date() - timedelta(days=EXPIRE_PENDING_AFTER_DAYS)).isoformat()
     targets: list[tuple[dict, str]] = []
     try:
+        # 1. Despachos en ruta o demorados con más de 72h sin concluir
         res = with_retry(lambda: db.table("dispatches").select("id, status, metadata")
-                         .in_("status", list(ACTIVE)).lt("dispatched_at", cutoff_active)
+                         .in_("status", ["in_transit", "delivering", "lost"]).lt("dispatched_at", cutoff_active)
                          .limit(500).execute(), "barrido activos")
         targets += [(r, "expired_active_72h") for r in res.data or []]
+        # 2. Cupos programados sin placa con más de 2 días de antigüedad
         res = with_retry(lambda: db.table("dispatches").select("id, status, metadata")
-                         .in_("status", ["scheduled", "loading"]).lt("scheduled_date", cutoff_pending)
+                         .in_("status", ["scheduled"]).lt("scheduled_date", cutoff_pending)
                          .limit(500).execute(), "barrido pendientes")
         targets += [(r, "expired_pending") for r in res.data or []]
     except Exception:
@@ -407,33 +427,54 @@ def sweep_expired(db: Client, now: datetime, dry_run: bool) -> int:
 @dataclass
 class Decision:
     new_status: str | None = None
+    has_gps: bool | None = None
+    dispatched_at: datetime | None = None
     confirmed_arrival_at: datetime | None = None
+    confirmed_delivered_at: datetime | None = None
     patch: dict[str, Any] = field(default_factory=dict)
     note: str = ""
 
     @property
     def changed(self) -> bool:
-        return bool(self.new_status or self.patch)
+        return bool(
+            self.new_status
+            or self.has_gps is not None
+            or self.dispatched_at
+            or self.confirmed_arrival_at
+            or self.confirmed_delivered_at
+            or self.patch
+        )
 
 
+# Registra el arribo a la estación (transición a delivering)
 def _arrive(dec: Decision, when: datetime, source: str, reason: str, liters: Any) -> None:
     dec.new_status = "delivering"
     dec.confirmed_arrival_at = when
     dec.patch.update({
-        "arrived_at": iso(when), "arrival_source": source, "arrival_reason": reason,
+        "arrived_at": iso(when),
+        "arrival_source": source,
+        "arrival_reason": reason,
         "estimated_discharge_minutes": estimate_discharge_minutes(liters),
-        "near_since": None, "is_delayed": False,
+        "near_since": None,
+        "is_delayed": False,
     })
     dec.note = f"LLEGÓ ({source}): {reason}"
 
 
+# Registra la entrega final de combustible (transición a delivered)
 def _deliver(dec: Decision, arrived: datetime, confidence: str, closed_by: str, reason: str, now: datetime) -> None:
     dec.new_status = "delivered"
-    dec.confirmed_arrival_at = arrived
+    dec.confirmed_delivered_at = now
+    if not dec.confirmed_arrival_at:
+        dec.confirmed_arrival_at = arrived
     dec.patch.update({
-        "delivered_at": iso(now), "delivery_confidence": confidence, "closed_by": closed_by,
-        "delivery_reason": reason, "discharge_duration_minutes": round(max(0.0, minutes(now - arrived)), 1),
-        "near_since": None, "is_delayed": False,
+        "delivered_at": iso(now),
+        "delivery_confidence": confidence,
+        "closed_by": closed_by,
+        "delivery_reason": reason,
+        "discharge_duration_minutes": round(max(0.0, minutes(now - arrived)), 1),
+        "near_since": None,
+        "is_delayed": False,
     })
     dec.note = f"ENTREGADO ({confidence}): {reason}"
 
@@ -449,6 +490,7 @@ def _last_position_far(prev: dict | None, st: tuple[float, float], now: datetime
     return haversine_m(lat, lng, st[0], st[1]) > FAR_GUARD_M
 
 
+# Evalúa el despacho aplicando reglas según su estado y telemetría satelital
 def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: dict | None,
              now: datetime) -> Decision:
     dec = Decision()
@@ -472,8 +514,42 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
     gps_known = bool(meta.get("gps_seen_at")) or gps_fresh
     gps_transient = bool(gps and gps.status == "error")
 
+    # ------------------------------------------------------------------ LOADING
+    if status == "loading":
+        # 1. Detección de salida por GPS satelital fuera de la planta
+        if gps_fresh and gps:
+            dec.has_gps = True
+            plant_meta = CATALOGO_DISTRITOS.get(d.get("district_id"))
+            dist_plant = None
+            if plant_meta and plant_meta.get("plant_lat") and plant_meta.get("plant_lng"):
+                dist_plant = haversine_m(gps.lat, gps.lng, plant_meta["plant_lat"], plant_meta["plant_lng"])
+
+            # Si se alejó > 1.5 km de la planta con velocidad > 12 km/h -> salió a carretera
+            if dist_plant and dist_plant > 1500.0 and gps.speed > 12.0:
+                dec.new_status = "in_transit"
+                dec.dispatched_at = gps_time
+                dec.patch["departure_source"] = "gps"
+                dec.note = f"SALIÓ DE PLANTA (GPS): a {dist_plant/1000:.1f} km a {gps.speed:.0f} km/h"
+                return dec
+
+        # 2. Respaldo por horario estimado si YPFB no reportó hora efectiva en balanza
+        est_disp = parse_ts(d.get("estimated_dispatched_at"))
+        if est_disp and now >= est_disp:
+            dec.new_status = "in_transit"
+            dec.dispatched_at = est_disp
+            dec.has_gps = True if gps_fresh else False
+            dec.patch["departure_source"] = "time_fallback"
+            dec.note = f"SALIÓ DE PLANTA (Tiempo): cumplió hora estimada {iso(est_disp)}"
+            return dec
+
+        dec.note = "Cargando en planta"
+        return dec
+
     # ------------------------------------------------------------------ IN_TRANSIT
     if status == "in_transit":
+        if gps_fresh:
+            dec.has_gps = True
+
         # Regla A: sin coordenadas de destino no hay geocerca posible
         if not st:
             if overrun >= NO_STATION_DELIVERED_AFTER_MIN:
@@ -481,11 +557,13 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
                          f"sin coordenadas de estación; ETA+{overrun:.0f} min", now)
             return dec
 
-        # Regla B: GPS fresco, manda la física
+        # Regla B: GPS satelital fresco en vivo -> Manda la física sobre el reloj
         if dist is not None:
             near_since = parse_ts(meta.get("near_since"))
+            # Arribo por geocerca directa (<= 120m y baja velocidad)
             if dist <= GEOFENCE_RADIUS_M and gps.speed <= ARRIVAL_MAX_SPEED_KMH:
                 _arrive(dec, gps_time, "gps", f"geocerca {dist:.0f} m a {gps.speed:.0f} km/h", liters)
+            # Arribo por zona de permanencia (<= 400m detenido >= 4 min)
             elif dist <= NEAR_RADIUS_M and gps.speed <= NEAR_MAX_SPEED_KMH:
                 if near_since and minutes(gps_time - near_since) >= NEAR_DWELL_MIN:
                     _arrive(dec, near_since, "gps",
@@ -495,22 +573,40 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
             else:
                 if meta.get("near_since"):
                     dec.patch["near_since"] = None
+                # Truth Override: Sigue en carretera, no se inventa entrega
                 delayed = overrun >= DELAY_FLAG_AFTER_MIN and dist > DELAY_FAR_M
                 if bool(meta.get("is_delayed")) != delayed:
                     dec.patch["is_delayed"] = delayed
                     if delayed:
-                        dec.note = f"DEMORADO a {dist / 1000:.1f} km (ETA+{overrun:.0f} min)"
+                        dec.note = f"DEMORADO en carretera a {dist / 1000:.1f} km (ETA+{overrun:.0f} min)"
             return dec
 
-        # Regla C: Kyros falló pero este camión sí tiene GPS -> esperar
+        # Regla C: Error transitorio de Kyros en camión con GPS conocido -> esperar
         if gps_transient and gps_known and overrun < TRANSIENT_GRACE_MIN:
-            dec.note = f"Kyros con error ({gps.detail}); se espera"
+            dec.note = f"Kyros con error ({gps.detail}); se espera satélite"
             return dec
 
-        # Regla D: offline / 404 / sin placa / GPS desactualizado
-        if _last_position_far(prev_radar, st, now):
-            dec.note = "GPS caído pero su última posición estaba lejos; se espera"
+        # Regla D: Despacho Tipo B (sin GPS) -> avanza por cronómetro estimado
+        if not d.get("has_gps") and not gps_known:
+            if overrun >= 0:
+                _arrive(dec, eta, "inferred", f"inferred_time_arrival (ETA+{overrun:.0f} min)", liters)
             return dec
+
+        # Regla E: Camión que tenía GPS pero perdió señal en carretera
+        if _last_position_far(prev_radar, st, now):
+            # Última posición conocida quedó a > 5 km: camión varado o sin cobertura
+            est_deliv = parse_ts(d.get("estimated_delivered_at")) or (eta + timedelta(minutes=60))
+            if now > est_deliv + timedelta(hours=3):
+                # Pasaron más de 3 horas de la entrega estimada y la señal se perdió en ruta
+                dec.new_status = "lost"
+                dec.patch["lost_at"] = iso(now)
+                dec.patch["lost_reason"] = "signal_lost_far_from_station"
+                dec.note = "SEÑAL PERDIDA en carretera a >1km; pasa a estado lost"
+                return dec
+            dec.note = "GPS sin señal reciente pero última posición lejos de estación; se espera"
+            return dec
+
+        # Si no estaba lejos (ej. se apagó corta-corriente a <= 400m de la estación)
         if overrun >= OFFLINE_DELIVERED_AFTER_MIN:
             _deliver(dec, eta, "inferred", "gps_offline_time_fallback",
                      f"sin GPS; ETA+{overrun:.0f} min", now)
@@ -520,34 +616,85 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
 
     # ------------------------------------------------------------------ DELIVERING
     if status == "delivering":
+        if gps_fresh:
+            dec.has_gps = True
+
         arrived = parse_ts(d.get("confirmed_arrival_at")) or parse_ts(meta.get("arrived_at")) or eta
-        try:
-            discharge = int(meta.get("estimated_discharge_minutes"))
-        except (TypeError, ValueError):
-            discharge = estimate_discharge_minutes(liters)
-        discharge = max(15, min(90, discharge))
+        # Obtener duración de descarga de la columna o calcularla
+        discharge = d.get("discharge_duration_minutes") or estimate_discharge_minutes(liters)
+        discharge = max(15, min(90, int(discharge)))
         elapsed = minutes(now - arrived)
         source = meta.get("arrival_source") or "inferred"
 
-        # La salida por GPS solo cuenta si vimos al camión llegar por GPS
-        if source == "gps" and dist is not None and dist > DEPARTURE_RADIUS_M:
+        # Fin de entrega por alejamiento físico (> 250 m)
+        if dist is not None and dist > DEPARTURE_RADIUS_M:
             _deliver(dec, arrived, "gps", "gps_departure",
                      f"se alejó {dist:.0f} m tras {elapsed:.0f} min", now)
+        # Fin de entrega al transcurrir el tiempo físico de vaciado
         elif elapsed >= discharge:
             _deliver(dec, arrived, "gps" if source == "gps" else "inferred", "discharge_time",
-                     f"descarga {elapsed:.0f}/{discharge} min", now)
+                     f"descarga completa {elapsed:.0f}/{discharge} min", now)
+        else:
+            dec.note = f"Descargando en surtidor ({elapsed:.0f}/{discharge} min)"
+        return dec
+
+    # ------------------------------------------------------------------ LOST
+    if status == "lost":
+        # 1. Recuperación: si el satélite vuelve a transmitir y está en la estación
+        if gps_fresh and dist is not None:
+            dec.has_gps = True
+            if dist <= GEOFENCE_RADIUS_M and gps.speed <= ARRIVAL_MAX_SPEED_KMH:
+                _arrive(dec, gps_time, "gps", f"recuperado de lost: arribó a geocerca {dist:.0f} m", liters)
+                return dec
+            elif dist <= NEAR_RADIUS_M and gps.speed <= NEAR_MAX_SPEED_KMH:
+                _arrive(dec, gps_time, "gps", f"recuperado de lost: arribó a estación {dist:.0f} m", liters)
+                return dec
+            else:
+                # Sigue demorado en ruta pero recuperó telemetría -> vuelve a in_transit
+                dec.new_status = "in_transit"
+                dec.patch["truth_override"] = "true"
+                dec.patch["recovered_from_lost"] = iso(now)
+                dec.note = f"RECUPERADO DE LOST: satélite activo a {dist/1000:.1f} km; vuelve a in_transit"
+                return dec
+
+        # 2. Expiración de camión perdido: si lleva más de 24 horas en lost -> cancelled
+        lost_at = parse_ts(meta.get("lost_at")) or (eta + timedelta(hours=3))
+        if minutes(now - lost_at) >= 1440:  # 24 horas
+            dec.new_status = "cancelled"
+            dec.patch["cancelled_at"] = iso(now)
+            dec.patch["cancellation_reason"] = "lost_unrecovered_24h"
+            dec.note = "CANCELADO: camión perdido sin reaparición en 24 horas"
+            return dec
+
+        dec.note = "En estado lost (esperando señal o llegada)"
+        return dec
+
     return dec
 
 
 # =============================================================================
 # Persistencia
 # =============================================================================
+# Guarda los cambios de estado y fechas en la base de datos Supabase
 def persist_decision(db: Client, d: dict, dec: Decision, now: datetime) -> bool:
     meta = d["metadata"] if isinstance(d.get("metadata"), dict) else {}
     payload: dict[str, Any] = {"metadata": {**meta, **dec.patch}, "updated_at": iso(now)}
+    # Actualizar estado si cambió
     if dec.new_status:
         payload["status"] = dec.new_status
+    # Actualizar bandera has_gps si fue validada
+    if dec.has_gps is not None:
+        payload["has_gps"] = dec.has_gps
+    # Actualizar salida confirmada si fue detectada en loading
+    if dec.dispatched_at is not None:
+        payload["dispatched_at"] = iso(dec.dispatched_at)
+    # Actualizar llegada confirmada
+    if dec.confirmed_arrival_at is not None:
         payload["confirmed_arrival_at"] = iso(dec.confirmed_arrival_at)
+    # Actualizar entrega confirmada
+    if dec.confirmed_delivered_at is not None:
+        payload["confirmed_delivered_at"] = iso(dec.confirmed_delivered_at)
+
     # Bloqueo optimista: si otro proceso cambió el status, no se pisa
     res = with_retry(lambda: db.table("dispatches").update(payload)
                      .eq("id", d["id"]).eq("status", d["status"]).execute(), f"actualizar #{d['id']}")
@@ -574,7 +721,8 @@ def build_radar(dispatches: list[dict], decisions: dict[int, Decision], gps_by_k
         if not key or not d.get("station_id"):
             continue
         final = decisions.get(d["id"], Decision()).new_status or d["status"]
-        if final in ACTIVE:
+        # El radar muestra cisternas activas en carretera o descargando
+        if final in ("in_transit", "delivering"):
             by_truck[key].append((d, final))
 
     upserts, keep = [], set()
@@ -655,7 +803,8 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False) ->
     want: dict[str, list[str]] = {}
     for d in dispatches:
         key = truck_key(d.get("license_plate"))
-        if key and station_coords(stations.get(d.get("station_id"))):
+        # Sondea GPS para todo camión activo con placa válida
+        if key:
             want[key] = plate_candidates(d.get("license_plate"))
 
     print(f"[3/5] Consultando GPS de {len(want)} camiones únicos...")
@@ -743,7 +892,10 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False) ->
     elapsed = time.time() - t0
     summary = {
         "expired": expired, "active": len(dispatches), "gps": dict(gstats),
-        "to_delivering": transitions["delivering"], "to_delivered": transitions["delivered"],
+        "to_in_transit": transitions["in_transit"],
+        "to_delivering": transitions["delivering"],
+        "to_delivered": transitions["delivered"],
+        "to_lost": transitions["lost"],
         "written": written, "conflicts": conflicts, "failed": failed,
         "radar_upserted": radar_up, "radar_deleted": radar_del, "elapsed_s": round(elapsed, 2),
     }
