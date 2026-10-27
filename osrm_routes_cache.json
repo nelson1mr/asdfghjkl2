@@ -4742,5 +4742,14 @@
     "duration_min": 11,
     "distance_km": 10.86,
     "updated_at": "2026-10-26T23:03:24.612510+00:00"
+  },
+  "-17.4506,-66.1238->-17.3972,-66.2013": {
+    "station_id": 1631,
+    "station_name": "ESTACIÓN DE SERVICIO CAPITÁN VICTOR USTARIZ",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|FnC{EV`FtW_UzW{Zvn@eQ|QyqA|x@uV`Coe@{LoPpJsLZiLeO`Qjc@gBdPgd@fpAbLdLmMfKuMrVaSnNOhVu]yGjF|cB",
+    "duration_min": 15,
+    "distance_km": 13.5,
+    "updated_at": "2026-10-27T16:18:33.172683+00:00"
   }
 }
