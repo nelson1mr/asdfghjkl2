@@ -4605,5 +4605,95 @@
     "duration_min": 240,
     "distance_km": 245.23,
     "updated_at": "2026-10-27T18:33:24.348696+00:00"
+  },
+  "-17.4506,-66.1238->-18.1724,-64.8644": {
+    "station_id": 1034,
+    "station_name": "ESTACION DE SERVICIO OMEREQUE",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|G|]``E_~B`Nmz@zy@mk@zjFeq@nt@qaC|Vw_JugAmzDoDy{FsfAajHltCslHkJcbA~z@a_ApkCswJxu@_Qg^uSn_AnDcy@}h@bOkm@qp@aLhHuz@mx@sNqvB{nIpmBiVzxD~h@xbBmd@ddA_oAraAgcF`|Boh@`yBshEj_CcjAtd@uvBn}EcuDbeB}jCfqEekAjbCv\\`k@ozAdg@eJkg@iBvqBygAbr@erBxWftAda@oDqDkh@zeAwaAi@{jBtd@yw@`SbKjCyjBv~@mcAxa@sgBp`Aoh@q]u]n{CozBbuAp_@~`A{i@_yAufEne@gKhq@js@r}BiGtSwe@|nDci@d~@ccAvuB~LlfGenAx}FebC~dQ_cKyUm[bXs~@u{BuEcJwl@}wAgMuW{g@x^kzCzsDahEvf@c@ap@kRhJyl@_]yStx@ikBkMusBdnAwyA{@{xAbi@omA{w@sw@mMacG_lAvHzIgeAm_@s`@j_@osDs_@_Uv`@uEyeAcrAuh@}|E",
+    "duration_min": 226,
+    "distance_km": 237.67,
+    "updated_at": "2026-10-27T23:17:39.153241+00:00"
+  },
+  "-16.5740,-68.1861->-16.5392,-68.0752": {
+    "station_id": 1746,
+    "station_name": "ESTACION DE SERVICIO CALACOTO",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEai@`Ay@aD|CmKuC`BkAeMsEnDeBy@jEeOaH{FyCqSlRkYp^wKdLyIdEwI{EgInVa\\zPcd@_EmDg@oSsLuVdDaP_G_P`@qd@sByO{^_b@{H\\{CpE{HHiAjCiQ{J_C}EiBe`@yb@qV{DsL}@gT~MuXpA}LmPcGcDmj@aB@OpJ_EVyE`K]yTiCgDeS@}[cOae@~G^eaA~Fsc@wo@bI\\gNxCcDcCbA",
+    "duration_min": 24,
+    "distance_km": 21.32,
+    "updated_at": "2026-10-27T23:17:39.585510+00:00"
+  },
+  "-16.5740,-68.1861->-16.4909,-68.1397": {
+    "station_id": 1750,
+    "station_name": "ESTACION DE SERVICIO URUGUAY",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApA}yAge@efEg`A{_@{_@dPa]mZmS`BwDcYgH}\\vFyDrEbFwLvNwFaJrAfFuDsERsVk_@|B{A}E{K{QtGqNcEc]}@qBpCkC}H|E_ZwHmEeFbJ",
+    "duration_min": 18,
+    "distance_km": 15.82,
+    "updated_at": "2026-10-27T23:17:39.879671+00:00"
+  },
+  "-16.5740,-68.1861->-16.4987,-68.1524": {
+    "station_id": 1747,
+    "station_name": "ESTACION DE SERVICIO ENTRE RÍOS",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApA}yAge@efEg`A{_@{_@dPa]mZmSpAcE}Bn@uTkI}\\vFsDvEpCoJtP}Ia`@|EcA{AjGaDyOyAuLtOeAsF{IuA",
+    "duration_min": 15,
+    "distance_km": 13.8,
+    "updated_at": "2026-10-27T23:17:40.174836+00:00"
+  },
+  "-16.5740,-68.1861->-15.8298,-67.5782": {
+    "station_id": 1774,
+    "station_name": "ESTACION DE SERVICIO CARANAVI",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofBqg@oxAq|@jD`VkTad@qq@wlC~U~^okBijCyhAkmAadDkrBcyAumA_jCubFaxAagA~[mjEmm@w|@r^{WgoAow@v`@`Sqs@k_@{Vxn@q|@l}@ovFy]gvDwpAizBq`@grCm~B{kBxS{pDod@{SsHaaAtZmxAshB{[ud@l_A}yA`Py{Bef@}Wuv@|AfcBed@wcBrLy{@_b@dv@jPf}CoFomAgm@nD|DasGei@``BtUaxAqeBgjHoqA{B}{AeoBstD}fB_tEhWkuAa{@`Xca@wq@xXumAaqAa`@|SsvAqWatBicGoBsfAxy@mn@g~@pa@ogC__BqtAsnEi}AaSeeB_hBkdCxc@qnBucAk~AjGjVox@__@|Wc`BcUuhBpgBe^gf@moCbrAwt@ua@vMut@o^i_Asx@bpD",
+    "duration_min": 183,
+    "distance_km": 183.24,
+    "updated_at": "2026-10-27T23:17:40.474444+00:00"
+  },
+  "-16.5740,-68.1861->-16.1670,-69.0812": {
+    "station_id": 1770,
+    "station_name": "ESTACION DE SERVICIO COPACABANA",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxp@[isD~|EsoDbr@cuFuAc|B|uMobHn`F{mQpePmoChcJue@jcIirS|mLlLr{AjwCvyC_JlkFsuBvgFgQfcEgcBr}Dd@bzC_}@zkBl`EuQrF~m@r{@tKrIns@bt@cp@g[n|AdrA`Z{mBdiDax@ttDuv@ro@{l@fvEle@d}CqfDteAa~AtpBfc@n{@}~@~YsPprArm@j@_Epp@zmAnlA~Dbz@fsAhKnEb|@ou@bj@",
+    "duration_min": 147,
+    "distance_km": 145.6,
+    "updated_at": "2026-10-27T23:17:40.772129+00:00"
+  },
+  "-19.7456,-63.9599->-19.8012,-63.9562": {
+    "station_id": 810,
+    "station_name": "COOPERATIVA INTEGRAL SAN JOSE OBREBRO MONTEAGUDO LTDA.",
+    "department": "chuquisaca",
+    "polyline": "vpowBfhkeKpLk@pVyIvIuQxI{F|FqAxGbCb[B~PcIbDmI`VhLxUiJnk@pVbOzB|_AeAh^mDK`FxQ~@",
+    "duration_min": 15,
+    "distance_km": 7.04,
+    "updated_at": "2026-10-27T23:17:41.065804+00:00"
+  },
+  "-19.7456,-63.9599->-19.8962,-63.7549": {
+    "station_id": 1764,
+    "station_name": "MUYUPAMPA",
+    "department": "chuquisaca",
+    "polyline": "vpowBfhkeKbd@eKpTqYzk@t@bVqS`VhLxUiJr{@lZ|_AeA`AmM~SkQta@e_A~]mAdd@qc@vOu]z@wf@}JgUcRsMy@ac@{NiPaDu[~ImQa~@wHvNwIkDoNoPgU{]kD|CgIf_@|Ax\\mQuHgQwGfK{a@gQxC}QqIkSo_AmP_zA{CuPsKoWsBgt@hIqQcFouA~N}Mg[|QqFqGa^jD}NmRgOhEsRzP}JuGeb@`pAoQj^{VnLd@t^uSb_@hCtw@}b@pZ`B|d@iRz}@hBpaEyw@`zDg^lSo^rJsd@aRkQHmSm[yi@|I{MyAiLns@_Wv}@mo@rkA{a@dY{W@wStQeRrFyZ",
+    "duration_min": 60,
+    "distance_km": 54.33,
+    "updated_at": "2026-10-27T23:17:41.359926+00:00"
+  },
+  "-19.7456,-63.9599->-19.8093,-63.9603": {
+    "station_id": 1768,
+    "station_name": "ESTACION DE SERVICIO LOS SAUCES",
+    "department": "chuquisaca",
+    "polyline": "vpowBfhkeKpLk@pVyIvIuQxI{F|FqAxGbCb[B~PcItEqInTlLxUiJnk@pVbOzB|_AeAFbT~D|DnGRrXwKr]hK~HiEnHdIvCaDlCrB",
+    "duration_min": 17,
+    "distance_km": 8.44,
+    "updated_at": "2026-10-27T23:17:41.654250+00:00"
+  },
+  "-19.5774,-65.7602->-20.2365,-65.1543": {
+    "station_id": 1769,
+    "station_name": "ESTACION DE SERVICIO PADCOYO SAN LUCAS Y.P.F.B.",
+    "department": "chuquisaca",
+    "polyline": "tsnvB`vjpKdOpWlnAwHveBkmClaAmPjqBGdo@j~@|_E`j@feFkKxkEerAxcFfXnyD{VnsBi{@zyAevBvtE_iA~EqmB_[}`@isAkyNlj@k}A{CusEpp@gnA~RsfCf}EekGvp@udH`lDkx@vbBwzBz`CedAd|CsnEdcGsXjpIqaB||CvTuA}bAh|@acC`{Fu}GiOyjA`~Ae\\jfBsqBzsAiTeKus@fiAebI",
+    "duration_min": 114,
+    "distance_km": 125.06,
+    "updated_at": "2026-10-27T23:17:41.953895+00:00"
   }
 }
