@@ -53,12 +53,20 @@
   "-22.7258,-64.3517->-22.7342,-64.3352": {
     "polyline": "tuuiCvxwgKnBmAzCmDkBaEvA{C~AeByBkL`VyFnKsNeUeUfTqO~F_DvHoFF[]KkEzCq@UOR",
     "duration_min": 5,
-    "distance_km": 3.08
+    "distance_km": 3.08,
+    "station_id": 1070,
+    "station_name": "ESTACION DE SERVICIO RIO BERMEJO",
+    "department": "tarija",
+    "updated_at": "2026-10-27T16:19:31.671963+00:00"
   },
   "-22.7258,-64.3517->-22.7395,-64.3343": {
     "polyline": "tuuiCvxwgKxIoHnIeAbFmCDfEtFwDhNySvDwC|_@_g@yOgObJ}L",
     "duration_min": 5,
-    "distance_km": 3.02
+    "distance_km": 3.02,
+    "station_id": 926,
+    "station_name": "ESTACION DE SERVICIO EL CHORRO",
+    "department": "tarija",
+    "updated_at": "2026-10-27T16:19:31.671808+00:00"
   },
   "-19.0800,-65.2217->-18.9987,-65.2224": {
     "polyline": "nimsBvtamKf@vGmBxChM[~FbFxGbOw@dPvH~EaShb@ao@nPid@tRek@jLik@lm@aCeBjDqJkQ}Q_t@dZ}b@nUaDbGcW}B_D_EuLiBwPv@e_@yMoLh@cEmAy@qIel@{Q}Mgd@Pis@wRFfDuLcKuHcPeBiHzEmDo@iFyRt@{JoBmFrGwF",
@@ -190,12 +198,20 @@
   "-11.0273,-68.7554->-11.0337,-68.7662": {
     "polyline": "nxhbAfxsbLfCnO@jAQnA]z@aCnCQ?MHCPDL~@T`MnLHLIf@L`@`@RnGbGb@R`A@rJtI@r@",
     "duration_min": 5,
-    "distance_km": 1.6
+    "distance_km": 1.6,
+    "station_id": 1007,
+    "station_name": "ESTACION DE SERVICIO LOS TAJIBOS - COBIJA",
+    "department": "pando",
+    "updated_at": "2026-10-27T16:19:32.354783+00:00"
   },
   "-11.0273,-68.7554->-11.0295,-68.7624": {
     "polyline": "nxhbAfxsbLfCnO@jAQnA]z@aCnCQ?MHAXNNr@JpL~K",
     "duration_min": 5,
-    "distance_km": 0.94
+    "distance_km": 0.94,
+    "station_id": 1115,
+    "station_name": "ESTACION DE SERVICIO TISTY",
+    "department": "pando",
+    "updated_at": "2026-10-27T16:19:32.354981+00:00"
   },
   "-17.4506,-66.1238->-17.3571,-65.8479": {
     "polyline": "hgoiBj|qrKdFzD_pAvAkO{BwKiNqaAdFqA_`@cu@kt@eSefCh^_dHwg@aAh@so@{h@sPr_@koFwZmmBvFmP`Y_Rve@}p@lYsk@vAeaA_\\}EwEaJlMyQ_BoUba@uHaJal@fUuKdSw\\e`@gl@~Jqs@oTiUmb@qQem@e|AgUgGsKwNiEsi@qVsi@aOew@kPwiC_i@dM_oAnCkxAjpA",
@@ -219,7 +235,11 @@
   "-17.4506,-66.1238->-17.6036,-66.0328": {
     "polyline": "hgoiBj|qrK|FnC{EVzFtXzrAoy@zHaU~XcTp^aDvh@gS|Lyx@vo@gg@jQyFr_@hFrUgXrh@nBre@}Pna@eD|CfVb[aPfPjQo^j`AiD|XxFlQfMlU~c@|\\f]lGhJu{@pyBa_D~g@aa@`j@krA`vDw|D",
     "duration_min": 28,
-    "distance_km": 28.0
+    "distance_km": 28.0,
+    "station_id": 1044,
+    "station_name": "ESTACION DE SERVICIO PAPU S.R.L.",
+    "department": "cochabamba",
+    "updated_at": "2026-10-27T16:19:33.616266+00:00"
   },
   "-17.4506,-66.1238->-17.3919,-66.2087": {
     "polyline": "hgoiBj|qrK|FnC{EV`FtW_UzWiYvl@uPhRieAtm@cFlHhFb}@aR~Ta_@xBsdAeLaV|p@bLdLmMfKuMrVaSnNOhV}o@cNcGpxC",
@@ -500,7 +520,11 @@
   "-17.4506,-66.1238->-17.2161,-66.5428": {
     "polyline": "hgoiBj|qrKbG|\\io@reAc~AljAhFb}@aR~TudBkHaV|p@bLdLep@jr@OhVu]yG|DjpEaVrrASx}Fr_@xkImkElpEwVn_@bKjOm_@|CwGjc@aW~CwElKxL~AsQ~Fd_@zAecAxUhGrMgh@jKwIbW|gB{Pmn@fh@f@qNuUfHas@fpA{^t@ajAd{AhQ_BkqApkA|G|Q_j@dCa@lq@m\\`EvCfL_z@}OeG~cAq^`NvAzQyd@bo@vEja@pV_HcFhS_v@|s@iBbh@wDmm@yQtWu[fpBqqAr{@yzB`WwI`Uqg@rJ`qBnFm]n]itAb[qFdo@oPnF",
     "duration_min": 103,
-    "distance_km": 84.0
+    "distance_km": 84.0,
+    "station_id": 1761,
+    "station_name": "ESTACIÓN DE SERVICIO VALLESANTIVAÑEZ S.R.L.",
+    "department": "cochabamba",
+    "updated_at": "2026-10-27T16:19:33.615287+00:00"
   },
   "-17.4506,-66.1238->-17.3843,-66.3602": {
     "polyline": "hgoiBj|qrK|FnC{EV`FtWio@reAc~AljAhFb}@aR~Ta_@xBsdAeLaV|p@bLdLep@jr@OhVu]yG|DjpEaVrrASvbEtHju@uHtC|QbiH|Ll`@knApjA__@bs@yCtQbKht@tOrL",
@@ -1814,12 +1838,20 @@
   "-17.8771,-63.2004->-17.0135,-63.2207": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizAmvc@~I{vShvEo`Rf~LgdO{aI{sYzoCgoDkaCgmJrJ",
     "duration_min": 100,
-    "distance_km": 106.73
+    "distance_km": 106.73,
+    "station_id": 884,
+    "station_name": "ESTACIÓN DE SERVICIO CHANE",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-27T16:19:34.837663+00:00"
   },
   "-17.8771,-63.2004->-17.2913,-63.8451": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@cbBvs@_CdbH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@v|Ao`@pjDuqBnYadAhbB}w@zpFw]zfK_}E_Biw@pwAqoKnW",
     "duration_min": 137,
-    "distance_km": 149.3
+    "distance_km": 149.3,
+    "station_id": 794,
+    "station_name": "COMERCIALIZADORA DE HIDROCARBUROS ABJ S.R.L.",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-27T16:19:34.839143+00:00"
   },
   "-17.8771,-63.2004->-16.9144,-62.6173": {
     "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizA{{d@nW}wVgsVe~FfBonEwmA_pD`}@uc@mmEg_Gk{@ydImbg@yiBaLqbSun[ohM{fJcwFrQwcHtfD",
@@ -2407,7 +2439,11 @@
   "-17.8771,-63.2004->-17.4032,-63.8723": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}NqeJ|YswHzoCg~IleAaiJ|rHkyAxHi`A`g@rBrf@cbBvs@_CdbH`iGbgQfoE|sWhcAtdMbnFb{FeHjaBxi@bkAg^nxDczBlc@ofBrdFkj@fsHiEj`Frn@jqBkXd`C",
     "duration_min": 132,
-    "distance_km": 141.14
+    "distance_km": 141.14,
+    "station_id": 893,
+    "station_name": "ESTACION DE SERVICIO COCA",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-27T16:19:34.840691+00:00"
   },
   "-17.8771,-63.2004->-17.7484,-62.9677": {
     "polyline": "p{alB|ov`K_^XmPxRmnEcp@hDmw@s}@aFwCuk@mJsX_yAwsBgn@o\\mwBkRo`AgjDyZqkBlCqgBgFk~BjSsgAkS{_Cso@i}DxLeLoL_v@cK^wd@cqC",
@@ -2489,7 +2525,11 @@
   "-17.8771,-63.2004->-17.7187,-63.1626": {
     "polyline": "p{alB|ov`K_^XmPxRcsDoh@mr@rm@cy@e_@sm@x~@yy@pe@ar@tL}fBcAajAqbAgy@a]{`@qoAoB_nAidEwkA",
     "duration_min": 23,
-    "distance_km": 21.79
+    "distance_km": 21.79,
+    "station_id": 1004,
+    "station_name": "ESTACIÓN DE SERVICIO LOS COYUYOS",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-27T16:19:34.840963+00:00"
   },
   "-17.8771,-63.2004->-17.0621,-62.6360": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizAyvXyNadKhg@yvFysGcxG}iEgu@icBwpDeoD}kAiXgqDp[onEwmAaqDj|@sb@wlEskDmgAsrA`KydImbg@yiBaLcmGq~KcgCi`BedA_dDsqF}aH",
@@ -3124,37 +3164,65 @@
   "-22.0742,-65.5990->-22.0716,-65.5954": {
     "polyline": "`jveCjkkoKhCx@HL?pAh@BzBiUVK?]OMYH_@QyCo@gPyC_@Z]B",
     "duration_min": 5,
-    "distance_km": 1.06
+    "distance_km": 1.06,
+    "station_id": 1143,
+    "station_name": "ESTACION DE SERVICIO 20 DE MAYO LTDA.",
+    "department": "potosi",
+    "updated_at": "2026-10-27T16:19:34.844280+00:00"
   },
   "-22.0742,-65.5990->-22.0813,-65.5930": {
     "polyline": "`jveCjkkoKhCx@H~Ah@BzBiUfOf@pUg@QoE\\yM_BIIY[C",
     "duration_min": 5,
-    "distance_km": 1.66
+    "distance_km": 1.66,
+    "station_id": 1136,
+    "station_name": "ESTACION DE SERVICIO \"VILLAZON\"",
+    "department": "potosi",
+    "updated_at": "2026-10-27T16:19:34.843980+00:00"
   },
   "-22.0742,-65.5990->-22.0690,-65.5941": {
     "polyline": "`jveCjkkoKhCx@H~Ah@BzBiUVKCc@e@@ig@wJMo@QG",
     "duration_min": 5,
-    "distance_km": 1.37
+    "distance_km": 1.37,
+    "station_id": 808,
+    "station_name": "COOPERATIVA DE TRANSPORTE INTERNACIONAL DEL SUD R.L.",
+    "department": "potosi",
+    "updated_at": "2026-10-27T16:19:34.844136+00:00"
   },
   "-22.0419,-63.6787->-21.9939,-63.6727": {
     "polyline": "j`peCnjtcKqxB}Os@dAwB?uzCa_A{FfNwBzX}BDk@_C",
     "duration_min": 6,
-    "distance_km": 6.13
+    "distance_km": 6.13,
+    "station_id": 902,
+    "station_name": "ESTACION DE SERVICIO COPACABANA S.R.L.",
+    "department": "tarija",
+    "updated_at": "2026-10-27T16:19:35.267332+00:00"
   },
   "-22.0419,-63.6787->-22.0094,-63.6810": {
     "polyline": "j`peCnjtcKqxB}OoCjAcv@iUkTrn@",
     "duration_min": 5,
-    "distance_km": 4.19
+    "distance_km": 4.19,
+    "station_id": 830,
+    "station_name": "EMPRESA COMERCIAL VANGUARDIA EN GAS \"VANGAS S.A.\", SUCURSAL YACUIBA",
+    "department": "tarija",
+    "updated_at": "2026-10-27T16:19:35.268683+00:00"
   },
   "-22.0419,-63.6787->-21.9034,-63.6335": {
     "polyline": "j`peCnjtcK}}BwMuzCa_AsJbh@cYyA{wJmiD{iCsp@u[gY",
     "duration_min": 16,
-    "distance_km": 17.01
+    "distance_km": 17.01,
+    "station_id": 1028,
+    "station_name": "ESTACION DE SERVICIO M.WARRIOR S.R.L.",
+    "department": "tarija",
+    "updated_at": "2026-10-27T16:19:35.269580+00:00"
   },
   "-22.0419,-63.6787->-21.9606,-63.6594": {
     "polyline": "j`peCnjtcKqxB}OkDdAuzCa_A{FfNwBzXsTq@a_EwoA@kC",
     "duration_min": 10,
-    "distance_km": 10.12
+    "distance_km": 10.12,
+    "station_id": 936,
+    "station_name": "ESTACION DE SERVICIO EL TERO TERO",
+    "department": "tarija",
+    "updated_at": "2026-10-27T16:19:35.267893+00:00"
   },
   "-20.0156,-63.5337->-20.0213,-63.5313": {
     "polyline": "thdyBvcxbKjA~C|FiD^l@dA`@j[aQYq@DyAO]aCHm@_@",
@@ -3286,12 +3354,20 @@
   "-10.8080,-65.3523->-10.8360,-65.3633": {
     "polyline": "n~}`Av_{mKdC~@|AgEzJ~DvAuDhi@~SoA`E|D|AtBqDreB|q@",
     "duration_min": 5,
-    "distance_km": 3.77
+    "distance_km": 3.77,
+    "station_id": 989,
+    "station_name": "ESTACION DE SERVICIO \"LA PERLA DEL MAMORE\"",
+    "department": "beni",
+    "updated_at": "2026-10-27T16:19:34.061031+00:00"
   },
   "-10.8080,-65.3523->-10.8244,-65.3571": {
     "polyline": "n~}`Av_{mKdC~@|AgEzJ~DvAuDhi@~SoA`E|D|AlBsD~\\xMGaA",
     "duration_min": 5,
-    "distance_km": 2.37
+    "distance_km": 2.37,
+    "station_id": 990,
+    "station_name": "ESTACION DE SERVICIO LAGO AZUL",
+    "department": "beni",
+    "updated_at": "2026-10-27T16:19:34.061227+00:00"
   },
   "-17.9357,-67.1146->-17.5902,-67.5033": {
     "polyline": "z~mlBtcsxKust@r}PqjEr{CseFneJiaFr~NebEp~G{fFzlFjl@uu@zN~s@v`MzjEvgCrhB",
@@ -3894,5 +3970,113 @@
     "duration_min": 7,
     "distance_km": 3.38,
     "updated_at": "2026-10-20T03:31:52.410983+00:00"
+  },
+  "-22.7258,-64.3517->-22.7264,-64.3558": {
+    "station_id": 1801,
+    "station_name": "BERMEJO",
+    "department": "tarija",
+    "polyline": "tuuiCvxwgKcAn@oB|B]PaCX\\d@?J[d@]xA?R_AhBAVr@hAV@^KhDqBPBHP?f@fB~@tAeCNIV@`Bz@iClDOG",
+    "duration_min": 5,
+    "distance_km": 1.02,
+    "updated_at": "2026-10-27T16:19:32.351936+00:00"
+  },
+  "-11.0273,-68.7554->-11.0270,-68.7570": {
+    "station_id": 1828,
+    "station_name": "PROGRESO",
+    "department": "pando",
+    "polyline": "nxhbAfxsbLzA|IsCLi@G",
+    "duration_min": 5,
+    "distance_km": 0.3,
+    "updated_at": "2026-10-27T16:19:32.771808+00:00"
+  },
+  "-11.0273,-68.7554->-11.0275,-68.7565": {
+    "station_id": 1829,
+    "station_name": "ESTACION DE SERVICIO COBIJA",
+    "department": "pando",
+    "polyline": "nxhbAfxsbLj@fDo@RBf@",
+    "duration_min": 5,
+    "distance_km": 0.15,
+    "updated_at": "2026-10-27T16:19:33.191961+00:00"
+  },
+  "-17.4506,-66.1238->-17.3972,-66.2013": {
+    "station_id": 1631,
+    "station_name": "ESTACIÓN DE SERVICIO CAPITÁN VICTOR USTARIZ",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|FnC{EV`FtW_UzW{Zvn@eQ|QyqA|x@uV`Coe@{LoPpJsLZiLeO`Qjc@gBdPgd@fpAbLdLmMfKuMrVaSnNOhVu]yGjF|cB",
+    "duration_min": 15,
+    "distance_km": 13.5,
+    "updated_at": "2026-10-27T16:19:33.614461+00:00"
+  },
+  "-16.5740,-68.1861->-17.3976,-66.2860": {
+    "station_id": 1214,
+    "station_name": "PETROCEL S.R.L.",
+    "department": "cochabamba",
+    "polyline": "hbddBhrd_LnbOof@heEp`ArcTcaA|mh@stTdyNmgJpgJmoKj}KssBf~Fk_Gn|Ugkg@pgCgnRhsXun_@hfM{{Yz{Do|GxfCoyAlhB_ub@{VahGq}Cyf@wx@uoElhCybDhm@w{EcxBk|ElkJowOwTmuAqkDWneGgfL_@mzGx_BsiDohA}eEl|@u_AqzAa|CzOexB}kCmtB`cBsuA~@mgBsaIlWjJuxC`gDsoEoxBfThc@ycBqyA}rB{uCh@nr@csCkmAqmAydDhWaTcaByk@h{@svKqkCsnGdl@kzK{h@u|AabAhDq`F",
+    "duration_min": 367,
+    "distance_km": 344.35,
+    "updated_at": "2026-10-27T16:19:34.057605+00:00"
+  },
+  "-10.8080,-65.3523->-10.8149,-65.3527": {
+    "station_id": 1821,
+    "station_name": "FEDERICO ROMAN",
+    "department": "beni",
+    "polyline": "n~}`Av_{mKdC~@|AgEzJ~DvAuDxRzH",
+    "duration_min": 5,
+    "distance_km": 0.94,
+    "updated_at": "2026-10-27T16:19:34.819681+00:00"
+  },
+  "-22.0742,-65.5990->-22.0775,-65.5964": {
+    "station_id": 1789,
+    "station_name": "ANTOFAGASTA",
+    "department": "potosi",
+    "polyline": "`jveCjkkoKhCx@HL?pAh@BzBiU`Mb@?QqAG",
+    "duration_min": 5,
+    "distance_km": 0.84,
+    "updated_at": "2026-10-27T16:19:35.266094+00:00"
+  },
+  "-22.0419,-63.6787->-22.0199,-63.6772": {
+    "station_id": 1803,
+    "station_name": "SAN MARTIN",
+    "department": "tarija",
+    "polyline": "j`peCnjtcKgtBgNiCu@s@dA{ADyMwDsCbJtFtAfAmD",
+    "duration_min": 5,
+    "distance_km": 3.0,
+    "updated_at": "2026-10-27T16:19:35.686444+00:00"
+  },
+  "-18.9892,-57.7927->-19.0175,-57.7196": {
+    "station_id": 999,
+    "station_name": "ESTACION DE SERVICIO LIDO S.R.L",
+    "department": "santa_cruz",
+    "polyline": "vz{rBzvv_JaGnAWaFaNvCw@I?cBzT}nD|Kum@hBqDdFmD~m@uO~P{NrEmIp`AsfCnSej@s@q@",
+    "duration_min": 10,
+    "distance_km": 9.64,
+    "updated_at": "2026-10-27T16:19:36.103599+00:00"
+  },
+  "-18.9892,-57.7927->-18.9848,-57.7930": {
+    "station_id": 1216,
+    "station_name": "PUERTO S.R.L.",
+    "department": "santa_cruz",
+    "polyline": "vz{rBzvv_JaGnAWaFaNvCo@AGG?cBPmCU?KJuA|BC`A",
+    "duration_min": 5,
+    "distance_km": 0.85,
+    "updated_at": "2026-10-27T16:19:36.539860+00:00"
+  },
+  "-18.9892,-57.7927->-18.9858,-57.7933": {
+    "station_id": 1807,
+    "station_name": "MARISCAL SUCRE",
+    "department": "santa_cruz",
+    "polyline": "vz{rBzvv_JaGnAWaFyLjC",
+    "duration_min": 5,
+    "distance_km": 0.52,
+    "updated_at": "2026-10-27T16:19:36.953794+00:00"
+  },
+  "-18.9892,-57.7927->-19.0054,-57.7147": {
+    "station_id": 1806,
+    "station_name": "PUERTO QUIJARRO",
+    "department": "santa_cruz",
+    "polyline": "vz{rBzvv_JaGnAWaFaNvCw@I?cBzT}nD|Kum@hBqDdFmD~m@uO~P{NrEmIf~@uaC_l@ip@Yg\\{GC",
+    "duration_min": 11,
+    "distance_km": 10.49,
+    "updated_at": "2026-10-27T16:19:37.373354+00:00"
   }
 }

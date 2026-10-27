@@ -1,6 +1,8 @@
 name: asdfghjkl action
 
 on:
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 concurrency:
