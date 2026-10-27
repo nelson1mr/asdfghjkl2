@@ -630,28 +630,28 @@ async def process_and_transform_records(
                 # Caso A: Cisterna con salida confirmada por balanza oficial
                 status = "in_transit"
                 estimated_dispatched_at = dispatched_at
-                estimated_arrival_at = dispatched_at + timedelta(minutes=travel_min) if travel_min else None
-                estimated_delivered_at = estimated_arrival_at + timedelta(minutes=discharge_duration_minutes) if estimated_arrival_at else None
-                confirmed_arrival_at = None
-                confirmed_delivered_at = None
+                estimated_arrived_at = dispatched_at + timedelta(minutes=travel_min) if travel_min else None
+                estimated_delivered_at = estimated_arrived_at + timedelta(minutes=discharge_duration_minutes) if estimated_arrived_at else None
+                arrived_at = None
+                delivered_at = None
             elif plate:
                 # Caso B: Cisterna asignada cargando en planta (sin balanza aún)
                 status = "loading"
                 # Tiempo estimado de carga en planta según volumen (35m <=10kL, 45m >10kL)
                 load_wait = 35 if liters <= 10000 else 45
                 estimated_dispatched_at = now_utc + timedelta(minutes=load_wait)
-                estimated_arrival_at = estimated_dispatched_at + timedelta(minutes=travel_min) if travel_min else None
-                estimated_delivered_at = estimated_arrival_at + timedelta(minutes=discharge_duration_minutes) if estimated_arrival_at else None
-                confirmed_arrival_at = None
-                confirmed_delivered_at = None
+                estimated_arrived_at = estimated_dispatched_at + timedelta(minutes=travel_min) if travel_min else None
+                estimated_delivered_at = estimated_arrived_at + timedelta(minutes=discharge_duration_minutes) if estimated_arrived_at else None
+                arrived_at = None
+                delivered_at = None
             else:
                 # Caso C: Cupo programado nominado sin placa vehicular asignada
                 status = "scheduled"
                 estimated_dispatched_at = None
-                estimated_arrival_at = None
+                estimated_arrived_at = None
                 estimated_delivered_at = None
-                confirmed_arrival_at = None
-                confirmed_delivered_at = None
+                arrived_at = None
+                delivered_at = None
 
             # Hash INVARIANTE: No depende de la hora de salida ni de variaciones textuales de la razón social.
             # Identifica el despacho/cupo físico unívocamente para evitar duplicados en la BD y push notifications repetidas.
@@ -690,10 +690,10 @@ async def process_and_transform_records(
                 "estimated_dispatched_at": estimated_dispatched_at.isoformat() if estimated_dispatched_at else None,
                 "travel_duration_minutes": travel_duration_minutes,
                 "discharge_duration_minutes": discharge_duration_minutes,
-                "estimated_arrival_at": estimated_arrival_at.isoformat() if estimated_arrival_at else None,
-                "confirmed_arrival_at": confirmed_arrival_at.isoformat() if confirmed_arrival_at else None,
+                "estimated_arrived_at": estimated_arrived_at.isoformat() if estimated_arrived_at else None,
+                "arrived_at": arrived_at.isoformat() if arrived_at else None,
                 "estimated_delivered_at": estimated_delivered_at.isoformat() if estimated_delivered_at else None,
-                "confirmed_delivered_at": confirmed_delivered_at.isoformat() if confirmed_delivered_at else None,
+                "delivered_at": delivered_at.isoformat() if delivered_at else None,
                 "status": status,
                 "source": "ypfb",
                 "unique_hash": unique_hash,
@@ -772,7 +772,7 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
         try:
             # Consultar status, telemetría y confirmaciones existentes
             res = db.table("dispatches").select(
-                "unique_hash, status, has_gps, dispatched_at, confirmed_arrival_at, confirmed_delivered_at, metadata"
+                "unique_hash, status, has_gps, dispatched_at, arrived_at, delivered_at, metadata"
             ).in_("unique_hash", chunk).execute()
             for r in res.data or []:
                 existing_map[r["unique_hash"]] = r
@@ -794,10 +794,10 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
             # Preservar fechas de salida, llegada o entrega confirmadas previamente
             if ex.get("dispatched_at") and not d.get("dispatched_at"):
                 d["dispatched_at"] = ex["dispatched_at"]
-            if ex.get("confirmed_arrival_at"):
-                d["confirmed_arrival_at"] = ex["confirmed_arrival_at"]
-            if ex.get("confirmed_delivered_at"):
-                d["confirmed_delivered_at"] = ex["confirmed_delivered_at"]
+            if ex.get("arrived_at"):
+                d["arrived_at"] = ex["arrived_at"]
+            if ex.get("delivered_at"):
+                d["delivered_at"] = ex["delivered_at"]
             # Preservar telemetría y campos agregados por el radar GPS en metadata
             ex_meta = ex.get("metadata")
             if isinstance(ex_meta, dict):
