@@ -67,13 +67,13 @@ FAR_GUARD_M = 5000.0
 # --- GPS y Protección Anti-429 ------------------------------------------------
 GPS_FRESH_MIN = 20.0
 RADAR_KEEP_STALE_MIN = 45.0
-MAX_CONCURRENT_GPS = 2              # Concurrencia estricta para no saturar Kyros (Anti-429)
-PACING_S = 1.8                      # Pausa de 1.8 s entre consultas (respeta límite de 30 req/min de Kyros)
+MAX_CONCURRENT_GPS = 5              # Límite concurrente calibrado (bench: 5 sockets OK)
+PACING_S = 1.5                      # Pacing óptimo calibrado (bench: 1.5s sin 429)
 HTTP_TIMEOUT_S = 8.0                # Tiempo máximo de espera por respuesta
-HTTP_RETRIES = 2                    # Reintentos máximos en timeout
-GPS_PHASE_BUDGET_S = 180.0          # Presupuesto total de tiempo para sondeo GPS
-BREAKER_LIMIT = 12                  # Fallos consecutivos antes de pausar
-COOLDOWN_429_SECONDS = 25.0         # Enfriamiento en memoria si Kyros responde 429
+HTTP_RETRIES = 3                    # Reintentos máximos (incluye cooldown si 429)
+GPS_PHASE_BUDGET_S = 360.0          # Presupuesto total de tiempo para sondeo GPS (6 min)
+BREAKER_LIMIT = 15                  # Fallos consecutivos antes de pausar
+COOLDOWN_429_SECONDS = 31.0         # Cooldown exacto medido en bench (30.7s)
 
 # --- Tiempos de respaldo ------------------------------------------------------
 DEFAULT_TRIP_MIN = 60
@@ -293,10 +293,11 @@ async def _query_plate(session: aiohttp.ClientSession, cand: str) -> tuple[str, 
                 if resp.status == 404:
                     return ("not_found", None)
                 if resp.status in (429, 503):
-                    # Rate limit temporal en la API de Kyros para esta placa específica
-                    print(f"  [RATE-LIMIT] Kyros HTTP {resp.status} en placa {cand}. Continuando...")
-                    await asyncio.sleep(1.0)
-                    return ("error", f"http_{resp.status}")
+                    ra = resp.headers.get("Retry-After", "")
+                    cooldown = float(ra) if ra.isdigit() else COOLDOWN_429_SECONDS
+                    print(f"  [RATE-LIMIT] Kyros HTTP {resp.status} ({cand}). Enfriando IP {cooldown:.1f}s (reintento {attempt + 1}/{HTTP_RETRIES})...")
+                    await asyncio.sleep(cooldown)
+                    continue  # Reintento limpio tras enfriamiento calibrado de la IP
                 last = f"http_{resp.status}"
                 if resp.status not in (500, 502, 504):
                     return ("error", last)
@@ -318,7 +319,7 @@ async def fetch_gps(session: aiohttp.ClientSession, breaker: Breaker, key: str, 
             breaker.ok()
             return GpsResult(key, "online", plate_used=cand, **payload)
         if kind == "error":
-            # Un 429 de placa específica no rompe el circuito de todo el país
+            # Si fue un 429 persistente no abre el breaker general inmediatamente
             if payload != "http_429":
                 breaker.fail()
             return GpsResult(key, "error", detail=payload)
@@ -326,17 +327,18 @@ async def fetch_gps(session: aiohttp.ClientSession, breaker: Breaker, key: str, 
     return GpsResult(key, "not_found")
 
 
-# Consulta satelital secuencial de camiones únicos con pacing suave (Anti-429)
+# Consulta satelital secuencial de camiones únicos con pacing calibrado (Anti-429)
 async def fetch_all_gps(want: dict[str, list[str]], verbose: bool = False) -> dict[str, GpsResult]:
     if not want:
         return {}
     breaker = Breaker()
-    connector = aiohttp.TCPConnector(limit_per_host=2)
+    connector = aiohttp.TCPConnector(limit_per_host=MAX_CONCURRENT_GPS)
     out: dict[str, GpsResult] = {}
     items = list(want.items())
+    total = len(items)
 
     async with aiohttp.ClientSession(connector=connector, headers=HTTP_HEADERS) as session:
-        for k, c in items:
+        for idx, (k, c) in enumerate(items, 1):
             if breaker.open:
                 print("  [WARN] Circuit breaker abierto por fallos consecutivos en Kyros.")
                 break
@@ -344,12 +346,17 @@ async def fetch_all_gps(want: dict[str, list[str]], verbose: bool = False) -> di
             out[k] = res
             if verbose:
                 if res.status == "online":
-                    print(f"    🛰️  [GPS] {k}: ONLINE ({res.speed:.0f} km/h en {res.lat:.4f}, {res.lng:.4f})")
+                    print(f"    [{idx}/{total}] 🛰️  [GPS] {k}: ONLINE ({res.speed:.0f} km/h en {res.lat:.4f}, {res.lng:.4f})")
                 elif res.status == "not_found":
-                    print(f"    ⚪ [GPS] {k}: Sin reporte satelital en Kyros (404)")
+                    print(f"    [{idx}/{total}] ⚪ [GPS] {k}: Sin reporte satelital en Kyros (404)")
                 else:
-                    print(f"    ⚠️  [GPS] {k}: {res.status} ({res.detail})")
-            # Pacing de 1.8 s entre cada cisterna para proteger Kyros (Anti-429)
+                    print(f"    [{idx}/{total}] ⚠️  [GPS] {k}: {res.status} ({res.detail})")
+            elif idx % 25 == 0 or idx == total:
+                online_c = sum(1 for r in out.values() if r.status == "online")
+                nf_c = sum(1 for r in out.values() if r.status == "not_found")
+                err_c = sum(1 for r in out.values() if r.status == "error")
+                print(f"  • Progreso GPS: {idx}/{total} camiones (Online: {online_c}, Sin GPS: {nf_c}, Errores: {err_c})")
+            # Pacing calibrado entre cada cisterna para proteger Kyros (Anti-429)
             await asyncio.sleep(PACING_S)
 
     # Rellenar con error si el breaker omitió placas
@@ -518,6 +525,15 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
             dec.patch["gps_seen_at"] = iso(gps_time)
         if gps_fresh and st:
             dist = haversine_m(gps.lat, gps.lng, st[0], st[1])
+        dec.has_gps = True
+        dec.patch["gps_status"] = "online"
+        dec.patch["gps_checked_at"] = iso(now)
+    elif gps and gps.status == "not_found":
+        if d.get("has_gps") is not False:
+            dec.has_gps = False
+        if meta.get("gps_status") != "not_found":
+            dec.patch["gps_status"] = "not_found"
+            dec.patch["gps_checked_at"] = iso(now)
     gps_known = bool(meta.get("gps_seen_at")) or gps_fresh
     gps_transient = bool(gps and gps.status == "error")
 
@@ -705,6 +721,9 @@ def persist_decision(db: Client, d: dict, dec: Decision, now: datetime) -> bool:
     # Actualizar entrega confirmada
     if dec.delivered_at is not None:
         payload["delivered_at"] = iso(dec.delivered_at)
+    # Actualizar duración real de descarga si fue calculada
+    if dec.patch.get("discharge_duration_minutes") is not None:
+        payload["discharge_duration_minutes"] = dec.patch["discharge_duration_minutes"]
 
     # Bloqueo optimista: si otro proceso cambió el status, no se pisa
     res = with_retry(lambda: db.table("dispatches").update(payload)
@@ -791,7 +810,7 @@ def reconcile_radar(db: Client, upserts: list[dict], keep: set[str], prev_rows: 
 # =============================================================================
 # Orquestador
 # =============================================================================
-async def run_async(db: Client, dry_run: bool = False, verbose: bool = False) -> dict:
+async def run_async(db: Client, dry_run: bool = False, verbose: bool = False, force_gps: bool = False) -> dict:
     t0 = time.time()
     now = datetime.now(timezone.utc)
     print("\n" + "=" * 78)
@@ -812,12 +831,20 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False) ->
     prev_by_key = {k: r for r in prev_rows if (k := truck_key(r.get("license_plate")))}
 
     want: dict[str, list[str]] = {}
+    skipped_no_gps = 0
     for d in dispatches:
         key = truck_key(d.get("license_plate"))
-        # Sondea GPS para todo camión activo con placa válida
-        if key:
-            want[key] = plate_candidates(d.get("license_plate"))
+        if not key:
+            continue
+        meta = d["metadata"] if isinstance(d.get("metadata"), dict) else {}
+        # Omitir camiones ya confirmados sin telemetría satelital en Kyros (404)
+        if not force_gps and d.get("has_gps") is False and meta.get("gps_status") == "not_found":
+            skipped_no_gps += 1
+            continue
+        want[key] = plate_candidates(d.get("license_plate"))
 
+    if skipped_no_gps > 0:
+        print(f"  • Caché de telemetría: {skipped_no_gps} despachos sin GPS omitidos de la consulta satelital.")
     print(f"[3/5] Consultando GPS de {len(want)} camiones únicos...")
     gps_by_key = await fetch_all_gps(want, verbose=verbose)
     gstats = Counter()
@@ -915,18 +942,19 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False) ->
     return summary
 
 
-def check_proximity(db: Client | None = None, dry_run: bool = False, verbose: bool = False) -> dict:
+def check_proximity(db: Client | None = None, dry_run: bool = False, verbose: bool = False, force_gps: bool = False) -> dict:
     if db is None:
         if not SUPABASE_URL or not SUPABASE_KEY:
             raise ValueError("Variables V3 y V4 requeridas.")
         db = create_client(SUPABASE_URL, SUPABASE_KEY)
-    return asyncio.run(run_async(db, dry_run=dry_run, verbose=verbose))
+    return asyncio.run(run_async(db, dry_run=dry_run, verbose=verbose, force_gps=force_gps))
 
 
 def main() -> None:
     p = argparse.ArgumentParser(description="Proximidad y geofencing de cisternas (Surtiveo v4)")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--verbose", action="store_true")
+    p.add_argument("--force-gps", action="store_true", help="Fuerza sondeo GPS de todas las placas ignorando caché 404")
     p.add_argument("--loop", action="store_true")
     p.add_argument("--interval", type=int, default=300)
     args = p.parse_args()
@@ -939,13 +967,13 @@ def main() -> None:
     if args.loop:
         while True:
             try:
-                check_proximity(db, args.dry_run, args.verbose)
+                check_proximity(db, args.dry_run, args.verbose, args.force_gps)
             except Exception as e:
                 print(f"[ERROR EN BUCLE] {e}")
             time.sleep(args.interval)
     else:
         try:
-            check_proximity(db, args.dry_run, args.verbose)
+            check_proximity(db, args.dry_run, args.verbose, args.force_gps)
         except Exception as e:
             print(f"[FATAL] {e}")
             sys.exit(1)  # el Action queda en rojo y te enteras
