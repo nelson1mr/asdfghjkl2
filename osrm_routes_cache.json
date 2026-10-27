@@ -4578,5 +4578,23 @@
     "duration_min": 69,
     "distance_km": 91.58,
     "updated_at": "2026-10-27T17:33:36.169184+00:00"
+  },
+  "-17.4506,-66.1238->-17.6119,-66.0240": {
+    "station_id": 1198,
+    "station_name": "INVERSIONES VALLE SUR S.A.",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|FnC{EVzFtXzrAoy@zHaU~XcTp^aDvh@gS|Lyx@vo@gg@jQyFr_@hFrUgXrh@nBre@}Pna@eD|CfVb[aPfPjQo^j`AiD|XxFlQfMlU~c@|\\f]lGhJu{@pyBa_D~g@aa@`j@krA`rEexE|HuUvMcD",
+    "duration_min": 29,
+    "distance_km": 29.41,
+    "updated_at": "2026-10-27T18:03:30.992766+00:00"
+  },
+  "-16.5740,-68.1861->-16.6474,-68.2945": {
+    "station_id": 1063,
+    "station_name": "ESTACION DE SERVICIO QHANTATI S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxm@gD~AjCkF~Sc]|m@a~AjlB{GgD~cPr|Nl@cB",
+    "duration_min": 18,
+    "distance_km": 18.15,
+    "updated_at": "2026-10-27T18:03:31.298501+00:00"
   }
 }
