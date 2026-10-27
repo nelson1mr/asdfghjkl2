@@ -159,7 +159,7 @@ def main():
     # 5. Ingestión oficial de despachos y nominaciones YPFB / Kyros (Nuevo Motor V3)
     print("\n[ETAPA 5/5] Sincronizando despachos y nominaciones oficiales YPFB...")
     try:
-        ingestar_despachos_ypfb.run_ypfb_ingestion(db, dias_atras=1)
+        ingestar_despachos_ypfb.run_ypfb_ingestion(db, dias_atras=0)
     except Exception as e:
         print(f"  [ERROR] Falló la sincronización de despachos YPFB: {e}")
 
