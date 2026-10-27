@@ -4596,5 +4596,14 @@
     "duration_min": 18,
     "distance_km": 18.15,
     "updated_at": "2026-10-27T18:03:31.298501+00:00"
+  },
+  "-16.5740,-68.1861->-15.5571,-67.3486": {
+    "station_id": 1030,
+    "station_name": "ESTACION DE SERVICIO \"NETANEL\"",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBj@gaJshB{[s_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{nAicKadJ_{E_tEhWi|@e}AcyF{z@atBicGhv@avBg~@pa@ogC__BqtAsnEocEa|BkdCxc@}mEi{@jVox@c`CxAuhBpgBe^gf@moCbrAwcAwxCjj@kxBsrCcsC{uDxd@acEo`CghEl_BmpC{cC}d@tkAyeEym@`ZgjB_r@gFegAwaGqfEogA{cDscEy`Brq@mlAae@o|@_bG",
+    "duration_min": 240,
+    "distance_km": 245.23,
+    "updated_at": "2026-10-27T18:33:24.348696+00:00"
   }
 }
