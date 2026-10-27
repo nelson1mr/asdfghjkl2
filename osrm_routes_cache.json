@@ -4695,5 +4695,32 @@
     "duration_min": 114,
     "distance_km": 125.06,
     "updated_at": "2026-10-27T23:17:41.953895+00:00"
+  },
+  "-16.5740,-68.1861->-15.3155,-68.2237": {
+    "station_id": 1840,
+    "station_name": "ESTACION DE SERVICIO PETROMAPIRI S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEioJ}cBcsBa{CwlC~U~^okBijCyhAmoGeiKubFaxAsaLi_@|`Bo`KcqCydMm~B{kBj@gaJshB{[s_CnpAwtC{}A|AfcBqVq`DsPltEwt@_hA|DasGei@``B{nAicKadJ_{E_tEhWi|@e}AcyF{z@atBicGhv@avBg~@pa@ogC__BqtAsnEocEa|BkdCxc@}mEi{@jVox@c`CxAuhBpgBe^gf@moCbrAoeAuwCy{Eb`OosI`zGinEuFwdFdtBwtHzgKeuBrHecAbiC}bSnbMllA~~AowBpyCR`eHisCdoC~W|mAexA~bBpvAbuDm\\d{Bg~C|sCjbB`kCsvAfzBsRn}FkuEuBy{B|jCi{BzLb_@ljGet@vMvEj_BcaHsv@",
+    "duration_min": 395,
+    "distance_km": 344.99,
+    "updated_at": "2026-10-27T23:47:35.251848+00:00"
+  },
+  "-16.5740,-68.1861->-13.7794,-68.1272": {
+    "station_id": 1175,
+    "station_name": "ESTACION DE SERVICO SAYHOGAS S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_LiaQgoF~^okBwzK_sMieSkxB|`Bo`KqpGuqPj@gaJ__Kgi@|AfcBqVq`DsPltE{hDi_SopZw|Iw|@kzJy`NciKa}LemAixGlsC_lDgfLka]gaB}hBa_KazP{}Gm|EsvYm|CibEmvBz\\mj@urFqdMyuE}iNaeNcrQxPocEcgHuegArmQcv~@|yk@exS~lw@i{f@r_`@yiFtsMmse@|hVwiQxrV|q@jpHciPunG",
+    "duration_min": 568,
+    "distance_km": 553.48,
+    "updated_at": "2026-10-27T23:47:35.588387+00:00"
+  },
+  "-17.9357,-67.1146->-18.5938,-66.9238": {
+    "station_id": 959,
+    "station_name": "ESTACION DE SERVICIO GRAN PODER",
+    "department": "oruro",
+    "polyline": "z~mlBtcsxK`tB_x@pCay@riB{Jnu@ojGbbDybAleIcqEvnEpY~sKkuCn{@zY_M`pBjdB`m@teT_lCfld@olDjqLigBdoGe}C",
+    "duration_min": 79,
+    "distance_km": 83.78,
+    "updated_at": "2026-10-27T23:47:35.917352+00:00"
   }
 }
