@@ -43,7 +43,7 @@ SUPABASE_KEY = os.getenv("V4") or os.getenv("SUPABASE_KEY") or os.getenv("SUPABA
 KYROS_BASE_URL = "https://nominac.kyros-tech.com/api"
 OSRM_BASE_URL = "http://router.project-osrm.org/route/v1/driving"
 
-PAGE_SIZE = 200                          # Cantidad de items por página al consultar la API de Kyros
+PAGE_SIZE = 50                          # Cantidad de items por página al consultar la API de Kyros
 BATCH_SIZE = 100                         # Tamaño de lote para inserciones masivas en Supabase
 MAX_CONCURRENT_KYROS = 3                 # Máximo de conexiones simultáneas a Kyros para no saturar el servidor
 
