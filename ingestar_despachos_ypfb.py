@@ -571,8 +571,8 @@ async def process_and_transform_records(
 
             liters = float(it.get("cantidad_despachada") or 0.0)
             plate = (it.get("placa_despacho") or "").strip() or None
-            # En ingesta inicia en False; el monitor de proximidad lo activa al recibir GPS válido
-            has_gps = False
+            # En ingesta inicia en None si tiene placa (pendiente de verificar por proximidad)
+            has_gps = None if plate else False
             is_provincia = (it.get("ambito") or "").strip().lower() == "provincia"
 
             fecha_hora_efectiva = it.get("fecha_despacho_efectivo_hora")
@@ -665,7 +665,8 @@ async def process_and_transform_records(
                 "family_code": it.get("familia_codigo"),
                 "client": it.get("cliente"),
                 "district_name": d_meta.get("nombre"),
-                "unit": it.get("unidad", "L")
+                "unit": it.get("unidad", "L"),
+                "gps_status": "pending" if plate else "not_found",
             }
             if eta_source:
                 metadata_dict["eta_source"] = eta_source

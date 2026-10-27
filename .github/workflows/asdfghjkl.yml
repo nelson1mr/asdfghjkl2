@@ -32,6 +32,12 @@ jobs:
           gg: ${{ secrets.gg }}
         run: |
           python main.py
+      - name: Run Proximity & Geofencing Immediately
+        env:
+          V3: ${{ secrets.V3 }}
+          V4: ${{ secrets.V4 }}
+        run: |
+          python verificar_proximidad_cisternas.py
       - name: Commit and push updated OSRM cache
         run: |
           git config user.name "surtibot"

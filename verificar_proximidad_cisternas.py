@@ -486,7 +486,7 @@ def _deliver(dec: Decision, arrived: datetime, confidence: str, closed_by: str, 
         "delivery_confidence": confidence,
         "closed_by": closed_by,
         "delivery_reason": reason,
-        "discharge_duration_minutes": round(max(0.0, minutes(now - arrived)), 1),
+        "discharge_duration_minutes": int(round(max(0.0, minutes(now - arrived)))),
         "near_since": None,
         "is_delayed": False,
     })
@@ -529,11 +529,10 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
         dec.patch["gps_status"] = "online"
         dec.patch["gps_checked_at"] = iso(now)
     elif gps and gps.status == "not_found":
-        if d.get("has_gps") is not False:
-            dec.has_gps = False
-        if meta.get("gps_status") != "not_found":
-            dec.patch["gps_status"] = "not_found"
-            dec.patch["gps_checked_at"] = iso(now)
+        # Un 404 en Kyros es definitivo: esta cisterna no tiene telemetría asignada hoy
+        dec.has_gps = False
+        dec.patch["gps_status"] = "not_found"
+        dec.patch["gps_checked_at"] = iso(now)
     gps_known = bool(meta.get("gps_seen_at")) or gps_fresh
     gps_transient = bool(gps and gps.status == "error")
 
@@ -723,7 +722,7 @@ def persist_decision(db: Client, d: dict, dec: Decision, now: datetime) -> bool:
         payload["delivered_at"] = iso(dec.delivered_at)
     # Actualizar duración real de descarga si fue calculada
     if dec.patch.get("discharge_duration_minutes") is not None:
-        payload["discharge_duration_minutes"] = dec.patch["discharge_duration_minutes"]
+        payload["discharge_duration_minutes"] = int(round(dec.patch["discharge_duration_minutes"]))
 
     # Bloqueo optimista: si otro proceso cambió el status, no se pisa
     res = with_retry(lambda: db.table("dispatches").update(payload)
@@ -808,124 +807,234 @@ def reconcile_radar(db: Client, upserts: list[dict], keep: set[str], prev_rows: 
 
 
 # =============================================================================
-# Orquestador
+# Orquestador Continuo (Streaming en Tiempo Real)
 # =============================================================================
 async def run_async(db: Client, dry_run: bool = False, verbose: bool = False, force_gps: bool = False) -> dict:
     t0 = time.time()
     now = datetime.now(timezone.utc)
     print("\n" + "=" * 78)
-    print(f"🛰️  PROXIMIDAD DE CISTERNAS v4 | {now.isoformat()[:19]} UTC" + (" | DRY-RUN" if dry_run else ""))
+    print(f"🛰️  PROXIMIDAD DE CISTERNAS v4 (STREAMING) | {now.isoformat()[:19]} UTC" + (" | DRY-RUN" if dry_run else ""))
     print("=" * 78)
 
-    print("[0/5] Barrido de despachos expirados...")
+    print("[0/3] Barrido de despachos expirados...")
     expired = sweep_expired(db, now, dry_run)
     print(f"  -> {expired} cancelados por expiración.")
 
-    print("[1/5] Cargando despachos activos (con y sin estación)...")
+    print("[1/3] Cargando despachos activos, estaciones y radar previo...")
     dispatches = load_active_dispatches(db)
-    print(f"  -> {len(dispatches)} activos.")
-
-    print("[2/5] Cargando estaciones y radar previo...")
     stations = load_stations(db, {d["station_id"] for d in dispatches if d.get("station_id")})
     prev_rows = load_radar(db)
     prev_by_key = {k: r for r in prev_rows if (k := truck_key(r.get("license_plate")))}
+    print(f"  -> {len(dispatches)} despachos activos, {len(stations)} estaciones cargadas.")
 
-    want: dict[str, list[str]] = {}
-    skipped_no_gps = 0
-    for d in dispatches:
-        key = truck_key(d.get("license_plate"))
-        if not key:
-            continue
-        meta = d["metadata"] if isinstance(d.get("metadata"), dict) else {}
-        # Omitir camiones ya confirmados sin telemetría satelital en Kyros (404)
-        if not force_gps and d.get("has_gps") is False and meta.get("gps_status") == "not_found":
-            skipped_no_gps += 1
-            continue
-        want[key] = plate_candidates(d.get("license_plate"))
-
-    if skipped_no_gps > 0:
-        print(f"  • Caché de telemetría: {skipped_no_gps} despachos sin GPS omitidos de la consulta satelital.")
-    print(f"[3/5] Consultando GPS de {len(want)} camiones únicos...")
-    gps_by_key = await fetch_all_gps(want, verbose=verbose)
-    gstats = Counter()
-    for g in gps_by_key.values():
-        if g.status == "online":
-            fresh = minutes(now - min(g.recorded_at or now, now)) <= GPS_FRESH_MIN
-            gstats["online_fresco" if fresh else "online_desactualizado"] += 1
-        else:
-            gstats[g.status] += 1
-    print(f"  -> {dict(gstats)}")
-    if gstats["error"] > max(5, len(want) // 2):
-        print("  [WARN] Kyros con fallas masivas: los camiones con GPS conocido no se cerrarán por tiempo.")
-
-    print("[4/5] Evaluando reglas...")
-    decisions: dict[int, Decision] = {}
-    transitions = Counter()
-
-    # Identificar despachos viejos superados (la misma placa ya salió en un viaje posterior)
+    # Agrupar despachos por camión único
     by_truck: dict[str, list[dict]] = defaultdict(list)
+    no_plate_dispatches: list[dict] = []
     for d in dispatches:
         k = truck_key(d.get("license_plate"))
-        if k and d.get("dispatched_at"):
+        if k:
             by_truck[k].append(d)
+        else:
+            no_plate_dispatches.append(d)
 
+    # Identificar viajes viejos superados (la misma placa ya inició un despacho posterior)
     superseded_ids = set()
     for k, d_list in by_truck.items():
         if len(d_list) > 1:
-            # Ordenar por salida más reciente primero
             d_list.sort(key=lambda x: parse_ts(x.get("dispatched_at")) or now, reverse=True)
             latest_time = parse_ts(d_list[0].get("dispatched_at"))
             for old_d in d_list[1:]:
                 old_time = parse_ts(old_d.get("dispatched_at"))
-                # Si salió con más de 90 min de diferencia respecto al viaje más nuevo,
-                # físicamente ya completó y vació el tanque del viaje anterior.
                 if old_time and latest_time and minutes(latest_time - old_time) > 90.0:
                     superseded_ids.add(old_d["id"])
 
-    for d in dispatches:
-        # Si el camión ya tiene un viaje posterior, cerramos este viaje viejo directamente
-        if d["id"] in superseded_ids:
-            dec = Decision()
-            eta_val = parse_ts(d.get("estimated_arrived_at")) or now
-            _deliver(dec, eta_val, "inferred", "superseded_by_newer_dispatch",
-                     "viaje previo de la cisterna; ya inició un despacho posterior", now)
-            decisions[d["id"]] = dec
-            transitions["delivered"] += 1
-            st_name = (stations.get(d.get("station_id")) or {}).get("name") or "sin estación"
-            print(f"  • #{d['id']} [{d.get('license_plate') or 'S/P'}] -> {st_name}: {dec.note}")
+    # Separar qué camiones requieren consulta inmediata a Kyros vs omitidos por caché
+    truck_keys = sorted(by_truck.keys())
+    to_query: list[str] = []
+    cached_404: list[str] = []
+
+    for k in truck_keys:
+        d_list = by_truck[k]
+        if force_gps:
+            to_query.append(k)
             continue
 
-        key = truck_key(d.get("license_plate"))
-        try:
-            dec = evaluate(d, stations.get(d.get("station_id")),
-                           gps_by_key.get(key) if key else None,
-                           prev_by_key.get(key) if key else None, now)
-        except Exception as e:
-            print(f"  [ERROR] Evaluando #{d.get('id')}: {e}")
-            dec = Decision()
-        decisions[d["id"]] = dec
+        # Si ya fue verificado como 404 en Kyros (sin GPS) -> Omitir definitivamente para este viaje
+        is_confirmed_not_found = all(
+            d.get("has_gps") is False and (d.get("metadata") or {}).get("gps_status") == "not_found"
+            for d in d_list
+        )
+        if is_confirmed_not_found:
+            cached_404.append(k)
+            continue
+
+        # En cualquier otro caso (has_gps True, o despacho nuevo sin verificar): Consultar
+        to_query.append(k)
+
+    print(f"[2/3] Monitoreo y sincronización streaming: {len(to_query)} camiones a sondear "
+          f"({len(cached_404)} cisternas sin GPS omitidas definitivamente)...")
+
+    gstats = Counter()
+    transitions = Counter()
+    written = conflicts = failed = 0
+    radar_upserted = 0
+    keep_radar_plates = set()
+    breaker = Breaker()
+    connector = aiohttp.TCPConnector(limit_per_host=MAX_CONCURRENT_GPS)
+
+    # Evalúa y persiste inmediatamente un camión específico
+    def process_and_persist_truck(key: str, gps_result: GpsResult | None) -> list[str]:
+        nonlocal written, conflicts, failed, radar_upserted
+        logs = []
+        d_list = by_truck[key]
+        eligible_radar = []
+
+        for d in d_list:
+            if d["id"] in superseded_ids:
+                dec = Decision()
+                eta_val = parse_ts(d.get("estimated_arrived_at")) or now
+                _deliver(dec, eta_val, "inferred", "superseded_by_newer_dispatch",
+                         "viaje previo de la cisterna; ya inició un despacho posterior", now)
+            else:
+                try:
+                    dec = evaluate(d, stations.get(d.get("station_id")), gps_result, prev_by_key.get(key), now)
+                except Exception as e:
+                    print(f"  [ERROR] Evaluando #{d.get('id')}: {e}")
+                    dec = Decision()
+
+            final_status = dec.new_status or d.get("status")
+            if dec.new_status:
+                transitions[dec.new_status] += 1
+
+            # Persistencia inmediata en Supabase
+            if dec.changed and not dry_run:
+                try:
+                    if persist_decision(db, d, dec, now):
+                        written += 1
+                    else:
+                        conflicts += 1
+                except Exception as e:
+                    failed += 1
+                    print(f"  [ERROR] Persistiendo #{d['id']}: {e}")
+
+            if final_status in ("in_transit", "delivering") and d.get("station_id"):
+                eligible_radar.append((d, final_status))
+
+            if dec.note and (dec.new_status or verbose or dec.note.startswith("DEMORADO")):
+                st_name = (stations.get(d.get("station_id")) or {}).get("name") or "sin estación"
+                status_badge = f" -> {dec.new_status.upper()}" if dec.new_status else ""
+                logs.append(f"      • #{d['id']}{status_badge} [{st_name}]: {dec.note}")
+
+        # Actualizar radar active_cisterns inmediatamente si está transmitiendo coordenadas
+        if gps_result and gps_result.status == "online":
+            t_rec = min(gps_result.recorded_at or now, now)
+            if minutes(now - t_rec) <= GPS_FRESH_MIN and eligible_radar:
+                eligible_radar.sort(key=lambda x: (0 if x[1] == "delivering" else 1,
+                                                   parse_ts(x[0].get("estimated_arrived_at")) or now))
+                target_d = eligible_radar[0][0]
+                radar_row = {
+                    "license_plate": key,
+                    "dispatch_id": target_d["id"],
+                    "station_id": target_d["station_id"],
+                    "latitude": gps_result.lat,
+                    "longitude": gps_result.lng,
+                    "speed_kmh": round(gps_result.speed, 1),
+                    "heading": round(_heading(gps_result, prev_by_key.get(key)), 1),
+                    "is_moving": gps_result.moving,
+                    "is_public": True,
+                    "recorded_at": iso(t_rec),
+                    "updated_at": iso(now),
+                }
+                if not dry_run:
+                    try:
+                        with_retry(lambda: db.table("active_cisterns").upsert(radar_row, on_conflict="license_plate").execute(), "radar upsert")
+                        radar_upserted += 1
+                    except Exception:
+                        pass
+                keep_radar_plates.add(key)
+        else:
+            prev_row = prev_by_key.get(key)
+            prev_t = parse_ts(prev_row.get("recorded_at")) if prev_row else None
+            if prev_t and minutes(now - prev_t) <= RADAR_KEEP_STALE_MIN:
+                keep_radar_plates.add(key)
+
+        return logs
+
+    # Procesar camiones consultando Kyros uno por uno con persistencia inmediata
+    total_query = len(to_query)
+    async with aiohttp.ClientSession(connector=connector, headers=HTTP_HEADERS) as session:
+        for idx, key in enumerate(to_query, 1):
+            if breaker.open:
+                print("  [WARN] Circuit breaker abierto por fallos consecutivos en Kyros.")
+                break
+
+            candidates = plate_candidates(key)
+            gps_res = await fetch_gps(session, breaker, key, candidates)
+
+            if gps_res.status == "online":
+                fresh = minutes(now - min(gps_res.recorded_at or now, now)) <= GPS_FRESH_MIN
+                gstats["online_fresco" if fresh else "online_desactualizado"] += 1
+            else:
+                gstats[gps_res.status] += 1
+
+            # Evaluar y guardar en caliente en la BD
+            logs = process_and_persist_truck(key, gps_res)
+
+            if verbose:
+                if gps_res.status == "online":
+                    print(f"  [{idx}/{total_query}] 🛰️  [GPS] {key}: ONLINE ({gps_res.speed:.0f} km/h en {gps_res.lat:.4f}, {gps_res.lng:.4f})")
+                elif gps_res.status == "not_found":
+                    print(f"  [{idx}/{total_query}] ⚪ [GPS] {key}: Sin reporte satelital en Kyros (404)")
+                else:
+                    print(f"  [{idx}/{total_query}] ⚠️  [GPS] {key}: {gps_res.status} ({gps_res.detail})")
+                for line in logs:
+                    print(line)
+            elif idx % 25 == 0 or idx == total_query:
+                print(f"  • Progreso: {idx}/{total_query} camiones procesados (Online: {gstats['online_fresco']}, Guardados: {written})...")
+
+            # Pacing calibrado entre peticiones sucesivas
+            await asyncio.sleep(PACING_S)
+
+    # Procesar camiones omitidos por caché (cinemáticos / sin satélite)
+    if cached_404:
+        for key in cached_404:
+            gstats["not_found_cached"] += 1
+            logs = process_and_persist_truck(key, GpsResult(key, "not_found", detail="cache_skipped_30m"))
+            if verbose and logs:
+                print(f"  [CACHÉ] ⚪ [GPS] {key}: Omitido por caché (sin GPS verificado)")
+                for line in logs:
+                    print(line)
+
+    # Procesar despachos sin placa (solo cinemáticos)
+    for d in no_plate_dispatches:
+        dec = evaluate(d, stations.get(d.get("station_id")), None, None, now)
         if dec.new_status:
             transitions[dec.new_status] += 1
-        if dec.note and (dec.new_status or verbose or dec.note.startswith("DEMORADO")):
-            st_name = (stations.get(d.get("station_id")) or {}).get("name") or "sin estación"
-            print(f"  • #{d['id']} [{d.get('license_plate') or 'S/P'}] -> {st_name}: {dec.note}")
-
-    print("[5/5] Persistiendo...")
-    written = conflicts = failed = 0
-    if not dry_run:
-        for d in dispatches:
-            dec = decisions[d["id"]]
-            if not dec.changed:
-                continue
+        if dec.changed and not dry_run:
             try:
                 if persist_decision(db, d, dec, now):
                     written += 1
-                else:
-                    conflicts += 1
             except Exception:
-                failed += 1
-    upserts, keep = build_radar(dispatches, decisions, gps_by_key, prev_by_key, now)
-    radar_up, radar_del = reconcile_radar(db, upserts, keep, prev_rows, dry_run)
+                pass
+
+    print("[3/3] Reconciliando radar y limpiando entregados...")
+    radar_del = 0
+    if not dry_run:
+        delete_ids = []
+        for r in prev_rows:
+            if r.get("driver_user_id"):
+                continue
+            plate = r.get("license_plate")
+            k_plate = truck_key(plate)
+            if k_plate not in keep_radar_plates or plate != k_plate:
+                delete_ids.append(r["id"])
+        for i in range(0, len(delete_ids), 200):
+            chunk = delete_ids[i:i + 200]
+            try:
+                with_retry(lambda: db.table("active_cisterns").delete().in_("id", chunk).execute(), "limpieza radar")
+                radar_del += len(chunk)
+            except Exception:
+                pass
 
     elapsed = time.time() - t0
     summary = {
@@ -935,7 +1044,7 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False, fo
         "to_delivered": transitions["delivered"],
         "to_lost": transitions["lost"],
         "written": written, "conflicts": conflicts, "failed": failed,
-        "radar_upserted": radar_up, "radar_deleted": radar_del, "elapsed_s": round(elapsed, 2),
+        "radar_upserted": radar_upserted, "radar_deleted": radar_del, "elapsed_s": round(elapsed, 2),
     }
     print(f"  -> {summary}")
     print("=" * 78)
