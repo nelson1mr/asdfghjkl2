@@ -595,6 +595,19 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
             else:
                 if meta.get("near_since"):
                     dec.patch["near_since"] = None
+
+                # Cierre de seguridad: Si pasaron más de 3 horas de la entrega estimada
+                # y la cisterna está lejos (>1 km), el viaje físico ya concluyó (ej. missed geofence o shift end).
+                est_deliv = parse_ts(d.get("estimated_delivered_at")) or (eta + timedelta(minutes=60))
+                overdue_delivery_min = minutes(now - est_deliv)
+                trip_duration = d.get("travel_duration_minutes") or DEFAULT_TRIP_MIN
+                max_overdue_allowance = max(180.0, trip_duration * 1.5)
+
+                if overdue_delivery_min >= max_overdue_allowance and dist > DELAY_FAR_M:
+                    _deliver(dec, eta, "inferred", "trip_window_expired",
+                             f"ventana de viaje superada (+{overdue_delivery_min/60:.1f}h de entrega est.); cisterna retirada a {dist/1000:.1f} km", now)
+                    return dec
+
                 # Truth Override: Sigue en carretera, no se inventa entrega
                 delayed = overrun >= DELAY_FLAG_AFTER_MIN and dist > DELAY_FAR_M
                 if bool(meta.get("is_delayed")) != delayed:
