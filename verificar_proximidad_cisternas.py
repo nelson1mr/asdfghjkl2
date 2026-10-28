@@ -571,8 +571,11 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
             if plant_meta and plant_meta.get("plant_lat") and plant_meta.get("plant_lng"):
                 dist_plant = haversine_m(gps.lat, gps.lng, plant_meta["plant_lat"], plant_meta["plant_lng"])
 
-            # Si se alejó > 1.5 km de la planta con velocidad > 12 km/h -> salió a carretera
-            if dist_plant and dist_plant > 1500.0 and gps.speed > 12.0:
+            # Si se alejó > 1.5 km de la planta con velocidad > 12 km/h,
+            # o si ya está a > 3.0 km de la planta (incluso detenido en semáforo/destino) -> salió a carretera
+            is_departed_speed = dist_plant and dist_plant > 1500.0 and gps.speed > 12.0
+            is_departed_far = dist_plant and dist_plant > 3000.0
+            if is_departed_speed or is_departed_far:
                 dec.new_status = "in_transit"
                 dec.dispatched_at = gps_time
                 dec.patch["departure_source"] = "gps"
