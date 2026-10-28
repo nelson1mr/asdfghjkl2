@@ -160,6 +160,25 @@ def normalize_text(text: str | None) -> str:
     t = t.upper().replace('"', "").replace("'", "").strip()
     return re.sub(r"\s+", " ", t)
 
+def normalize_plate(raw_plate: str | None) -> str | None:
+    """
+    Normaliza la placa vehicular a formato canónico estándar [números]-[letras][resto].
+    Garantiza que variaciones como '3875 YBR', '3875YBR' o '3875-YBR' produzcan siempre
+    el mismo identificador, preservando sufijos especiales si existieran (ej. '1234-XYZ 1').
+    """
+    if not raw_plate:
+        return None
+    p = str(raw_plate).strip()
+    if not p:
+        return None
+    m = re.match(r"^(\d{2,5})[\s-]*([A-Za-z]{3,4})(.*)$", p)
+    if m:
+        nums = m.group(1)
+        letters = m.group(2).upper()
+        rest = m.group(3)
+        return f"{nums}-{letters}{rest}"
+    return p.upper()
+
 def clean_brand(text: str | None) -> str:
     """Extrae el núcleo o marca distintiva de la estación."""
     s = normalize_text(text)
@@ -570,7 +589,8 @@ async def process_and_transform_records(
             fuel_type_id, _ = map_fuel_type(prod_raw, familia)
 
             liters = float(it.get("cantidad_despachada") or 0.0)
-            plate = (it.get("placa_despacho") or "").strip() or None
+            raw_plate = (it.get("placa_despacho") or "").strip() or None
+            plate = normalize_plate(raw_plate)
             # En ingesta inicia en None si tiene placa (pendiente de verificar por proximidad)
             has_gps = None if plate else False
             is_provincia = (it.get("ambito") or "").strip().lower() == "provincia"
@@ -656,7 +676,7 @@ async def process_and_transform_records(
             # Hash INVARIANTE: No depende de la hora de salida ni de variaciones textuales de la razón social.
             # Identifica el despacho/cupo físico unívocamente para evitar duplicados en la BD y push notifications repetidas.
             st_key = f"st_{station_id}" if station_id else f"raw_{clean_brand(raw_name)}"
-            plate_key = f"pl_{plate.strip().upper()}" if plate else "noplate"
+            plate_key = f"pl_{plate}" if plate else "noplate"
             hash_input = f"ypfb_desp_{d_id}_{scheduled_date_val}_{st_key}_{fuel_type_id}_{plate_key}_{int(liters)}"
             unique_hash = hashlib.md5(hash_input.encode("utf-8")).hexdigest()
 
