@@ -200,6 +200,7 @@ def normalize_plate(raw_plate: Any) -> str | None:
     if not raw_plate:
         return None
     p = str(raw_plate).strip()
+    p = re.sub(r"\s*\(\d+\)", "", p).strip()
     if not p:
         return None
     m = re.match(r"^(\d{2,5})[\s-]*([A-Za-z]{3,4})(.*)$", p)
