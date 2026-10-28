@@ -195,12 +195,24 @@ def estimate_discharge_minutes(liters: Any) -> int:
 
 
 # --- Placas y Sanitización ---------------------------------------------------
-# Extrae y normaliza la placa vehicular en mayúsculas sin mutaciones que saturen Kyros
-def clean_plate(raw: Any) -> str | None:
-    if not raw:
+# Extrae y normaliza la placa vehicular a formato canónico estándar [números]-[letras][resto]
+def normalize_plate(raw_plate: Any) -> str | None:
+    if not raw_plate:
         return None
-    s = str(raw).strip().upper()
-    return s if s else None
+    p = str(raw_plate).strip()
+    if not p:
+        return None
+    m = re.match(r"^(\d{2,5})[\s-]*([A-Za-z]{3,4})(.*)$", p)
+    if m:
+        nums = m.group(1)
+        letters = m.group(2).upper()
+        rest = m.group(3)
+        return f"{nums}-{letters}{rest}"
+    return p.upper()
+
+
+def clean_plate(raw: Any) -> str | None:
+    return normalize_plate(raw)
 
 
 def plate_candidates(raw: Any) -> list[str]:
@@ -476,17 +488,30 @@ def _arrive(dec: Decision, when: datetime, source: str, reason: str, liters: Any
 
 
 # Registra la entrega final de combustible (transición a delivered)
-def _deliver(dec: Decision, arrived: datetime, confidence: str, closed_by: str, reason: str, now: datetime) -> None:
+def _deliver(dec: Decision, arrived: datetime, confidence: str, closed_by: str, reason: str, now: datetime, nominal_discharge: int | None = None) -> None:
     dec.new_status = "delivered"
-    dec.delivered_at = now
     if not dec.arrived_at:
         dec.arrived_at = arrived
+
+    discharge_min = int(nominal_discharge or 45)
+    expected_finish = (arrived + timedelta(minutes=discharge_min)) if arrived else now
+
+    # Si se cierra por ventana expirada, viaje previo o fallback y el viaje ocurrió en el pasado:
+    # el fin físico de entrega ocurrió en (arrived + tiempo_descarga), no a la hora arbitraria 'now' del cron.
+    if closed_by in ("trip_window_expired", "superseded_by_newer_dispatch", "initial_sync_overdue", "no_station_time_fallback", "gps_offline_time_fallback"):
+        delivery_time = expected_finish if expected_finish <= now else now
+        calc_discharge = discharge_min
+    else:
+        delivery_time = now
+        calc_discharge = int(round(max(0.0, minutes(now - arrived)))) if arrived else discharge_min
+
+    dec.delivered_at = delivery_time
     dec.patch.update({
-        "delivered_at": iso(now),
+        "delivered_at": iso(delivery_time),
         "delivery_confidence": confidence,
         "closed_by": closed_by,
         "delivery_reason": reason,
-        "discharge_duration_minutes": int(round(max(0.0, minutes(now - arrived)))),
+        "discharge_duration_minutes": calc_discharge,
         "near_since": None,
         "is_delayed": False,
     })
@@ -576,7 +601,7 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
         if not st:
             if overrun >= NO_STATION_DELIVERED_AFTER_MIN:
                 _deliver(dec, eta, "inferred", "no_station_time_fallback",
-                         f"sin coordenadas de estación; ETA+{overrun:.0f} min", now)
+                         f"sin coordenadas de estación; ETA+{overrun:.0f} min", now, d.get("discharge_duration_minutes"))
             return dec
 
         # Regla B: GPS satelital fresco en vivo -> Manda la física sobre el reloj
@@ -605,7 +630,7 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
 
                 if overdue_delivery_min >= max_overdue_allowance and dist > DELAY_FAR_M:
                     _deliver(dec, eta, "inferred", "trip_window_expired",
-                             f"ventana de viaje superada (+{overdue_delivery_min/60:.1f}h de entrega est.); cisterna retirada a {dist/1000:.1f} km", now)
+                             f"ventana de viaje superada (+{overdue_delivery_min/60:.1f}h de entrega est.); cisterna retirada a {dist/1000:.1f} km", now, d.get("discharge_duration_minutes"))
                     return dec
 
                 # Truth Override: Sigue en carretera, no se inventa entrega
@@ -648,7 +673,7 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
         # Si no estaba lejos (ej. se apagó corta-corriente a <= 400m de la estación)
         if overrun >= OFFLINE_DELIVERED_AFTER_MIN:
             _deliver(dec, eta, "inferred", "gps_offline_time_fallback",
-                     f"sin GPS; ETA+{overrun:.0f} min", now)
+                     f"sin GPS; ETA+{overrun:.0f} min", now, d.get("discharge_duration_minutes"))
         elif overrun >= OFFLINE_DELIVERING_AFTER_MIN:
             _arrive(dec, eta, "inferred", f"sin GPS; ETA+{overrun:.0f} min", liters)
         return dec
@@ -668,11 +693,11 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
         # Fin de entrega por alejamiento físico (> 250 m)
         if dist is not None and dist > DEPARTURE_RADIUS_M:
             _deliver(dec, arrived, "gps", "gps_departure",
-                     f"se alejó {dist:.0f} m tras {elapsed:.0f} min", now)
+                     f"se alejó {dist:.0f} m tras {elapsed:.0f} min", now, discharge)
         # Fin de entrega al transcurrir el tiempo físico de vaciado
         elif elapsed >= discharge:
             _deliver(dec, arrived, "gps" if source == "gps" else "inferred", "discharge_time",
-                     f"descarga completa {elapsed:.0f}/{discharge} min", now)
+                     f"descarga completa {elapsed:.0f}/{discharge} min", now, discharge)
         else:
             dec.note = f"Descargando en surtidor ({elapsed:.0f}/{discharge} min)"
         return dec
@@ -907,7 +932,7 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False, fo
                 dec = Decision()
                 eta_val = parse_ts(d.get("estimated_arrived_at")) or now
                 _deliver(dec, eta_val, "inferred", "superseded_by_newer_dispatch",
-                         "viaje previo de la cisterna; ya inició un despacho posterior", now)
+                         "viaje previo de la cisterna; ya inició un despacho posterior", now, d.get("discharge_duration_minutes"))
             else:
                 try:
                     dec = evaluate(d, stations.get(d.get("station_id")), gps_result, prev_by_key.get(key), now)
