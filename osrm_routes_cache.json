@@ -4879,5 +4879,14 @@
     "duration_min": 5,
     "distance_km": 0.85,
     "updated_at": "2026-10-28T15:47:38.539003+00:00"
+  },
+  "-16.5740,-68.1861->-16.5041,-68.1337": {
+    "station_id": 1749,
+    "station_name": "ESTACION DE SERVICIO SAN PEDRO",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApA}yAge@efEg`A{_@{_@dPa]mZmSpAcE}Bn@uTkI}\\vFcEhElFmLvNwFaJrAfFuDyEJwVs_@fCkA}E{KaCbAMyK`G}UqHcLfJoJsD}D",
+    "duration_min": 17,
+    "distance_km": 14.86,
+    "updated_at": "2026-10-28T16:47:43.924318+00:00"
   }
 }
