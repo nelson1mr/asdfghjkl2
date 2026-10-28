@@ -773,7 +773,7 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
         try:
             # Consultar status, telemetría y confirmaciones existentes
             res = db.table("dispatches").select(
-                "unique_hash, status, has_gps, dispatched_at, arrived_at, delivered_at, metadata"
+                "unique_hash, status, has_gps, dispatched_at, arrived_at, delivered_at, estimated_dispatched_at, estimated_arrived_at, estimated_delivered_at, metadata"
             ).in_("unique_hash", chunk).execute()
             for r in res.data or []:
                 existing_map[r["unique_hash"]] = r
@@ -799,6 +799,17 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
                 d["arrived_at"] = ex["arrived_at"]
             if ex.get("delivered_at"):
                 d["delivered_at"] = ex["delivered_at"]
+
+            # Preservar estimaciones temporales previas si YPFB no trae boleta de balanza oficial
+            # Evita que el horario estimado de salida derive hacia adelante cada vez que corre el scraper en 'loading' o 'in_transit'
+            if not d.get("dispatched_at"):
+                if ex.get("estimated_dispatched_at"):
+                    d["estimated_dispatched_at"] = ex["estimated_dispatched_at"]
+                if ex.get("estimated_arrived_at"):
+                    d["estimated_arrived_at"] = ex["estimated_arrived_at"]
+                if ex.get("estimated_delivered_at"):
+                    d["estimated_delivered_at"] = ex["estimated_delivered_at"]
+
             # Preservar telemetría y campos agregados por el radar GPS en metadata
             ex_meta = ex.get("metadata")
             if isinstance(ex_meta, dict):
