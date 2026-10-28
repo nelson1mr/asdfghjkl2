@@ -2182,7 +2182,11 @@
   "-17.8771,-63.2004->-18.0702,-64.4247": {
     "polyline": "p{alB|ov`K_^XodEttFfqGfmHfzAf_IliIb{AlyCdlAb}BtpBz|F|jCt_HbgGxbBbOlcEfeBx{EbxFtg@hzAyJ~dAbvB|aDex@bvBecAtJ`GdiAcaBnlD}n@tMMfl@_wAp]zVt|Cbq@ty@sb@fRj@dnBfjAxToT~Uhn@`p@uI|i@fq@tOyTvWfq@zJRti@|}Aq`@dFf}@xf@gk@s@vzAvaAzNqX|hCiaD`|FmHbmAvu@tqAcYf^rp@jlEmoAzuC_@nvAnXrP}r@pk@fSlx@szA|T{rD`iEigNfgEyg@|k@wpBrJeyEbsCiIfc@zrArgCnKraBw\\do@pX~gBpy@cGpkBjmBxcBaPr|@n{AbeAjL`|@qa@fmC~`AvKn|J`eIbfMktD`zFgjAnmEogBbhAfGbi@mo@ze@vl@vdA_Arx@ka@fT}qAt|F",
     "duration_min": 213,
-    "distance_km": 215.36
+    "distance_km": 215.36,
+    "station_id": 1261,
+    "station_name": "SURTIDOR SANTIAGUITO",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-28T15:47:38.210378+00:00"
   },
   "-17.8771,-63.2004->-17.7257,-63.1653": {
     "polyline": "p{alB|ov`K_^XmPxRcsDoh@mr@rm@cy@e_@sm@x~@yy@pe@ar@tL}fBcAajAqbAgy@a]{`@qoAoB_nA{xCyz@",
@@ -4830,5 +4834,50 @@
     "duration_min": 92,
     "distance_km": 96.11,
     "updated_at": "2026-10-28T15:17:34.510989+00:00"
+  },
+  "-17.9357,-67.1146->-18.4191,-66.5838": {
+    "station_id": 1793,
+    "station_name": "LLALLAGUA I",
+    "department": "potosi",
+    "polyline": "z~mlBtcsxK`tB_x@pCay@riB{Jnu@ojGvgDafAtxCgwBbfDsuAvnEpYj_I_qBjdEoxGvsCiqAdeEcnFnvEijDjrC{`DgRq}AbrAipC~yDml@xr@mfCzoAmVp`BihDdeAwq@~PurA_]sv@pi@{d@ie@{J`@wvB|f@}nB_eBepDdcAyw@v\\~~@fw@eTdt@}kBcWe_A~RgmAr_BofBx`@pM",
+    "duration_min": 92,
+    "distance_km": 96.06,
+    "updated_at": "2026-10-28T15:47:37.222175+00:00"
+  },
+  "-17.9357,-67.1146->-17.9542,-67.1090": {
+    "station_id": 1783,
+    "station_name": "CINCO ESQUINAS",
+    "department": "oruro",
+    "polyline": "z~mlBtcsxKjgAab@fBhAdA_@nUb@pPxAAZ",
+    "duration_min": 5,
+    "distance_km": 2.27,
+    "updated_at": "2026-10-28T15:47:37.549839+00:00"
+  },
+  "-17.9357,-67.1146->-17.9475,-67.1080": {
+    "station_id": 1784,
+    "station_name": "MORELA",
+    "department": "oruro",
+    "polyline": "z~mlBtcsxKrhAyb@`AYNR",
+    "duration_min": 5,
+    "distance_km": 1.49,
+    "updated_at": "2026-10-28T15:47:37.878712+00:00"
+  },
+  "-17.9357,-67.1146->-16.5041,-68.1337": {
+    "station_id": 1749,
+    "station_name": "ESTACION DE SERVICIO SAN PEDRO",
+    "department": "la_paz",
+    "polyline": "z~mlBtcsxKust@r}PqjEr{CqjMdiZ}l^r`h@agCjnRa}Uvjg@uqG|nGeiKldBqdJllKk}NhjJywh@fxTqyS||@eaEy_Ay`Ptd@}cH}gBqg@oxAu|@dDgM}fC",
+    "duration_min": 207,
+    "distance_km": 219.02,
+    "updated_at": "2026-10-28T15:47:38.209665+00:00"
+  },
+  "-20.0156,-63.5337->-20.0177,-63.5312": {
+    "station_id": 904,
+    "station_name": "ESTACION DE SERVICIO CORDILLERA LA WILLIAMS",
+    "department": "santa_cruz",
+    "polyline": "thdyBvcxbKjA~CfPoJJmMgEC?q@_@G",
+    "duration_min": 5,
+    "distance_km": 0.85,
+    "updated_at": "2026-10-28T15:47:38.539003+00:00"
   }
 }
