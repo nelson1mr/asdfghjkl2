@@ -5032,5 +5032,14 @@
     "duration_min": 79,
     "distance_km": 84.46,
     "updated_at": "2026-10-29T21:31:09.198119+00:00"
+  },
+  "-14.8432,-64.9091->-13.0511,-64.6661": {
+    "station_id": 1848,
+    "station_name": "ESTACION DE SERVICIO COELHO CAAMAÑO S.R.L.",
+    "department": "beni",
+    "polyline": "f_ryAltdkKmnv@gjGctFzlBovIm{Fa~y@~mWasPyEekNpuQgvImfEqmCqwHecMmoEifUynCafEmuEu_L~x@ab^e}HarTen_@ybQstE_`DgqJsa_@my@grFfyIteApyD",
+    "duration_min": 307,
+    "distance_km": 247.34,
+    "updated_at": "2026-10-29T22:01:06.604656+00:00"
   }
 }
