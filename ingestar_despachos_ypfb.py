@@ -74,23 +74,23 @@ HAVERSINE_SPEED_MONTANA_KMH = 35.0       # velocidad promedio en carretera sinuo
 # =============================================================================
 CATALOGO_DISTRITOS = {
     # 1. Beni Norte / Pando / Riberalta
-    11: {"codigo": "AMZ", "nombre": "Amazonico (Riberalta)", "departamento": "beni", "plant_lat": -11.00370517677800, "plant_lng": -66.04830114170910},
+    11: {"codigo": "AMZ", "nombre": "Amazonico", "departamento": "beni", "plant_lat": -11.00370517677800, "plant_lng": -66.04830114170910},
     # 2. Tarija Frontera Sur
-    17: {"codigo": "BER", "nombre": "Zona Comercial Bermejo", "departamento": "tarija", "plant_lat": -22.72582853533690, "plant_lng": -64.35166157316420},
+    17: {"codigo": "BER", "nombre": "Bermejo", "departamento": "tarija", "plant_lat": -22.72582853533690, "plant_lng": -64.35166157316420},
     # 3. Chuquisaca / Sucre
-    20: {"codigo": "CHU", "nombre": "Planta Qhora Qhora (Sucre)", "departamento": "chuquisaca", "plant_lat": -19.07998626110280, "plant_lng": -65.22167650982740},
+    20: {"codigo": "CHU", "nombre": "Chuquisaca", "departamento": "chuquisaca", "plant_lat": -19.07998626110280, "plant_lng": -65.22167650982740},
     # 4. Pando Capital
-    10: {"codigo": "COB", "nombre": "Zona Comercial Cobija", "departamento": "pando", "plant_lat": -11.02727737546800, "plant_lng": -68.75543913244700},
+    10: {"codigo": "COB", "nombre": "Cobija", "departamento": "pando", "plant_lat": -11.02727737546800, "plant_lng": -68.75543913244700},
     # 5. Cochabamba Central
-    19: {"codigo": "CEN", "nombre": "Planta Valle Hermoso", "departamento": "cochabamba", "plant_lat": -17.45056070037580, "plant_lng": -66.12384363077580},
+    19: {"codigo": "CEN", "nombre": "Cochabamba", "departamento": "cochabamba", "plant_lat": -17.45056070037580, "plant_lng": -66.12384363077580},
     # 6. La Paz / El Alto
-    5:  {"codigo": "LPZ", "nombre": "Planta Senkata (El Alto)", "departamento": "la_paz", "plant_lat": -16.57400707348200, "plant_lng": -68.18613838385400},
+    5:  {"codigo": "LPZ", "nombre": "Distrito Comercial La Paz", "departamento": "la_paz", "plant_lat": -16.57400707348200, "plant_lng": -68.18613838385400},
     # 7. Beni Frontera
-    12: {"codigo": "GUA", "nombre": "Zona Comercial Guayaramerin", "departamento": "beni", "plant_lat": -10.80801641933020, "plant_lng": -65.35227326676250},
+    12: {"codigo": "GUA", "nombre": "Guayaramerin", "departamento": "beni", "plant_lat": -10.80801641933020, "plant_lng": -65.35227326676250},
     # 8. Chuquisaca Chaco
-    25: {"codigo": "MON", "nombre": "Planta Monteagudo", "departamento": "chuquisaca", "plant_lat": -19.74559341842000, "plant_lng": -63.95991249941300},
+    25: {"codigo": "MON", "nombre": "Monteagudo", "departamento": "chuquisaca", "plant_lat": -19.74559341842000, "plant_lng": -63.95991249941300},
     # 9. Oruro Altiplano
-    9:  {"codigo": "ORU", "nombre": "Planta San Pedro", "departamento": "oruro", "plant_lat": -17.93571571041580, "plant_lng": -67.11460797116160},
+    9:  {"codigo": "ORU", "nombre": "Oruro", "departamento": "oruro", "plant_lat": -17.93571571041580, "plant_lng": -67.11460797116160},
     # 10. Potosí Sur (Atocha - ANH Oficial)
     27: {"codigo": "PEA", "nombre": "Planta Engarrafadora Atocha", "departamento": "potosi", "plant_lat": -20.961194, "plant_lng": -66.204000},
     # 11. Chuquisaca Cinti (Camargo - ANH Oficial)
@@ -98,33 +98,33 @@ CATALOGO_DISTRITOS = {
     # 12. Potosí Norte (Catavi/Llallagua - ANH Oficial)
     28: {"codigo": "PEC", "nombre": "Planta Engarrafadora Catavi", "departamento": "potosi", "plant_lat": -18.422617, "plant_lng": -66.578006},
     # 13. Potosí Centro
-    22: {"codigo": "POT", "nombre": "Planta Potosí (San Clemente)", "departamento": "potosi", "plant_lat": -19.57737082058280, "plant_lng": -65.76022191904490},
+    22: {"codigo": "POT", "nombre": "Potosi", "departamento": "potosi", "plant_lat": -19.57737082058280, "plant_lng": -65.76022191904490},
     # 14. Cochabamba Trópico
-    26: {"codigo": "PVR", "nombre": "Planta Puerto Villarroel", "departamento": "cochabamba", "plant_lat": -16.84177978017380, "plant_lng": -64.80314536951480},
+    26: {"codigo": "PVR", "nombre": "Puerto Villarroel", "departamento": "cochabamba", "plant_lat": -16.84177978017380, "plant_lng": -64.80314536951480},
     # 15. Santa Cruz Central (Refinería Palmasola)
-    4:  {"codigo": "SCZ", "nombre": "Planta Santa Cruz (Palmasola)", "departamento": "santa_cruz", "plant_lat": -17.87708642377990, "plant_lng": -63.20039447396990},
+    4:  {"codigo": "SCZ", "nombre": "Santa Cruz", "departamento": "santa_cruz", "plant_lat": -17.87708642377990, "plant_lng": -63.20039447396990},
     # 16. Chuquisaca Tomina (Estación Tarabuquillo YPFB)
-    21: {"codigo": "TBQ", "nombre": "Estación Tarabuquillo", "departamento": "chuquisaca", "plant_lat": -19.352513230910183, "plant_lng": -64.4783075529959},
+    21: {"codigo": "TBQ", "nombre": "Tarabuquillo", "departamento": "chuquisaca", "plant_lat": -19.352513230910183, "plant_lng": -64.4783075529959},
     # 17. Tarija Valle Central
-    14: {"codigo": "TAR", "nombre": "Planta Tarija (El Portillo)", "departamento": "tarija", "plant_lat": -21.56692058473000, "plant_lng": -64.66612664982680},
+    14: {"codigo": "TAR", "nombre": "Tarija", "departamento": "tarija", "plant_lat": -21.56692058473000, "plant_lng": -64.66612664982680},
     # 18. Beni Central
-    13: {"codigo": "TRI", "nombre": "Planta Trinidad", "departamento": "beni", "plant_lat": -14.84321802876630, "plant_lng": -64.90912405774000},
+    13: {"codigo": "TRI", "nombre": "Trinidad", "departamento": "beni", "plant_lat": -14.84321802876630, "plant_lng": -64.90912405774000},
     # 19. Potosí Sur (Tupiza)
-    24: {"codigo": "TUP", "nombre": "Planta Tupiza", "departamento": "potosi", "plant_lat": -21.46794714927200, "plant_lng": -65.71686132811010},
+    24: {"codigo": "TUP", "nombre": "Tupiza", "departamento": "potosi", "plant_lat": -21.46794714927200, "plant_lng": -65.71686132811010},
     # 20. Potosí Suroeste (Salar Uyuni)
-    23: {"codigo": "UYU", "nombre": "Planta Uyuni", "departamento": "potosi", "plant_lat": -20.45555987377030, "plant_lng": -66.81324108503760},
+    23: {"codigo": "UYU", "nombre": "Uyuni", "departamento": "potosi", "plant_lat": -20.45555987377030, "plant_lng": -66.81324108503760},
     # 21. Tarija Chaco
-    18: {"codigo": "VLM", "nombre": "Planta Villa Montes", "departamento": "tarija", "plant_lat": -21.26809159197950, "plant_lng": -63.45017401501540},
+    18: {"codigo": "VLM", "nombre": "Villamontes", "departamento": "tarija", "plant_lat": -21.26809159197950, "plant_lng": -63.45017401501540},
     # 22. Potosí Frontera Argentina
-    16: {"codigo": "VLZ", "nombre": "Zona Comercial Villazón", "departamento": "potosi", "plant_lat": -22.07423729756340, "plant_lng": -65.59901311062280},
+    16: {"codigo": "VLZ", "nombre": "Villazon", "departamento": "potosi", "plant_lat": -22.07423729756340, "plant_lng": -65.59901311062280},
     # 23. Tarija Frontera
-    15: {"codigo": "YAC", "nombre": "Zona Comercial Yacuiba", "departamento": "tarija", "plant_lat": -22.04187815162910, "plant_lng": -63.67874361108990},
+    15: {"codigo": "YAC", "nombre": "Yacuiba", "departamento": "tarija", "plant_lat": -22.04187815162910, "plant_lng": -63.67874361108990},
     # 24. Santa Cruz Cordillera
-    7:  {"codigo": "CAM", "nombre": "Planta Camiri", "departamento": "santa_cruz", "plant_lat": -20.01562013641880, "plant_lng": -63.53367201983930},
+    7:  {"codigo": "CAM", "nombre": "Zona Comercial Camiri", "departamento": "santa_cruz", "plant_lat": -20.01562013641880, "plant_lng": -63.53367201983930},
     # 25. Santa Cruz Pantanal
-    6:  {"codigo": "PSZ", "nombre": "Zona Comercial Puerto Suárez", "departamento": "santa_cruz", "plant_lat": -18.98924775924940, "plant_lng": -57.79274321626870},
+    6:  {"codigo": "PSZ", "nombre": "Zona Comercial Puerto Suarez", "departamento": "santa_cruz", "plant_lat": -18.98924775924940, "plant_lng": -57.79274321626870},
     # 26. Santa Cruz Chiquitanía
-    8:  {"codigo": "SJC", "nombre": "Planta San José de Chiquitos", "departamento": "santa_cruz", "plant_lat": -17.84416194151650, "plant_lng": -60.73058573529120}
+    8:  {"codigo": "SJC", "nombre": "Zona Comercial San Jose de Chiquitos", "departamento": "santa_cruz", "plant_lat": -17.84416194151650, "plant_lng": -60.73058573529120}
 }
 
 VALID_DEPARTMENTS = {
@@ -682,18 +682,29 @@ async def process_and_transform_records(
             hash_input = f"ypfb_desp_{d_id}_{scheduled_date_val}_{st_key}_{fuel_type_id}_{plate_key}_{int(liters)}"
             unique_hash = hashlib.md5(hash_input.encode("utf-8")).hexdigest()
 
+            if has_departed and dispatched_at:
+                dep_source = "balanza"
+                dep_reason = f"Boleta oficial de balanza YPFB ({dispatched_at.astimezone(BOLIVIA_TZ).strftime('%H:%M:%S')})"
+            else:
+                dep_source = "planta"
+                dep_reason = "En proceso de carga en planta"
+
             metadata_dict = {
+                "client": it.get("cliente"),
+                "district_code": d_meta.get("codigo"),
+                "district_name": d_meta.get("nombre"),
                 "family": familia,
                 "family_code": it.get("familia_codigo"),
-                "client": it.get("cliente"),
-                "district_name": d_meta.get("nombre"),
                 "unit": it.get("unidad", "L"),
+                "ambito": it.get("ambito"),
+                "origen_etiqueta": it.get("origen_etiqueta"),
+                "departure_source": dep_source,
+                "departure_reason": dep_reason,
                 "gps_status": "pending" if plate else "not_found",
+                "estimated_discharge_minutes": discharge_duration_minutes,
             }
             if eta_source:
                 metadata_dict["eta_source"] = eta_source
-            if eta_travel_min is not None:
-                metadata_dict["eta_travel_min"] = eta_travel_min
             if route_distance_km is not None:
                 metadata_dict["route_distance_km"] = route_distance_km
 
