@@ -5041,5 +5041,14 @@
     "duration_min": 307,
     "distance_km": 247.34,
     "updated_at": "2026-10-29T22:01:06.604656+00:00"
+  },
+  "-17.9357,-67.1146->-18.4648,-66.5660": {
+    "station_id": 1792,
+    "station_name": "UNCIA",
+    "department": "potosi",
+    "polyline": "z~mlBtcsxK`tB_x@pCay@riB{Jnu@ojGvgDafAtxCgwBbfDsuAvnEpYj_I_qBjdEoxGvsCiqAdeEcnFnvEijDjrC{`DgRq}AbrAipC~yDml@xr@mfCzoAmVp`BihDpfAkt@rOapA_]sv@pi@{d@ie@{J`@wvB|f@}nByfBgdDpGq]l|@ee@v\\~~@rx@uUxr@mjBcWe_A~RgmAr_BofBzXzQ|b@avAxoDst@roAlW",
+    "duration_min": 98,
+    "distance_km": 102.86,
+    "updated_at": "2026-10-29T22:46:08.152960+00:00"
   }
 }
