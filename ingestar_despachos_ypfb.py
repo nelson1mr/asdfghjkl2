@@ -814,13 +814,46 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
             # Preservar confirmación satelital has_gps evaluada por el monitor
             if ex.get("has_gps") is not None:
                 d["has_gps"] = ex["has_gps"]
-            # Preservar fechas de salida, llegada o entrega confirmadas previamente
-            if ex.get("dispatched_at") and not d.get("dispatched_at"):
-                d["dispatched_at"] = ex["dispatched_at"]
-            if ex.get("arrived_at"):
-                d["arrived_at"] = ex["arrived_at"]
-            if ex.get("delivered_at"):
-                d["delivered_at"] = ex["delivered_at"]
+            ex_meta = ex.get("metadata") if isinstance(ex.get("metadata"), dict) else {}
+            was_retro = ex_meta.get("departure_source") in ("gps_retroactive", "time_fallback", "gps") and (
+                "descubierto en destino" in str(ex_meta.get("arrival_reason", "")) or
+                ex_meta.get("departure_source") == "gps_retroactive"
+            )
+
+            # Reconciliación de coherencia temporal cuando YPFB envía balanza oficial tardía:
+            # Si el despacho ya había sido descubierto en destino (descubrimiento tardío)
+            # y ahora llega la hora de salida de balanza oficial de YPFB:
+            if d.get("dispatched_at") and was_retro:
+                official_disp = parse_kyros_datetime(fecha_hora_efectiva) if fecha_hora_efectiva else None
+                if official_disp:
+                    travel_m = d.get("travel_duration_minutes") or 25
+                    discharge_m = d.get("discharge_duration_minutes") or 45
+                    reconciled_arr = official_disp + timedelta(minutes=travel_m)
+                    reconciled_del = reconciled_arr + timedelta(minutes=discharge_m)
+
+                    d["dispatched_at"] = official_disp.isoformat()
+                    d["arrived_at"] = reconciled_arr.isoformat()
+                    if ex.get("delivered_at"):
+                        d["delivered_at"] = reconciled_del.isoformat()
+                    elif ex.get("arrived_at"):
+                        d["arrived_at"] = reconciled_arr.isoformat()
+
+                    d["discharge_duration_minutes"] = discharge_m
+                    if "metadata" not in d or not isinstance(d["metadata"], dict):
+                        d["metadata"] = {}
+                    d["metadata"]["departure_source"] = "balanza_oficial"
+                    d["metadata"]["arrival_source"] = "reconciled_official"
+                    d["metadata"]["delivery_confidence"] = "gps" if ex.get("has_gps") else "inferred"
+                    d["metadata"]["delivery_reason"] = f"reconciliado con hora oficial de balanza YPFB ({d['dispatched_at'][:19]})"
+                    d["metadata"]["discharge_duration_minutes"] = discharge_m
+            else:
+                # Preservar fechas de salida, llegada o entrega confirmadas previamente
+                if ex.get("dispatched_at") and not d.get("dispatched_at"):
+                    d["dispatched_at"] = ex["dispatched_at"]
+                if ex.get("arrived_at"):
+                    d["arrived_at"] = ex["arrived_at"]
+                if ex.get("delivered_at"):
+                    d["delivered_at"] = ex["delivered_at"]
 
             # Preservar estimaciones temporales previas si YPFB no trae boleta de balanza oficial
             # Evita que el horario estimado de salida derive hacia adelante cada vez que corre el scraper en 'loading' o 'in_transit'
