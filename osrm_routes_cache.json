@@ -4978,5 +4978,14 @@
     "duration_min": 5,
     "distance_km": 3.35,
     "updated_at": "2026-10-29T19:16:02.444450+00:00"
+  },
+  "-21.2681,-63.4502->-15.5801,-67.2516": {
+    "station_id": 1040,
+    "station_name": "ESTACION DE SERVICIO PALOS BLANCOS",
+    "department": "la_paz",
+    "polyline": "nxx`CjngbKs_@b{QqdFpaDr_o@fjX}kJraMvoD`iRgiDlzQxgH~_b@`dKvbEk`Sjgp@`tRbzSruGxuXw_J`eN{{SrpCyrDbez@e|JnsDa{GfiRoheB|kFsk}@_eW}ec@raEgnSzub@orVleB{nP|hMqtIvgWvaA||\\cdLn|Fiwf@dCyxGbjOovPceB}`TtqV~PbgO}ne@z}OcpPfcQn{GrsIk\\hoc@elP`wTe`VxmDk|KnrKosBpeRfnKpuGw{bAhr`@yk~An|ImvXh|Tujs@|gPasr@`~gAgnZfg{@uvn@~_b@q_i@vyTkqj@|`@{ePkjF_|Jw`QeiSm{BolDktg@ssKqfBsPltE{hDi_SopZw|Iw|@kzJy`NciKkvUfeAckD{eL_a]}`BuiBg_KoyPy|G~yB{xX",
+    "duration_min": 1228,
+    "distance_km": 1330.3,
+    "updated_at": "2026-10-29T19:31:05.927384+00:00"
   }
 }
