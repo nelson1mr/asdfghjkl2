@@ -458,6 +458,7 @@ class Decision:
     dispatched_at: datetime | None = None
     arrived_at: datetime | None = None
     delivered_at: datetime | None = None
+    discharge_duration_minutes: int | None = None
     patch: dict[str, Any] = field(default_factory=dict)
     note: str = ""
 
@@ -478,7 +479,6 @@ def _arrive(dec: Decision, when: datetime, source: str, reason: str, liters: Any
     dec.new_status = "delivering"
     dec.arrived_at = when
     dec.patch.update({
-        "arrived_at": iso(when),
         "arrival_source": source,
         "arrival_reason": reason,
         "estimated_discharge_minutes": estimate_discharge_minutes(liters),
@@ -507,12 +507,12 @@ def _deliver(dec: Decision, arrived: datetime, confidence: str, closed_by: str, 
         calc_discharge = int(round(max(0.0, minutes(now - arrived)))) if arrived else discharge_min
 
     dec.delivered_at = delivery_time
+    dec.discharge_duration_minutes = calc_discharge
     dec.patch.update({
-        "delivered_at": iso(delivery_time),
+        "delivery_source": confidence,
         "delivery_confidence": confidence,
         "closed_by": closed_by,
         "delivery_reason": reason,
-        "discharge_duration_minutes": calc_discharge,
         "near_since": None,
         "is_delayed": False,
     })
@@ -590,9 +590,8 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
                 dec.dispatched_at = retro_departure
                 dec.arrived_at = gps_time
                 dec.patch.update({
-                    "dispatched_at": iso(retro_departure),
-                    "arrived_at": iso(gps_time),
                     "departure_source": "gps_retroactive",
+                    "departure_reason": f"Descubierto en destino a {dist:.0f} m (salida estimada retroactiva)",
                     "arrival_source": "gps",
                     "arrival_reason": f"geocerca {dist:.0f} m a {gps.speed:.0f} km/h (descubierto en destino)",
                     "near_since": None,
@@ -613,9 +612,11 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
                     mins_on_road = min(travel_min, max(5, int((dist_plant / 1000.0) * 1.2)))
                     dec.dispatched_at = gps_time - timedelta(minutes=mins_on_road)
                     dec.patch["departure_source"] = "gps_retroactive"
+                    dec.patch["departure_reason"] = f"En carretera a {dist_plant/1000:.1f} km (salida estimada retroactiva)"
                 else:
                     dec.dispatched_at = gps_time
                     dec.patch["departure_source"] = "gps"
+                    dec.patch["departure_reason"] = f"Salió de planta (GPS) a {dist_plant/1000:.1f} km a {gps.speed:.0f} km/h"
                 dec.note = f"SALIÓ DE PLANTA (GPS): a {dist_plant/1000:.1f} km a {gps.speed:.0f} km/h"
                 return dec
 
@@ -626,6 +627,7 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
             dec.dispatched_at = est_disp
             dec.has_gps = True if gps_fresh else False
             dec.patch["departure_source"] = "time_fallback"
+            dec.patch["departure_reason"] = f"Cumplió tiempo de carga estimado ({iso(est_disp)})"
             dec.note = f"SALIÓ DE PLANTA (Tiempo): cumplió hora estimada {iso(est_disp)}"
             return dec
 
@@ -814,7 +816,9 @@ def persist_decision(db: Client, d: dict, dec: Decision, now: datetime) -> bool:
     if dec.delivered_at is not None:
         payload["delivered_at"] = iso(dec.delivered_at)
     # Actualizar duración real de descarga si fue calculada
-    if dec.patch.get("discharge_duration_minutes") is not None:
+    if dec.discharge_duration_minutes is not None:
+        payload["discharge_duration_minutes"] = int(round(dec.discharge_duration_minutes))
+    elif dec.patch.get("discharge_duration_minutes") is not None:
         payload["discharge_duration_minutes"] = int(round(dec.patch["discharge_duration_minutes"]))
 
     # Bloqueo optimista: si otro proceso cambió el status, no se pisa
