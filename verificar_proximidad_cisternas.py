@@ -572,14 +572,50 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
             if plant_meta and plant_meta.get("plant_lat") and plant_meta.get("plant_lng"):
                 dist_plant = haversine_m(gps.lat, gps.lng, plant_meta["plant_lat"], plant_meta["plant_lng"])
 
+            travel_min = d.get("travel_duration_minutes") or DEFAULT_TRIP_MIN
+
+            # Sub-caso 1A: Descubrimiento tardío directamente en el surtidor destino
+            # La cisterna ya está dentro de la geocerca de la estación (<= 120m) o detenida a <= 400m
+            # y no está en la planta de origen (> 2.0 km)
+            is_at_station = dist is not None and (
+                (dist <= GEOFENCE_RADIUS_M and gps.speed <= ARRIVAL_MAX_SPEED_KMH) or
+                (dist <= NEAR_RADIUS_M and (dist_plant is None or dist_plant > 2000.0) and gps.speed <= NEAR_MAX_SPEED_KMH)
+            )
+
+            if is_at_station:
+                # Transiciona directamente a delivering (descargando)
+                # Salida estimada retroactiva = gps_time - travel_min
+                retro_departure = gps_time - timedelta(minutes=travel_min)
+                dec.new_status = "delivering"
+                dec.dispatched_at = retro_departure
+                dec.arrived_at = gps_time
+                dec.patch.update({
+                    "dispatched_at": iso(retro_departure),
+                    "arrived_at": iso(gps_time),
+                    "departure_source": "gps_retroactive",
+                    "arrival_source": "gps",
+                    "arrival_reason": f"geocerca {dist:.0f} m a {gps.speed:.0f} km/h (descubierto en destino)",
+                    "near_since": None,
+                })
+                dec.note = f"DESCUBIERTO EN SURTIDOR (GPS): a {dist:.0f} m; pasa directo a delivering"
+                return dec
+
+            # Sub-caso 1B: Salida normal o en ruta
             # Si se alejó > 1.5 km de la planta con velocidad > 12 km/h,
-            # o si ya está a > 3.0 km de la planta (incluso detenido en semáforo/destino) -> salió a carretera
+            # o si ya está a > 3.0 km de la planta -> salió a carretera
             is_departed_speed = dist_plant and dist_plant > 1500.0 and gps.speed > 12.0
             is_departed_far = dist_plant and dist_plant > 3000.0
             if is_departed_speed or is_departed_far:
                 dec.new_status = "in_transit"
-                dec.dispatched_at = gps_time
-                dec.patch["departure_source"] = "gps"
+                # Si ya está muy lejos de la planta (> 10 km) en su primera detección,
+                # no salió hace 0 min; estimamos su salida retroactiva en carretera (~50 km/h)
+                if dist_plant and dist_plant > 10000.0:
+                    mins_on_road = min(travel_min, max(5, int((dist_plant / 1000.0) * 1.2)))
+                    dec.dispatched_at = gps_time - timedelta(minutes=mins_on_road)
+                    dec.patch["departure_source"] = "gps_retroactive"
+                else:
+                    dec.dispatched_at = gps_time
+                    dec.patch["departure_source"] = "gps"
                 dec.note = f"SALIÓ DE PLANTA (GPS): a {dist_plant/1000:.1f} km a {gps.speed:.0f} km/h"
                 return dec
 
@@ -694,10 +730,25 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
         elapsed = minutes(now - arrived)
         source = meta.get("arrival_source") or "inferred"
 
-        # Fin de entrega por alejamiento físico (> 250 m)
+        # Fin de entrega por alejamiento físico (> 250 m / DEPARTURE_RADIUS_M)
         if dist is not None and dist > DEPARTURE_RADIUS_M:
+            is_retro = meta.get("departure_source") == "gps_retroactive" or "descubierto en destino" in str(meta.get("arrival_reason", ""))
+
+            # Filtro de seguridad contra paradas momentáneas de paso (< 8 min):
+            # Si no era descubrimiento tardío y estuvo menos de 8 minutos, fue una pasada o semáforo
+            if elapsed < 8.0 and not is_retro:
+                dec.new_status = "in_transit"
+                dec.arrived_at = None
+                dec.patch.update({
+                    "arrived_at": None,
+                    "near_since": None,
+                })
+                dec.note = f"DE PASO (GPS): se alejó tras solo {elapsed:.0f} min (< 8 min mínimos); vuelve a in_transit"
+                return dec
+
+            calc_d = discharge if is_retro else max(15, int(round(elapsed)))
             _deliver(dec, arrived, "gps", "gps_departure",
-                     f"se alejó {dist:.0f} m tras {elapsed:.0f} min", now, discharge)
+                     f"se alejó {dist:.0f} m tras {elapsed:.0f} min", now, calc_d)
         # Fin de entrega al transcurrir el tiempo físico de vaciado
         elif elapsed >= discharge:
             _deliver(dec, arrived, "gps" if source == "gps" else "inferred", "discharge_time",
