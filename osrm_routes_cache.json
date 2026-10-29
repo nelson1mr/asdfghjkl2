@@ -5023,5 +5023,14 @@
     "duration_min": 152,
     "distance_km": 162.31,
     "updated_at": "2026-10-29T20:01:14.281219+00:00"
+  },
+  "-16.5740,-68.1861->-16.0796,-68.6719": {
+    "station_id": 1773,
+    "station_name": "ESTACION DE SERVICIO ACHACACHI",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxp@[isD~|EsoDbr@cuFuAc|B|uMobHn`F_lQzbPiqC~eJwg@teIynGj`EgsOtjHrCv`@udB~{A_`Dzu@}xGl`D",
+    "duration_min": 79,
+    "distance_km": 84.46,
+    "updated_at": "2026-10-29T21:31:09.198119+00:00"
   }
 }
