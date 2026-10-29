@@ -4933,5 +4933,41 @@
     "duration_min": 83,
     "distance_km": 84.95,
     "updated_at": "2026-10-29T14:47:33.708963+00:00"
+  },
+  "-21.5669,-64.6661->-21.8764,-64.7065": {
+    "station_id": 1799,
+    "station_name": "PADCAYA",
+    "department": "tarija",
+    "polyline": "|bsbC|`uiKzBn\\pvBcoAdhAcrA~e@oNnuBdEhWym@jyAqiAdn@c@r|FotBx\\q[nu@{AlzBzzA`x@lgBln@bf@`bAfUx`@jd@vaAt[fuAjVjfDvChdCnl@nsDlrBb]jnA|`B~aA",
+    "duration_min": 40,
+    "distance_km": 41.85,
+    "updated_at": "2026-10-29T18:01:13.745843+00:00"
+  },
+  "-21.5669,-64.6661->-21.5196,-64.7440": {
+    "station_id": 1800,
+    "station_name": "LAS AMERICAS",
+    "department": "tarija",
+    "polyline": "|bsbC|`uiKo@|AdB|\\wDfNiqBr}CeG~MiKrs@sVx{BmL`ZcEjEa@vF_RfRcIlEo^yEgXbEsIzKyYxOjLsFrAT",
+    "duration_min": 11,
+    "distance_km": 11.15,
+    "updated_at": "2026-10-29T18:01:14.086368+00:00"
+  },
+  "-21.5669,-64.6661->-21.5468,-64.6999": {
+    "station_id": 1797,
+    "station_name": "PRESIDENTE ARCE",
+    "department": "tarija",
+    "polyline": "|bsbC|`uiKo@|AdB|\\YxC}ClIkuB|cDe@Y}@n@g@xDdAb@hCkG",
+    "duration_min": 5,
+    "distance_km": 4.65,
+    "updated_at": "2026-10-29T18:01:14.426122+00:00"
+  },
+  "-21.4679,-65.7169->-21.4369,-65.7204": {
+    "station_id": 1847,
+    "station_name": "ESTACION DE SERVICIO TUPIZA Y.P.F.B.",
+    "department": "potosi",
+    "polyline": "h|_bCtfbpKgTdJa^g@}QeBun@mLwH[_PrGBbBcXbLqJ~A{HfD",
+    "duration_min": 7,
+    "distance_km": 3.7,
+    "updated_at": "2026-10-29T18:01:14.766006+00:00"
   }
 }
