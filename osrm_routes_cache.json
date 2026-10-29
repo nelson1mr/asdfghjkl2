@@ -5050,5 +5050,14 @@
     "duration_min": 98,
     "distance_km": 102.86,
     "updated_at": "2026-10-29T22:46:08.152960+00:00"
+  },
+  "-16.5740,-68.1861->-17.4356,-67.5219": {
+    "station_id": 907,
+    "station_name": "ESTACION DE SERVICIO CRUCE LURIBAY S.R.L. E.S.C.L. S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_LnbOof@heEp`ArcTcaA|mh@stTdyNmgJpgJmoKprKojB`iGohGn|Ugkg@bdCkgRbfHgdL_]dm@",
+    "duration_min": 126,
+    "distance_km": 132.82,
+    "updated_at": "2026-10-29T23:46:14.141363+00:00"
   }
 }
