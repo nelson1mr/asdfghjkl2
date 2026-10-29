@@ -4987,5 +4987,41 @@
     "duration_min": 1228,
     "distance_km": 1330.3,
     "updated_at": "2026-10-29T19:31:05.927384+00:00"
+  },
+  "-17.4506,-66.1238->-17.4496,-66.1310": {
+    "station_id": 1754,
+    "station_name": "ESTACION DE SERVICIO VALLE HERMOSO",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|FnCWj@WKwC?SGpDrS^hBNVaJ~I_@]WX",
+    "duration_min": 5,
+    "distance_km": 1.05,
+    "updated_at": "2026-10-29T20:01:13.163202+00:00"
+  },
+  "-17.4506,-66.1238->-17.3654,-66.1734": {
+    "station_id": 1748,
+    "station_name": "ESTACION DE SERVICIO CALA CALA",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|FnC{EV`FtW_UzW{Zvn@eQ|QyqA|x@uV`Coe@{LiU|Kw}AmA}dAjLuc@|[asAfVaOxW`AtNyB|R",
+    "duration_min": 15,
+    "distance_km": 12.63,
+    "updated_at": "2026-10-29T20:01:13.521442+00:00"
+  },
+  "-17.4506,-66.1238->-17.3716,-66.1735": {
+    "station_id": 1751,
+    "station_name": "ESTACION DE SERVICIO AMERICA",
+    "department": "cochabamba",
+    "polyline": "hgoiBj|qrK|FnC{EV`FtW_UzW{Zvn@eQ|QyqA|x@uV`Cmd@{LkV|Ke~AmAodAjLad@b\\kv@tNi@mJaEvnA",
+    "duration_min": 15,
+    "distance_km": 12.56,
+    "updated_at": "2026-10-29T20:01:13.877977+00:00"
+  },
+  "-16.5740,-68.1861->-15.6675,-69.1228": {
+    "station_id": 943,
+    "station_name": "ESTACION DE SERVICIO \"ESCOMA\" S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxp@[isD~|EweLlo@c|B|uMooZjdWiqC~eJqi@lgIgaXhjNa`Bv}BkhN~rFevYrmD}w@paJ~_AzrHqzIpa[asJ`_LarOl}KqmL`_F",
+    "duration_min": 152,
+    "distance_km": 162.31,
+    "updated_at": "2026-10-29T20:01:14.281219+00:00"
   }
 }
