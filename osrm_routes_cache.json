@@ -4969,5 +4969,14 @@
     "duration_min": 7,
     "distance_km": 3.7,
     "updated_at": "2026-10-29T18:01:14.766006+00:00"
+  },
+  "-21.2681,-63.4502->-21.2666,-63.4758": {
+    "station_id": 1802,
+    "station_name": "PALOS BLANCOS",
+    "department": "tarija",
+    "polyline": "nxx`CjngbKiHlI}A|IqH`v@kJht@fTdDaBdMfLhB}AfK",
+    "duration_min": 5,
+    "distance_km": 3.35,
+    "updated_at": "2026-10-29T19:16:02.444450+00:00"
   }
 }
