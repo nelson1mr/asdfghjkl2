@@ -4897,5 +4897,23 @@
     "duration_min": 223,
     "distance_km": 227.32,
     "updated_at": "2026-10-29T00:32:44.136016+00:00"
+  },
+  "-16.5740,-68.1861->-16.1634,-67.7220": {
+    "station_id": 863,
+    "station_name": "ESTACION DE SERVICIO BALLIVIANSANTABARBARA",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofB{_@{_@dPa]{WqYsX{G}b@fM`VkTaJrA_Yet@{gAuB{cAtYrc@ijAsCe`@_gA_UibAyr@yBsq@qiAmqBkrBcyAif@_bBkf@_g@ubFaxAagA~[mjEmm@w|@r^{WgoAm[hBa[l]`Sqs@gIcTcUwAfUqJpX_q@p^}eBeE_n@`d@q`BwXwf@vHgd@aT{e@fEkbAwpAizBq`@grC}U_\\}{@oVqj@kw@xS{pDod@{SsHaaAtZmxAwUnJ{qAkg@cN~VpGbOc^hW}yA`Py{Bef@}Wuv@}JfUzM~lAed@wcBvQeZcDs`@i@`b@u`@bSbLfOqLxh@vOr@dFpYcE~fAoFomAgm@nD^qh@bPuMcZ_RvEuc@bTaOoY{f@pLekBei@``BtUaxAsc@keAq@meA_YycAxDfwAa[uzC{R_WwmAaAe^gk@y]_D}q@{kA",
+    "duration_min": 119,
+    "distance_km": 117.54,
+    "updated_at": "2026-10-29T14:17:51.771238+00:00"
+  },
+  "-19.5774,-65.7602->-19.5836,-65.7558": {
+    "station_id": 1796,
+    "station_name": "VILLA IMPERIAL",
+    "department": "potosi",
+    "polyline": "tsnvB`vjpK}DlDoEeGpDmANS]_@K}@b@wAjEiIT?tV~O|G}Hj@Y?c@zEwF",
+    "duration_min": 5,
+    "distance_km": 1.74,
+    "updated_at": "2026-10-29T14:17:52.133610+00:00"
   }
 }
