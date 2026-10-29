@@ -835,6 +835,7 @@ def batch_upsert_dispatches(db: Client, dispatches: list[dict], batch_size: int 
             # Si el despacho ya había sido descubierto en destino (descubrimiento tardío)
             # y ahora llega la hora de salida de balanza oficial de YPFB:
             if d.get("dispatched_at") and was_retro:
+                fecha_hora_efectiva = None
                 official_disp = parse_kyros_datetime(fecha_hora_efectiva) if fecha_hora_efectiva else None
                 if official_disp:
                     travel_m = d.get("travel_duration_minutes") or 25
