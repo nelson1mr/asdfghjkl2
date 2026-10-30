@@ -5099,5 +5099,14 @@
     "duration_min": 44,
     "distance_km": 46.21,
     "updated_at": "2026-10-30T14:16:04.172335+00:00"
+  },
+  "-19.0800,-65.2217->-19.0394,-65.2488": {
+    "station_id": 1762,
+    "station_name": "OSTRIA GUTIERREZ",
+    "department": "chuquisaca",
+    "polyline": "nimsBvtamKf@vGmBxChM[~FbFxGbOw@dPvH~EsIrMuEnPsBzBen@xOid@tRcTxBaVpHgBxEkQ~QkKdFiIlLaCeBfD_GBqBqP}QmArAeRzEue@fUkKcV",
+    "duration_min": 11,
+    "distance_km": 8.31,
+    "updated_at": "2026-10-30T16:46:04.909235+00:00"
   }
 }
