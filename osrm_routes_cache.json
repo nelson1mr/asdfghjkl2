@@ -5059,5 +5059,14 @@
     "duration_min": 126,
     "distance_km": 132.82,
     "updated_at": "2026-10-29T23:46:14.141363+00:00"
+  },
+  "-16.5740,-68.1861->-16.5705,-68.6714": {
+    "station_id": 1111,
+    "station_name": "ESTACION DE SERVICIO TIAHUANACU",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lxp@[od@|bAymC`yCsoDbr@cfDtAhgA~hFjkBzjG_MheC`_@dwClHx~Frp@pi@vlC~aKfK`dBxgAxrCno@b~@mm@dcEjrBbgDyB~^kbArgAczBhmE|k@~gH",
+    "duration_min": 62,
+    "distance_km": 64.19,
+    "updated_at": "2026-10-30T00:15:59.189872+00:00"
   }
 }
