@@ -5081,5 +5081,14 @@
     "duration_min": 69,
     "distance_km": 69.7,
     "updated_at": "2026-10-30T02:30:57.922249+00:00"
+  },
+  "-21.5669,-64.6661->-21.2457,-65.2031": {
+    "station_id": 1745,
+    "station_name": "ESTACION DE SERVICIO EL PUENTE - YPFB",
+    "department": "tarija",
+    "polyline": "|bsbC|`uiKwAtl@_vBfeD_Nlw@}KeD{xCtfCmn@vtBqhBrb@sClU{YbHm~Hgl@aMlx@eh@tLuOhf@qu@re@{tAkX{Ul{@OduAm]kTcGbs@oOg@nPbh@qCrV_N`ArMf_@iU~BaIdf@fMfXoKxb@gl@lm@zg@~mAia@tLgQhb@dCz~@jq@pUyAhe@n[d]kEr[jl@z~@hAbc@cTrGt\\hk@zJoVhE`S}Wr[eGeLi|@~PjAfrAa[npBfUtqDk_AxeBmy@jd@}|@flA[d]nU~AcP|MryAviAmTIdQtOuGlVeq@e@xQvJsVjcAvEx`@la@t^zNz~@tUzHmg@aDzIfLcm@tqAquBp`@{bAaCsy@hl@}z@hMoAnkAsb@jl@}^mNyHti@sa@nWwq@~tAik@lJyk@frHch@lo@asBbF_KmJ",
+    "duration_min": 90,
+    "distance_km": 98.82,
+    "updated_at": "2026-10-30T13:46:03.983698+00:00"
   }
 }
