@@ -5126,5 +5126,14 @@
     "duration_min": 143,
     "distance_km": 163.0,
     "updated_at": "2026-10-30T18:01:05.413662+00:00"
+  },
+  "-19.0800,-65.2217->-19.0627,-65.2729": {
+    "station_id": 1766,
+    "station_name": "EL TEJAR",
+    "department": "chuquisaca",
+    "polyline": "nimsBvtamKf@vGmBxChM[~FbFxGbOw@dPtGtCZhCmIrKuEnPsBzBik@pNu]jOvEzAjPPjEvAjR~_@|L`LtA|KfF`F`@vHyJxJ{AvGoNtFuLPqHgDmPT{QuCuHhBeDnGyCqB_[~PwGzBeAeAqD|EmGeGoA|D`FhSlEJhErDc@|FuEfCfCrC~DzPtS{F|BDn@dA",
+    "duration_min": 13,
+    "distance_km": 11.33,
+    "updated_at": "2026-10-30T20:01:04.146188+00:00"
   }
 }
