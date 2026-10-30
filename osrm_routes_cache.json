@@ -5135,5 +5135,14 @@
     "duration_min": 13,
     "distance_km": 11.33,
     "updated_at": "2026-10-30T20:01:04.146188+00:00"
+  },
+  "-16.5740,-68.1861->-17.4364,-67.5205": {
+    "station_id": 982,
+    "station_name": "ESTACION DE SERVICIO KONANI S.R.L.",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_LnbOof@heEp`ArcTcaA|mh@stTdyNmgJpgJmoKjtK{kBfgGcgGn|Ugkg@bdCkgRbfHgdLwXjd@",
+    "duration_min": 126,
+    "distance_km": 132.72,
+    "updated_at": "2026-10-30T20:31:08.076724+00:00"
   }
 }
