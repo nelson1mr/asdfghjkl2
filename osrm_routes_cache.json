@@ -3060,7 +3060,11 @@
   "-17.8771,-63.2004->-17.8088,-63.2112": {
     "polyline": "p{alB|ov`K_^XmPxR}tCsf@e]{@mr@rm@cy@e_@ab@pr@_t@pj@zUgJ",
     "duration_min": 13,
-    "distance_km": 9.51
+    "distance_km": 9.51,
+    "station_id": 910,
+    "station_name": "ESTACION DE SERVICIO DAVILA S.R.L",
+    "department": "santa_cruz",
+    "updated_at": "2026-10-30T02:01:11.038621+00:00"
   },
   "-17.8771,-63.2004->-17.1363,-63.2285": {
     "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CcmFcyAc|X_PubJpZqsHboCg~IleAaiJ|rHkyAxHewCv_C}hImgDe_EuxC{rRtjA",
