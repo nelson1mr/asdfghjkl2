@@ -5117,5 +5117,14 @@
     "duration_min": 295,
     "distance_km": 301.32,
     "updated_at": "2026-10-30T17:16:06.265309+00:00"
+  },
+  "-21.5669,-64.6661->-20.6946,-65.2244": {
+    "station_id": 1767,
+    "station_name": "YPFB - CAMARGO",
+    "department": "chuquisaca",
+    "polyline": "|bsbC|`uiK_~IrcOahCdbAm~Hgl@o}B`tC{tAkXmxCzhPhsC`lIm}Al`@mBlvJwwDlxEb~AzyB}aAvuBvnAfjCujAzyAopHrxA_A~jAanEpaE_tAhbJ{gu@|zC_kc@oAsiJzjAosH{dB",
+    "duration_min": 143,
+    "distance_km": 163.0,
+    "updated_at": "2026-10-30T18:01:05.413662+00:00"
   }
 }
