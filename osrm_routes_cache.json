@@ -5090,5 +5090,14 @@
     "duration_min": 90,
     "distance_km": 98.82,
     "updated_at": "2026-10-30T13:46:03.983698+00:00"
+  },
+  "-19.5774,-65.7602->-19.5527,-65.4416": {
+    "station_id": 1795,
+    "station_name": "BETANZOS",
+    "department": "potosi",
+    "polyline": "tsnvB`vjpK}DlDec@qe@fNcc@sDwOiM`C{FkG|KsOw~@uE{EqKwUkGmDs]k]{Zav@y_BoLyHcp@wHk}AegAeR{VwHc`@}a@uMoa@qm@uhAwzB|C{v@jUu\\vd@sU|Wy`AgBsa@rGeSqXa|AnX{oApc@oj@d@yr@rKyo@zSy\\nb@sVbcAgQvb@yq@fmAas@}Csb@tIuGuAkO~]a}@pAep@ng@{`@fDwQ|h@ko@lLc_@_i@esAfM_i@mc@aHaFk^aPwBgGmSqm@ib@sCo^xN{S~Ku{@",
+    "duration_min": 44,
+    "distance_km": 46.21,
+    "updated_at": "2026-10-30T14:16:04.172335+00:00"
   }
 }
