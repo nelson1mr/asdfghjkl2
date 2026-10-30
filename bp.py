@@ -51,7 +51,7 @@ PRODUCTS = [
 STATION_MAPPING = {
     "BEREA":        {"id": 1053, "fuels": [1, 2]}, 
     "CABEZAS":      {"id": 1055, "fuels": [1, 2]}, 
-    #"CEDENO":       {"id": 881,  "fuels": [1, 2]}, #ya no existe en la web de Biopetrol, se ignora
+    "CEDENO":       {"id": 881,  "fuels": [1, 2]}, 
     "CHACO":        {"id": 1220, "fuels": [1, 2, 3]}, 
     "EQUIPETROL":   {"id": 1221, "fuels": [1, 2]},  
     "LA TECA":      {"id": 1241, "fuels": [1, 2]},  
