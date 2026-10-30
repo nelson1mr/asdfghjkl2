@@ -5108,5 +5108,14 @@
     "duration_min": 11,
     "distance_km": 8.31,
     "updated_at": "2026-10-30T16:46:04.909235+00:00"
+  },
+  "-17.8771,-63.2004->-15.9121,-63.1683": {
+    "station_id": 1816,
+    "station_name": "GUARAYOS",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`KunQrkBqpDiaGmrFizA{{d@nW}wVgsV{}R_Lod@{mEg_Gk{@ogI_gg@csc@}of@}qQdtDyaP}uA{zg@gjSmpJhcI}}K~xS|e@hgJ}`L~oN{iAzzHqlFt~@}tKb{M{pa@~pUy|JrfAyx^lcT",
+    "duration_min": 295,
+    "distance_km": 301.32,
+    "updated_at": "2026-10-30T17:16:06.265309+00:00"
   }
 }
