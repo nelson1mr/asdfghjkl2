@@ -5144,5 +5144,14 @@
     "duration_min": 126,
     "distance_km": 132.72,
     "updated_at": "2026-10-30T20:31:08.076724+00:00"
+  },
+  "-17.8771,-63.2004->-16.2749,-62.5098": {
+    "station_id": 1166,
+    "station_name": "ESTACION DE SERVICIOS SAN JAVIER",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`KcqImEmhBjeBcsCtKekCwaBkd@q~CmrFizA{{d@nW}wVgsVe~FfBonEwmAaqDj|@sb@wlEg_Gk{@ogI_gg@cgBoGqbSun[y{LadJycGxNwxHtpDyaP}uAq|a@w}QcqDGufAscBo|Cb]erHefC}vN`tAmuGheDyh@y}@chFk[e~KhiBc{Bqo@",
+    "duration_min": 251,
+    "distance_km": 229.14,
+    "updated_at": "2026-10-31T03:01:07.498094+00:00"
   }
 }
