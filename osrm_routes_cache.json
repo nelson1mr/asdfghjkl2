@@ -5153,5 +5153,14 @@
     "duration_min": 251,
     "distance_km": 229.14,
     "updated_at": "2026-10-31T03:01:07.498094+00:00"
+  },
+  "-16.5740,-68.1861->-16.7183,-68.1862": {
+    "station_id": 952,
+    "station_name": "ESTACIÓN DE SERVICIO FULL TANK DE AMILCAR DIPP MERCADO",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Ll_Oof@reEp`Af~DcY",
+    "duration_min": 16,
+    "distance_km": 16.26,
+    "updated_at": "2026-10-31T18:16:11.256742+00:00"
   }
 }
