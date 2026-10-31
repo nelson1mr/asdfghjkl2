@@ -5171,5 +5171,14 @@
     "duration_min": 95,
     "distance_km": 93.19,
     "updated_at": "2026-10-31T20:16:04.204015+00:00"
+  },
+  "-16.5740,-68.1861->-16.1931,-67.7259": {
+    "station_id": 1125,
+    "station_name": "ESTACION DE SERVICIO UCHUMACHI",
+    "department": "la_paz",
+    "polyline": "hbddBhrd_Lzn@gEemApAcaHofB{_@{_@dPa]{WqYsX{G}b@fM`VkTaJrA_Yet@{gAuB{cAtYrc@ijAsCe`@_gA_UibAyr@yBsq@qiAmqBkrBcyAif@_bBkf@_g@ubFaxAagA~[mjEmm@w|@r^{WgoAm[hBa[l]`Sqs@gIcTcUwAfUqJpX_q@p^}eBeE_n@`d@q`BwXwf@vHgd@aT{e@fEkbAwpAizBq`@grC}U_\\}{@oVqj@kw@xS{pDod@{SsHaaAtZmxAwUnJ{qAkg@cN~VpGbOc^hW}yA`Py{Bef@}Wuv@}JfUzM~lAed@wcBvQeZcDs`@i@`b@u`@bSbLfOqLxh@vOr@dFpYeF`fAmEqlAgm@nD^qh@bPuMcZ_RvEuc@bTaOoY{f@pLekBei@``BtUaxAsc@keAq@meA_YycAxDfwAyZ{yCyT_XnxAcIbXoXni@pH}h@}^sn@~OagAe}@",
+    "duration_min": 128,
+    "distance_km": 121.51,
+    "updated_at": "2026-10-31T22:01:10.796805+00:00"
   }
 }
