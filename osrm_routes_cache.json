@@ -5180,5 +5180,14 @@
     "duration_min": 128,
     "distance_km": 121.51,
     "updated_at": "2026-10-31T22:01:10.796805+00:00"
+  },
+  "-16.5740,-68.1861->-14.0798,-66.7948": {
+    "station_id": 1229,
+    "station_name": "SANTA ROSA PERLA DEL BENI S.R.L.",
+    "department": "beni",
+    "polyline": "hbddBhrd_LiaQgoF~^okBwzK_sMieSkxB|`Bo`KqpGuqPj@gaJ__Kgi@|AfcBqVq`DsPltE{hDi_SopZw|Iw|@kzJy`NciKa}LemAixGlsC_lDgfLka]gaB}hBa_KazP{}Gm|EsvYm|CibEmvBz\\mj@urFqdMyuE}iNaeN}fLt~AyjHg}CuZykEgoIjk@s{FgyJ_`AsiLujYkxUcsPyqE_iNt`@qhE~rCswPyq@ivPxlHipH}HsyQs`BiiK}cF}|OtgBsjXkfEckHxiHkiDml@",
+    "duration_min": 520,
+    "distance_km": 482.77,
+    "updated_at": "2026-11-01T01:16:08.959932+00:00"
   }
 }
