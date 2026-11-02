@@ -5189,5 +5189,14 @@
     "duration_min": 520,
     "distance_km": 482.77,
     "updated_at": "2026-11-01T01:16:08.959932+00:00"
+  },
+  "-17.8771,-63.2004->-18.4642,-63.1250": {
+    "station_id": 1809,
+    "station_name": "ESTACION DE SERVICIO CABEZAS",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`KlKsb@ntB|r@rdDjiHnaD`Lbp@}L`y@uoBmR_oFfhB{h@jmRp|@va]kwApxj@||D|f@c_P",
+    "duration_min": 100,
+    "distance_km": 83.96,
+    "updated_at": "2026-11-02T16:46:00.173742+00:00"
   }
 }
