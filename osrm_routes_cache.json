@@ -5216,5 +5216,14 @@
     "duration_min": 64,
     "distance_km": 65.44,
     "updated_at": "2026-11-03T20:16:07.596235+00:00"
+  },
+  "-20.4556,-66.8132->-20.4549,-66.8155": {
+    "station_id": 1794,
+    "station_name": "UYUNI",
+    "department": "potosi",
+    "polyline": "bdz{BhpxvKaDyCg@K~B|Ll@x@W\\",
+    "duration_min": 5,
+    "distance_km": 0.45,
+    "updated_at": "2026-11-03T20:46:11.052471+00:00"
   }
 }
