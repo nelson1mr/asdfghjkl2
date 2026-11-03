@@ -5198,5 +5198,23 @@
     "duration_min": 100,
     "distance_km": 83.96,
     "updated_at": "2026-11-02T16:46:00.173742+00:00"
+  },
+  "-19.0800,-65.2217->-19.3523,-64.4751": {
+    "station_id": 1765,
+    "station_name": "ESTACION DE SERVICIO TARABUQUILLO",
+    "department": "chuquisaca",
+    "polyline": "nimsBvtamKbVxUxlAsqAv}EyVdd@ky@dp@jNy@}]x`AkFbn@u}A~t@~Hz|BqhAdr@giBej@gvCcp@u_@bFinAi}AkuCdLkoCl{@s\\`GoqAs^{KpK_hAuaAweBnR{vAg`@{b@yhAfE_y@ezAhk@ed@{XiVp\\sq@xiA{v@imAwLffCwvAgTmo@zi@gaAcb@kiCikDyhEe{A`_@gVe]qaBri@iDkXceBqOtSmvAmm@mJdYe_Aes@kcA`Fkj@asAcIbNu`BmzBwt@rQgdBs[ms@bp@oh@sVob@zaBunAxI{_AzdBqhC~xDivAmAa|@{l@mv@~wA_gDs@isAum@g_A~TcvCi^ca@|j@u_@eBg~@ztDi}@~pA}oBc_BoyBmqAum@zs@mbB}LulBrf@ax@nsBgPpwB_bD`tJ{iBhgCr`Dx}ByW|gAdqApoHuP",
+    "duration_min": 156,
+    "distance_km": 158.88,
+    "updated_at": "2026-11-03T20:16:07.266644+00:00"
+  },
+  "-17.8771,-63.2004->-17.3536,-63.2516": {
+    "station_id": 1097,
+    "station_name": "ESTACIÓN DE SERVICIO \"S.J.\"SRL",
+    "department": "santa_cruz",
+    "polyline": "p{alB|ov`Kmo@rScsDoh@mr@rm@cy@e_@mhBjeBcsCtKekCwaBkd@q~CmrFizA{oX}No_JfYu}HppCmcJdhAwfKttI",
+    "duration_min": 64,
+    "distance_km": 65.44,
+    "updated_at": "2026-11-03T20:16:07.596235+00:00"
   }
 }
