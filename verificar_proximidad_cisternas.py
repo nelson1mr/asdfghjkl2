@@ -305,12 +305,15 @@ async def _query_plate(session: aiohttp.ClientSession, cand: str) -> tuple[str, 
                     return ("online", parsed) if parsed else ("not_found", None)
                 if resp.status == 404:
                     return ("not_found", None)
-                if resp.status in (429, 503):
+                if resp.status == 429:
                     ra = resp.headers.get("Retry-After", "")
                     cooldown = float(ra) if ra.isdigit() else COOLDOWN_429_SECONDS
-                    print(f"  [RATE-LIMIT] Kyros HTTP {resp.status} ({cand}). Enfriando IP {cooldown:.1f}s (reintento {attempt + 1}/{HTTP_RETRIES})...")
+                    print(f"  [RATE-LIMIT] API HTTP 429 ({cand}). Enfriando IP {cooldown:.1f}s (reintento {attempt + 1}/{HTTP_RETRIES})...")
                     await asyncio.sleep(cooldown)
                     continue  # Reintento limpio tras enfriamiento calibrado de la IP
+                if resp.status == 503:
+                    # 503 Service Unavailable: el backend está caído, no dormir 31s
+                    return ("error", "http_503")
                 last = f"http_{resp.status}"
                 if resp.status not in (500, 502, 504):
                     return ("error", last)
@@ -499,7 +502,7 @@ def _deliver(dec: Decision, arrived: datetime, confidence: str, closed_by: str, 
 
     # Si se cierra por ventana expirada, viaje previo o fallback y el viaje ocurrió en el pasado:
     # el fin físico de entrega ocurrió en (arrived + tiempo_descarga), no a la hora arbitraria 'now' del cron.
-    if closed_by in ("trip_window_expired", "superseded_by_newer_dispatch", "initial_sync_overdue", "no_station_time_fallback", "gps_offline_time_fallback"):
+    if closed_by in ("trip_window_expired", "superseded_by_newer_dispatch", "initial_sync_overdue", "no_station_time_fallback", "gps_offline_time_fallback", "inferred_time_delivery"):
         delivery_time = expected_finish if expected_finish <= now else now
         calc_discharge = discharge_min
     else:
@@ -690,9 +693,13 @@ def evaluate(d: dict, station: dict | None, gps: GpsResult | None, prev_radar: d
             dec.note = f"Kyros con error ({gps.detail}); se espera satélite"
             return dec
 
-        # Regla D: Despacho Tipo B (sin GPS) -> avanza por cronómetro estimado
+        # Regla D: Despacho Tipo B (sin GPS o API no disponible) -> avanza por cronómetro estimado
         if not d.get("has_gps") and not gps_known:
-            if overrun >= 0:
+            discharge_min = int(d.get("discharge_duration_minutes") or estimate_discharge_minutes(liters) or 45)
+            if overrun >= discharge_min:
+                _deliver(dec, eta, "inferred", "inferred_time_delivery",
+                         f"tiempo de descarga cumplido (ETA+{overrun:.0f} min)", now, discharge_min)
+            elif overrun >= 0:
                 _arrive(dec, eta, "inferred", f"inferred_time_arrival (ETA+{overrun:.0f} min)", liters)
             else:
                 dec.note = f"En ruta cinemática (ETA: {eta.astimezone(BOLIVIA_TZ).strftime('%H:%M')}, faltan {int(-overrun)} min)"
@@ -1057,40 +1064,64 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False, fo
 
         return logs
 
-    # Procesar camiones consultando Kyros uno por uno con persistencia inmediata
+    # Procesar camiones consultando la API GPS uno por uno con persistencia inmediata
     total_query = len(to_query)
+    api_online = True
     async with aiohttp.ClientSession(connector=connector, headers=HTTP_HEADERS) as session:
-        for idx, key in enumerate(to_query, 1):
-            if breaker.open:
-                print("  [WARN] Circuit breaker abierto por fallos consecutivos en Kyros.")
-                break
+        # Pre-flight check: si el endpoint está completamente caído (503 / unreachable), no bloquear en 200+ peticiones
+        if total_query > 0:
+            try:
+                async with session.get(f"{KYROS_GPS_URL}/health_check", timeout=aiohttp.ClientTimeout(total=2.5)) as test_resp:
+                    if test_resp.status == 503:
+                        api_online = False
+                        print("  [WARN] API GPS no disponible (HTTP 503 Service Unavailable). Se avanza en modo cinemático.")
+            except Exception:
+                api_online = False
+                print("  [WARN] API GPS inaccesible. Se avanza en modo cinemático.")
 
-            candidates = plate_candidates(key)
-            gps_res = await fetch_gps(session, breaker, key, candidates)
+        if not api_online:
+            for key in to_query:
+                gstats["api_offline"] += 1
+                logs = process_and_persist_truck(key, GpsResult(key, "error", detail="api_offline"))
+                if verbose and logs:
+                    for line in logs:
+                        print(line)
+        else:
+            for idx, key in enumerate(to_query, 1):
+                if breaker.open:
+                    print("  [WARN] Circuit breaker abierto por fallos consecutivos en API GPS.")
+                    # Evaluar camiones restantes cinemáticamente para no abandonarlos
+                    for rem_key in to_query[idx - 1:]:
+                        gstats["circuit_open"] += 1
+                        process_and_persist_truck(rem_key, GpsResult(rem_key, "error", detail="circuit_open"))
+                    break
 
-            if gps_res.status == "online":
-                fresh = minutes(now - min(gps_res.recorded_at or now, now)) <= GPS_FRESH_MIN
-                gstats["online_fresco" if fresh else "online_desactualizado"] += 1
-            else:
-                gstats[gps_res.status] += 1
+                candidates = plate_candidates(key)
+                gps_res = await fetch_gps(session, breaker, key, candidates)
 
-            # Evaluar y guardar en caliente en la BD
-            logs = process_and_persist_truck(key, gps_res)
-
-            if verbose:
                 if gps_res.status == "online":
-                    print(f"  [{idx}/{total_query}] 🛰️  [GPS] {key}: ONLINE ({gps_res.speed:.0f} km/h en {gps_res.lat:.4f}, {gps_res.lng:.4f})")
-                elif gps_res.status == "not_found":
-                    print(f"  [{idx}/{total_query}] ⚪ [GPS] {key}: Sin reporte satelital en Kyros (404)")
+                    fresh = minutes(now - min(gps_res.recorded_at or now, now)) <= GPS_FRESH_MIN
+                    gstats["online_fresco" if fresh else "online_desactualizado"] += 1
                 else:
-                    print(f"  [{idx}/{total_query}] ⚠️  [GPS] {key}: {gps_res.status} ({gps_res.detail})")
-                for line in logs:
-                    print(line)
-            elif idx % 25 == 0 or idx == total_query:
-                print(f"  • Progreso: {idx}/{total_query} camiones procesados (Online: {gstats['online_fresco']}, Guardados: {written})...")
+                    gstats[gps_res.status] += 1
 
-            # Pacing calibrado entre peticiones sucesivas
-            await asyncio.sleep(PACING_S)
+                # Evaluar y guardar en caliente en la BD
+                logs = process_and_persist_truck(key, gps_res)
+
+                if verbose:
+                    if gps_res.status == "online":
+                        print(f"  [{idx}/{total_query}] 🛰️  [GPS] {key}: ONLINE ({gps_res.speed:.0f} km/h en {gps_res.lat:.4f}, {gps_res.lng:.4f})")
+                    elif gps_res.status == "not_found":
+                        print(f"  [{idx}/{total_query}] ⚪ [GPS] {key}: Sin reporte satelital en API (404)")
+                    else:
+                        print(f"  [{idx}/{total_query}] ⚠️  [GPS] {key}: {gps_res.status} ({gps_res.detail})")
+                    for line in logs:
+                        print(line)
+                elif idx % 25 == 0 or idx == total_query:
+                    print(f"  • Progreso: {idx}/{total_query} camiones procesados (Online: {gstats['online_fresco']}, Guardados: {written})...")
+
+                # Pacing calibrado entre peticiones sucesivas
+                await asyncio.sleep(PACING_S)
 
     # Procesar camiones omitidos por caché (cinemáticos / sin satélite)
     if cached_404:
