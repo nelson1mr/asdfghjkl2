@@ -40,7 +40,8 @@ load_dotenv()
 SUPABASE_URL = os.getenv("V3") or os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("V4") or os.getenv("SUPABASE_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
-KYROS_BASE_URL = "https://nominac.kyros-tech.com/api"
+YPFB_WEB_URL = os.getenv("YPFB_WEB_URL", "https://consulta.ypfb.gob.bo")
+KYROS_BASE_URL = os.getenv("KYROS_BASE_URL", "https://nominac.kyros-tech.com/api")
 OSRM_BASE_URL = "http://router.project-osrm.org/route/v1/driving"
 
 PAGE_SIZE = 50                          # Cantidad de items por página al consultar la API de Kyros
@@ -467,8 +468,55 @@ class StationMatcher:
         return None, None
 
 # =============================================================================
-# 6. EXTRACCIÓN ASÍNCRONA DE LA API DE KYROS
+# 6. EXTRACCIÓN ASÍNCRONA: WEB OFICIAL (consulta.ypfb.gob.bo) Y API
 # =============================================================================
+async def fetch_dispatches_from_web(session: aiohttp.ClientSession) -> list[dict]:
+    """Extrae despachos oficiales en tiempo real desde el portal web de YPFB (JSON precompilado)."""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "es-BO,es;q=0.9,en;q=0.8"
+    }
+    async with session.get(YPFB_WEB_URL, headers=headers, timeout=aiohttp.ClientTimeout(total=25)) as resp:
+        if resp.status != 200:
+            print(f"  [WARN] Portal web YPFB respondió con status HTTP {resp.status}")
+            return []
+        html = await resp.text()
+
+    pattern = r'<script[^>]*id=["\']datos-publicos["\'][^>]*>(.*?)</script>'
+    match = re.search(pattern, html, re.DOTALL)
+    if not match:
+        print("  [WARN] Bloque 'datos-publicos' no encontrado en el HTML de consulta.ypfb.gob.bo")
+        return []
+
+    try:
+        data = json.loads(match.group(1).strip())
+    except Exception as e:
+        print(f"  [ERROR] Fallo al deserializar JSON de datos-publicos: {e}")
+        return []
+
+    datos = data.get("datos", {})
+    despachos_raw = []
+
+    for d_id_str, d_val in datos.items():
+        try:
+            d_id = int(d_id_str)
+        except ValueError:
+            continue
+        if not isinstance(d_val, dict):
+            continue
+        for prod_name, prod_val in d_val.items():
+            if prod_name == "GLP" or not isinstance(prod_val, dict):
+                continue
+            for it in prod_val.get("despachos", []):
+                st_name = it.get("estacion") or it.get("cliente")
+                if not st_name or st_name.strip() == "YPFB":
+                    continue
+                it["_distrito_id"] = d_id
+                despachos_raw.append(it)
+
+    return despachos_raw
+
 async def fetch_kyros_page(
     session: aiohttp.ClientSession,
     semaphore: asyncio.Semaphore,
@@ -476,6 +524,7 @@ async def fetch_kyros_page(
     params: dict,
     max_retries: int = 3
 ) -> dict:
+    """Consulta paginada con reintentos para la API REST de YPFB."""
     async with semaphore:
         for attempt in range(max_retries):
             try:
@@ -535,6 +584,32 @@ async def fetch_district_data(
         despachos_raw.append(it)
 
     return despachos_raw
+
+async def fetch_dispatches_from_api(
+    session: aiohttp.ClientSession,
+    semaphore: asyncio.Semaphore,
+    fecha_desde: str,
+    fecha_hasta: str
+) -> list[dict]:
+    """Extrae despachos desde la API REST oficial de YPFB consultando distritos en paralelo."""
+    distritos_raw = await fetch_kyros_page(session, semaphore, f"{KYROS_BASE_URL}/catalogos/distritos/publico", {})
+    distritos_activos = [d for d in distritos_raw if d.get("tiene_datos")]
+    print(f"  -> {len(distritos_activos)} distritos comerciales con datos activos reportados por la API.")
+
+    if not distritos_activos:
+        return []
+
+    print(f"  -> Extrayendo despachos físicos (Semáforo: {MAX_CONCURRENT_KYROS} hilos)...")
+    tasks = [
+        fetch_district_data(session, semaphore, d, fecha_desde, fecha_hasta)
+        for d in distritos_activos
+    ]
+    results = await asyncio.gather(*tasks)
+
+    all_despachos = []
+    for desp_list in results:
+        all_despachos.extend(desp_list)
+    return all_despachos
 
 # =============================================================================
 # CÁLCULO DE DURACIÓN FÍSICA DE DESCARGA SEGÚN VOLUMEN
@@ -922,16 +997,21 @@ async def run_ypfb_ingestion_async(
     db: Client,
     dias_atras: int = 0,
     enable_osrm: bool = True,
-    dry_run: bool = False
+    dry_run: bool = False,
+    fuente: str = "auto"
 ) -> dict:
     t_start_total = time.time()
     now_bo = datetime.now(BOLIVIA_TZ)
     fecha_hasta = now_bo.strftime("%Y-%m-%d")
     fecha_desde = (now_bo - timedelta(days=dias_atras)).strftime("%Y-%m-%d")
 
+    fuente_efectiva = (fuente or os.getenv("YPFB_DISPATCH_SOURCE", "auto")).lower()
+    if fuente_efectiva not in ("auto", "web", "api"):
+        fuente_efectiva = "auto"
+
     print("\n" + "=" * 75)
     rango_str = f"Solo Hoy ({fecha_hasta})" if dias_atras == 0 else f"{fecha_desde} a {fecha_hasta}"
-    print(f"INGESTIÓN YPFB/KYROS -> SURTIVEO (SOLO DESPACHOS) | Rango: {rango_str}")
+    print(f"INGESTIÓN YPFB -> SURTIVEO | Rango: {rango_str} | Modo Fuente: {fuente_efectiva.upper()}")
     print("=" * 75)
 
     print("[1/5] Cargando catálogo de estaciones físicas desde Supabase...")
@@ -945,27 +1025,40 @@ async def run_ypfb_ingestion_async(
     osrm_cache = OSRMCache()
     print(f"  -> Caché OSRM cargada ({len(osrm_cache.routes)} rutas precalculadas).")
 
-    print("[2/5] Consultando distritos activos en Kyros API...")
+    all_despachos = []
+    fuente_usada = fuente_efectiva
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_KYROS)
     connector = aiohttp.TCPConnector(limit_per_host=6)
 
     async with aiohttp.ClientSession(connector=connector) as session:
-        distritos_raw = await fetch_kyros_page(session, semaphore, f"{KYROS_BASE_URL}/catalogos/distritos/publico", {})
-        distritos_activos = [d for d in distritos_raw if d.get("tiene_datos")]
-        print(f"  -> {len(distritos_activos)} distritos comerciales con datos activos.")
+        # Opción 1: Web oficial (consulta.ypfb.gob.bo)
+        if fuente_efectiva in ("auto", "web"):
+            print("[2/5] Extrayendo despachos oficiales desde portal web YPFB (consulta.ypfb.gob.bo)...")
+            try:
+                all_despachos = await fetch_dispatches_from_web(session)
+                if all_despachos:
+                    fuente_usada = "web"
+                    print(f"  -> {len(all_despachos)} despachos extraídos exitosamente desde la Web YPFB.")
+                elif fuente_efectiva == "auto":
+                    print("  [FALLBACK] Portal web no devolvió despachos. Intentando API oficial...")
+            except Exception as e:
+                if fuente_efectiva == "auto":
+                    print(f"  [FALLBACK] Error consultando portal web ({e}). Intentando API oficial...")
+                else:
+                    print(f"  [ERROR] Fallo al consultar portal web YPFB: {e}")
 
-        print(f"[3/5] Extrayendo despachos físicos (Semáforo: {MAX_CONCURRENT_KYROS} hilos)...")
-        tasks = [
-            fetch_district_data(session, semaphore, d, fecha_desde, fecha_hasta)
-            for d in distritos_activos
-        ]
-        results = await asyncio.gather(*tasks)
+        # Opción 2: API oficial REST (como fallback de auto o forzada por flag)
+        if not all_despachos and fuente_efectiva in ("auto", "api"):
+            print("[2/5] Consultando distritos activos y despachos en API oficial YPFB...")
+            try:
+                all_despachos = await fetch_dispatches_from_api(session, semaphore, fecha_desde, fecha_hasta)
+                if all_despachos:
+                    fuente_usada = "api"
+                    print(f"  -> {len(all_despachos)} despachos extraídos desde la API oficial.")
+            except Exception as e:
+                print(f"  [ERROR] Fallo al consultar API oficial YPFB: {e}")
 
-    all_despachos = []
-    for desp_list in results:
-        all_despachos.extend(desp_list)
-
-    print(f"  -> Despachos efectivos con cisterna extraídos: {len(all_despachos)}")
+    print(f"[3/5] Despachos efectivos con cisterna listos para procesar ({fuente_usada.upper()}): {len(all_despachos)}")
 
     print("[4/5] Mapeando estaciones, calculando estados físicos y polylines...")
     dispatches = await process_and_transform_records(
@@ -1016,7 +1109,8 @@ def run_ypfb_ingestion(
     db: Client | None = None,
     dias_atras: int = 0,
     enable_osrm: bool = True,
-    dry_run: bool = False
+    dry_run: bool = False,
+    fuente: str = "auto"
 ) -> dict:
     if db is None:
         if not SUPABASE_URL or not SUPABASE_KEY:
@@ -1024,13 +1118,14 @@ def run_ypfb_ingestion(
         db = create_client(SUPABASE_URL, SUPABASE_KEY)
 
     return asyncio.run(
-        run_ypfb_ingestion_async(db, dias_atras, enable_osrm, dry_run)
+        run_ypfb_ingestion_async(db, dias_atras, enable_osrm, dry_run, fuente)
     )
 
 def main():
-    parser = argparse.ArgumentParser(description="Ingestor de Despachos y Cisternas YPFB / Kyros para Surtiveo (Solo Despachos Reales)")
+    parser = argparse.ArgumentParser(description="Ingestor de Despachos y Cisternas YPFB para Surtiveo (Híbrido Web / API)")
     parser.add_argument("--dias", type=int, default=0, help="Número de días hacia atrás a consultar (default: 0 = solo hoy)")
     parser.add_argument("--solo-hoy", action="store_true", help="Consultar únicamente el día de hoy")
+    parser.add_argument("--fuente", type=str, choices=["auto", "web", "api"], default="auto", help="Fuente de datos: 'auto' (web con fallback a api), 'web' (portal consulta.ypfb.gob.bo) o 'api' (API oficial REST)")
     parser.add_argument("--sin-osrm", action="store_true", help="Desactivar generación de rutas polyline OSRM")
     parser.add_argument("--dry-run", action="store_true", help="Ejecutar análisis sin escribir en la base de datos")
 
@@ -1043,7 +1138,8 @@ def main():
         db=None,
         dias_atras=dias,
         enable_osrm=enable_osrm,
-        dry_run=args.dry_run
+        dry_run=args.dry_run,
+        fuente=args.fuente
     )
 
 if __name__ == "__main__":
