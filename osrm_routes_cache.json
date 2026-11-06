@@ -5225,5 +5225,14 @@
     "duration_min": 5,
     "distance_km": 0.45,
     "updated_at": "2026-11-03T20:46:11.052471+00:00"
+  },
+  "-20.4556,-66.8132->-20.9611,-66.2041": {
+    "station_id": 1791,
+    "station_name": "ALLITA ATOCHA",
+    "department": "potosi",
+    "polyline": "bdz{BhpxvKjx@~iAt~IunDp`Ger@po@}nCruH_iLxyGo~F|vYmg[tv@ofHa_AyaDb|BcfJ~`GegIzIyv@tpDy_D`{BuyGxxCyi@wXciCv`AtBzrBehB",
+    "duration_min": 93,
+    "distance_km": 96.03,
+    "updated_at": "2026-11-06T20:15:54.667415+00:00"
   }
 }
