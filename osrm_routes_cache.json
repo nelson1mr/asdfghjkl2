@@ -5234,5 +5234,23 @@
     "duration_min": 93,
     "distance_km": 96.03,
     "updated_at": "2026-11-06T20:15:54.667415+00:00"
+  },
+  "-17.9357,-67.1146->-17.9445,-67.1004": {
+    "station_id": 1009,
+    "station_name": "BIOPETROL LUCYFER",
+    "department": "oruro",
+    "polyline": "z~mlBtcsxK|gAob@B[_CsGkEoJaMsPZ[j[uNIS}OlH}AS",
+    "duration_min": 5,
+    "distance_km": 3.22,
+    "updated_at": "2026-11-07T17:15:53.169257+00:00"
+  },
+  "-17.8771,-63.2004->-17.9445,-67.1004": {
+    "station_id": 1009,
+    "station_name": "BIOPETROL LUCYFER",
+    "department": "oruro",
+    "polyline": "p{alB|ov`KunQrkBqpDiaGmrFizAmvc@~I{vShvE_eRlbMjzOtcaAboGrcMg`GphLa]z~]wxEpzXifE~dOmpNz}RwrAlhIzwBvnLw|F~kLwrAp~QcfThoy@ksLraLmjFv~i@tElo_@tzBjzFcmG|iMhh@rxGb`Ev|BfxBtzH{nDnpOjr@poKvnD`bBbmDaxAloW~hTswAfpEjkF~rEku@dlIy}Dp|CfnNyWjmKcvExiAzoAtcKeiGdoEzwLwnHnsk@hxB`aFlYn}]||j@tdExZdbFreIdaEmrDhiJjaImXydB`_E|kCltBnvA~wOq_B|iMefGngLblDBzMfpBsmI~hM{X`zFauIrrHfm@riCxtFaSbo@p|Dl|C`e@v\\lxJdgg@aaExzLxqN",
+    "duration_min": 666,
+    "distance_km": 690.62,
+    "updated_at": "2026-11-07T17:15:53.490504+00:00"
   }
 }
