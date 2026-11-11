@@ -5252,5 +5252,68 @@
     "duration_min": 666,
     "distance_km": 690.62,
     "updated_at": "2026-11-07T17:15:53.490504+00:00"
+  },
+  "-17.8442,-60.7306->-16.3895,-60.9446": {
+    "station_id": 1257,
+    "station_name": "SURTIDOR GUAPOMO S.R.L",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJcq@|~@ove@geGab}@y}D{kEiaKigB}d@q}I`eBm}D}z@u`C{yCsgEco@qkA~uComElnA{iSswAcwGrv@_tI|mGwiHxfCwhHtBceBfhAqpBdeEmvBnm@iTfoLmzHpcDpzAt|Yq|BdvCg{Bjv@o`ZhT_|QguFemEza@l]}vA",
+    "duration_min": 195,
+    "distance_km": 206.38,
+    "updated_at": "2026-11-11T02:16:03.437917+00:00"
+  },
+  "-17.8442,-60.7306->-15.3794,-61.4949": {
+    "station_id": 1845,
+    "station_name": "PETROMAGER S.R.L.",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJukeBcdK{kEiaK{eMb_AqdOueGg}GdeF_b\\_`@w~RvuKavHdHc~HfrHuTnpLw|HngDpzAt|Yq|BdvCw|]tkA_`R{uFy{FvDa|J|mF}~Xq|@c{XfvUvInaHw`Wlhb@soDd~SymIxaIkpb@xpG{uv@ksE",
+    "duration_min": 382,
+    "distance_km": 355.55,
+    "updated_at": "2026-11-11T02:16:03.797113+00:00"
+  },
+  "-17.8442,-60.7306->-15.9106,-61.4324": {
+    "station_id": 925,
+    "station_name": "ESTACIÓN DE SERVICIO \"EL CHIQUITANO\"",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJukeBcdK{kEiaK{eMb_AqdOueGg}GdeF_f\\s^wzRjtKavHdHc~HfrHuTnpLw|HngDpzAt|Yq|BdvCw|]tkA_`R{uFy{FvDa|J|mF}~Xq|@i|XbxUvHfdHu_Wjfb@otDbbOjeAfsC",
+    "duration_min": 286,
+    "distance_km": 291.55,
+    "updated_at": "2026-11-11T02:16:04.154739+00:00"
+  },
+  "-17.8442,-60.7306->-16.3674,-60.9713": {
+    "station_id": 1165,
+    "station_name": "ESTACIÓN DE SERVICIOS SAN IGNACIO DE VELASCO",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJcq@|~@ove@geGab}@y}D{kEiaKigB}d@q}I`eBm}D}z@u`C{yCmdE{n@wnAvuComElnAulSqwAixG|w@_pH~yFwiIjyCsrHjFunEtlGgoBtb@iWdtLw|HngDtzAd{VseAhzEirDvsAqsSr]}sLymA_xJkpDy{FvDyw@nkB",
+    "duration_min": 197,
+    "distance_km": 207.82,
+    "updated_at": "2026-11-11T02:16:04.511827+00:00"
+  },
+  "-17.8442,-60.7306->-18.3389,-59.7669": {
+    "station_id": 793,
+    "station_name": "CIRO ROMERO ESTRADA",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJn\\exDxzCuyJd^s}Y{UkpBtf@upAmd@o|Gt}@_~Cp|N{sPtgD}uGn^u_FhaIcgHvrDw}Kr]czCp|Ekd@zMjf@z`A?plAwc@zdAggDkf@}hAbd@qdBbxCiXpuEgyC|[kpAzhAa`@~H}wAlbByvBfAscGbxBwkGlWo~Bjs@acB|{C_kBdtEyrG",
+    "duration_min": 123,
+    "distance_km": 130.29,
+    "updated_at": "2026-11-11T02:16:04.868844+00:00"
+  },
+  "-17.8442,-60.7306->-18.8283,-58.6090": {
+    "station_id": 1844,
+    "station_name": "GASOLINERIA KINKO S.R.L.",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJhxD{rPpIe~h@b|@szCb~NgwPtgD}uGn^u_FhaIcgHjqE{xPzzJwa@rbAwvIbxCiXj|HukGllBwoElBkhGx}DibNdsOwwOzWsyE`eKs{XfaBqpLraFixHbBqkGdhBqrJfi@ktBb~By_AjsLo{f@~~By{WhoCknAjpFmkLnc@ahPtfCszF|sLenLt_IqdO|BykC",
+    "duration_min": 246,
+    "distance_km": 270.61,
+    "updated_at": "2026-11-11T02:16:05.226845+00:00"
+  },
+  "-17.8442,-60.7306->-17.8459,-60.7292": {
+    "station_id": 1811,
+    "station_name": "SAN JOSE DE CHIQUITOS",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJp@}JLGvOdA?^e@V?J",
+    "duration_min": 5,
+    "distance_km": 0.56,
+    "updated_at": "2026-11-11T02:16:05.582144+00:00"
   }
 }
