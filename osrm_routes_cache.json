@@ -5315,5 +5315,23 @@
     "duration_min": 5,
     "distance_km": 0.56,
     "updated_at": "2026-11-11T02:16:05.582144+00:00"
+  },
+  "-17.8442,-60.7306->-17.8279,-60.7745": {
+    "station_id": 866,
+    "station_name": "ESTACION DE SERVICIO BIANCA",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJq@bLeA?oQfH_AjAiBvUeBjbAuAfSkXnoA}FhPwN|XmHhN_B?",
+    "duration_min": 5,
+    "distance_km": 5.21,
+    "updated_at": "2026-11-13T00:00:51.719520+00:00"
+  },
+  "-17.8442,-60.7306->-19.0175,-57.7196": {
+    "station_id": 999,
+    "station_name": "ESTACION DE SERVICIO LIDO S.R.L",
+    "department": "santa_cruz",
+    "polyline": "l~{kBfltqJhxD{rPtfAyym@rh_@_wi@jqE{xPzzJwa@rbAwvInuM_eHtnHm|\\dsOwwOzll@}sxB~~By{Wt`KyzNnc@ahPhmYimb@n`AahSl}^glfAc_AqufA~qEqwO",
+    "duration_min": 321,
+    "distance_km": 370.72,
+    "updated_at": "2026-11-13T00:00:52.038846+00:00"
   }
 }
