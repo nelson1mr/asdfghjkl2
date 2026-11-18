@@ -5342,5 +5342,14 @@
     "duration_min": 34,
     "distance_km": 31.33,
     "updated_at": "2026-11-17T00:46:20.160710+00:00"
+  },
+  "-16.5740,-68.1861->-14.8656,-66.7445": {
+    "station_id": 1825,
+    "station_name": " ESTACION DE SERVICIO \"IRIARTE SAN BORJA\"",
+    "department": "beni",
+    "polyline": "hbddBhrd_LiaQgoF~^okBwzK_sMieSkxB|`Bo`KqpGuqPj@gaJ__Kgi@|AfcBqVq`DsPltE{hDi_SopZw|Iw|@kzJy`NciKa}LemAixGlsC_lDgfLka]gaB}hBa_KazP{}Ga}E_xYy{C}`EmvBz\\wqFcoLyoDv[w|RcyPqaJr{ByjHg}CuZykEgoIjk@s{FgyJ{fAkrLywXchU_wOylCsqAogC",
+    "duration_min": 371,
+    "distance_km": 384.56,
+    "updated_at": "2026-11-18T01:01:19.597970+00:00"
   }
 }
