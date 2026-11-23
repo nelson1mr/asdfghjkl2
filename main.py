@@ -22,6 +22,7 @@ import bp
 import genex
 import gg
 import ingestar_despachos_ypfb
+from switches import describe, is_enabled
 
 # Cargar variables de entorno
 load_dotenv()
@@ -34,24 +35,29 @@ SUPABASE_KEY = os.getenv("V4")
 # =============================================================================
 # Para agregar un nuevo scraper en el futuro:
 # 1. Importa el módulo (ej. import nuevo_surtidor)
-# 2. Agrégalo a la lista SCRAPER_REGISTRY
+# 2. Agrégalo a la lista SCRAPER_REGISTRY con su variable de switch (ver switches.py)
 SCRAPER_REGISTRY = [
     {
         "id": "GENEX",
         "name": "Cadena Genex (Santa Cruz)",
         "module": genex,
+        "switch": "SCRAPE_GENEX",
     },
     {
         "id": "BIOPETROL",
         "name": "Cadena Biopetrol",
         "module": bp,
+        "switch": "SCRAPE_BIOPETROL",
     },
     {
         "id": "GASGROUP",
         "name": "Cadena GasGroup (Santa Cruz / Tarija / Cbba)",
         "module": gg,
+        "switch": "SCRAPE_GASGROUP",
     },
 ]
+
+ALL_SWITCHES = ["SCRAPE_ANH", *(s["switch"] for s in SCRAPER_REGISTRY), "SCRAPE_YPFB"]
 
 
 def run_custom_scraper(scraper_info: dict) -> tuple[str, list[dict]]:
@@ -88,10 +94,20 @@ def execute_all_custom_scrapers() -> dict[tuple[int, int], dict]:
     custom_reports: dict[tuple[int, int], dict] = {}
     stats: dict[str, int] = {}
 
-    with ThreadPoolExecutor(max_workers=len(SCRAPER_REGISTRY) or 1) as executor:
+    enabled_scrapers = []
+    for scraper in SCRAPER_REGISTRY:
+        if is_enabled(scraper["switch"]):
+            enabled_scrapers.append(scraper)
+        else:
+            print(f"  [SWITCH] {scraper['name']} desactivado ({scraper['switch']}=off). Se omite.")
+
+    if not enabled_scrapers:
+        return custom_reports
+
+    with ThreadPoolExecutor(max_workers=len(enabled_scrapers)) as executor:
         futures = {
             executor.submit(run_custom_scraper, scraper): scraper["name"]
-            for scraper in SCRAPER_REGISTRY
+            for scraper in enabled_scrapers
         }
 
         for future in as_completed(futures):
@@ -119,14 +135,20 @@ def main():
         exit(1)
 
     db: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    print(f"[SWITCHES] {describe(ALL_SWITCHES)}")
 
     # 1. Cargar caché de estaciones y telemetría ANH
     print("\n[ETAPA 2/4] Consultando catálogo de estaciones y API ANH...")
-    stations_cache = asdfghjkl2.get_station_cache(db)
-    latest_official_cache = asdfghjkl2.get_latest_official_cache(db)
-    raw_anh_telemetry = asdfghjkl2.asyncio.run(asdfghjkl2.fetch_all_anh_telemetry())
-    anh_reports = asdfghjkl2.generate_anh_reports(raw_anh_telemetry, stations_cache, latest_official_cache)
-    print(f"  -> Reportes generados por ANH (macro nacional): {len(anh_reports)}")
+    anh_reports: list[dict] = []
+    if is_enabled("SCRAPE_ANH"):
+        # Las cachés de estaciones/snapshots solo las usa ANH: no se leen si está apagado (ahorra egress)
+        stations_cache = asdfghjkl2.get_station_cache(db)
+        latest_official_cache = asdfghjkl2.get_latest_official_cache(db)
+        raw_anh_telemetry = asdfghjkl2.asyncio.run(asdfghjkl2.fetch_all_anh_telemetry())
+        anh_reports = asdfghjkl2.generate_anh_reports(raw_anh_telemetry, stations_cache, latest_official_cache)
+        print(f"  -> Reportes generados por ANH (macro nacional): {len(anh_reports)}")
+    else:
+        print("  [SWITCH] ANH desactivado (SCRAPE_ANH=off). Se omite.")
 
     # 2. Ejecutar scrapers personalizados
     custom_reports = execute_all_custom_scrapers()
@@ -158,10 +180,13 @@ def main():
 
     # 5. Ingestión oficial de despachos y nominaciones YPFB / Kyros (Nuevo Motor V3)
     print("\n[ETAPA 5/5] Sincronizando despachos y nominaciones oficiales YPFB...")
-    try:
-        ingestar_despachos_ypfb.run_ypfb_ingestion(db, dias_atras=0)
-    except Exception as e:
-        print(f"  [ERROR] Falló la sincronización de despachos YPFB: {e}")
+    if not is_enabled("SCRAPE_YPFB"):
+        print("  [SWITCH] YPFB desactivado (SCRAPE_YPFB=off). No se consulta consulta.ypfb.gob.bo ni la API Kyros.")
+    else:
+        try:
+            ingestar_despachos_ypfb.run_ypfb_ingestion(db, dias_atras=0)
+        except Exception as e:
+            print(f"  [ERROR] Falló la sincronización de despachos YPFB: {e}")
 
     total_time = time.time() - start_total
     print("\n" + "=" * 70)

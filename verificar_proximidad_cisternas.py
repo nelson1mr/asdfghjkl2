@@ -53,6 +53,7 @@ BOLIVIA_TZ = timezone(timedelta(hours=-4))
 
 # Catálogo de plantas distribuidoras de YPFB para evaluar salida de planta en loading
 from ingestar_despachos_ypfb import CATALOGO_DISTRITOS
+from switches import is_enabled
 
 # --- Geocercas ----------------------------------------------------------------
 GEOFENCE_RADIUS_M = 120.0
@@ -1067,9 +1068,15 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False, fo
     # Procesar camiones consultando la API GPS uno por uno con persistencia inmediata
     total_query = len(to_query)
     api_online = True
+    offline_reason = "api_offline"
     async with aiohttp.ClientSession(connector=connector, headers=HTTP_HEADERS) as session:
+        # Switch manual (SCRAPE_KYROS_GPS=false): no se toca Kyros, ni siquiera el pre-flight
+        if total_query > 0 and not is_enabled("SCRAPE_KYROS_GPS"):
+            api_online = False
+            offline_reason = "gps_disabled"
+            print("  [SWITCH] GPS Kyros desactivado (SCRAPE_KYROS_GPS=off). Se avanza en modo cinemático.")
         # Pre-flight check: si el endpoint está completamente caído (503 / unreachable), no bloquear en 200+ peticiones
-        if total_query > 0:
+        elif total_query > 0:
             try:
                 async with session.get(f"{KYROS_GPS_URL}/health_check", timeout=aiohttp.ClientTimeout(total=2.5)) as test_resp:
                     if test_resp.status == 503:
@@ -1081,8 +1088,8 @@ async def run_async(db: Client, dry_run: bool = False, verbose: bool = False, fo
 
         if not api_online:
             for key in to_query:
-                gstats["api_offline"] += 1
-                logs = process_and_persist_truck(key, GpsResult(key, "error", detail="api_offline"))
+                gstats[offline_reason] += 1
+                logs = process_and_persist_truck(key, GpsResult(key, "error", detail=offline_reason))
                 if verbose and logs:
                     for line in logs:
                         print(line)

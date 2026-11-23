@@ -30,12 +30,20 @@ jobs:
           gx: ${{ secrets.gx }}
           bp: ${{ secrets.bp }}
           gg: ${{ secrets.gg }}
+          # Switches on/off por fuente (Settings → Variables). Vacío = encendido. Ver switches.py
+          SCRAPE_ANH: ${{ vars.SCRAPE_ANH }}
+          SCRAPE_GENEX: ${{ vars.SCRAPE_GENEX }}
+          SCRAPE_BIOPETROL: ${{ vars.SCRAPE_BIOPETROL }}
+          SCRAPE_GASGROUP: ${{ vars.SCRAPE_GASGROUP }}
+          SCRAPE_YPFB: ${{ vars.SCRAPE_YPFB }}
         run: |
           python main.py
       - name: Run Proximity & Geofencing Immediately
+        if: ${{ vars.RUN_PROXIMITY != 'false' }}
         env:
           V3: ${{ secrets.V3 }}
           V4: ${{ secrets.V4 }}
+          SCRAPE_KYROS_GPS: ${{ vars.SCRAPE_KYROS_GPS }}
         run: |
           python verificar_proximidad_cisternas.py
       - name: Commit and push updated OSRM cache
