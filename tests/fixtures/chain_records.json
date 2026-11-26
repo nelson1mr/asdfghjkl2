@@ -1,0 +1,14 @@
+{
+  "GENEX_OFFICIAL_WEB": [
+    {"station_id": 796, "fuel_type_id": 1, "official_condition": "available", "available_liters": 28992.0, "reported_at": "2026-11-26T10:00:00+00:00", "liters_reported_at": "2026-11-26T10:00:00+00:00", "source": "GENEX_OFFICIAL_WEB"},
+    {"station_id": 796, "fuel_type_id": 2, "official_condition": "unavailable", "available_liters": 0.0, "reported_at": "2026-11-26T10:00:00+00:00", "liters_reported_at": "2026-11-26T10:00:00+00:00", "source": "GENEX_OFFICIAL_WEB"},
+    {"station_id": 801, "fuel_type_id": 1, "official_condition": "available", "available_liters": null, "reported_at": "2026-11-26T10:00:00+00:00", "liters_reported_at": "2026-11-26T10:00:00+00:00", "source": "GENEX_OFFICIAL_WEB"}
+  ],
+  "BIOPETROL_OFFICIAL_WEB": [
+    {"station_id": 1053, "fuel_type_id": 1, "official_condition": "available", "available_liters": 15000.0, "reported_at": "2026-11-26T10:00:00+00:00", "liters_reported_at": "2026-11-26T10:00:00+00:00", "source": "BIOPETROL_OFFICIAL_WEB"},
+    {"station_id": 1055, "fuel_type_id": 2, "official_condition": "unavailable", "available_liters": 0.0, "reported_at": "2026-11-26T10:00:00+00:00", "liters_reported_at": "2026-11-26T10:00:00+00:00", "source": "BIOPETROL_OFFICIAL_WEB"}
+  ],
+  "GASGROUP_OFFICIAL_WEB": [
+    {"station_id": 1036, "fuel_type_id": 3, "official_condition": "available", "available_liters": 1234.56, "reported_at": "2026-11-26T10:00:00+00:00", "liters_reported_at": "2026-11-26T10:00:00+00:00", "source": "GASGROUP_OFFICIAL_WEB"}
+  ]
+}

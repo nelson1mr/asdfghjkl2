@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:surtiveo:contracts:ingest:official-reports:v1",
+  "title": "Surtiveo · ingesta de reportes oficiales · v1",
+  "description": "Payload de api.ingest_official_reports(payload). Una fuente por llamada. El servidor mapea la estación, deduplica e inserta solo lo nuevo (ver README.md).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "source", "observed_at", "items"],
+  "properties": {
+    "contract_version": {
+      "const": 1,
+      "description": "Versión del contrato. El servidor rechaza cualquier otra (error 22023)."
+    },
+    "source": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_ ]{1,63}$",
+      "description": "Texto exacto que se guarda en station_official_reports.source. Debe coincidir con private.data_sources.ingest_source; si no, se rechaza el lote. Conservar el texto histórico: la deduplicación compara por igualdad.",
+      "examples": ["ANH_SCRAPER V2", "BIOPETROL_OFFICIAL_WEB", "GENEX_OFFICIAL_WEB", "GASGROUP_OFFICIAL_WEB"]
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Momento del scrape (RFC 3339 con zona). Valor por defecto de reported_at y de liters_reported_at. No puede estar más de 5 min en el futuro."
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Opcional. Un uuid nuevo por llamada (también por bloque). Si se repite con el mismo payload, el servidor devuelve el resultado guardado con replayed = true; con otro payload, rechaza el lote."
+    },
+    "items": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 1000,
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fuel_type_id", "condition"],
+      "oneOf": [
+        { "required": ["anh_id"] },
+        { "required": ["station_id"] }
+      ],
+      "properties": {
+        "anh_id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647,
+          "description": "Id de la estación en la ANH (stations.anh_id). Exactamente uno de anh_id o station_id."
+        },
+        "station_id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647,
+          "description": "Id interno (stations.id). Exactamente uno de anh_id o station_id."
+        },
+        "fuel_type_id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32767,
+          "description": "public.fuel_types.id: 1 Gasolina, 2 Diésel, 3 Gasolina Premium, 4 Diésel Uls."
+        },
+        "condition": {
+          "enum": ["available", "unavailable"]
+        },
+        "available_liters": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 5000000,
+          "description": "NULL u omitido = sin medición (la ANH sin sonda). 0 = tanque vacío."
+        },
+        "queue_cars": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 500,
+          "description": "Autos en fila (official_queue_cars_estimate)."
+        },
+        "reported_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Momento del dato (la ANH usa fecha_ultima_venta). Por defecto, observed_at. No puede estar más de 5 min en el futuro."
+        },
+        "liters_reported_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Opcional y solo con available_liters. Si falta: el del último reporte de la misma fuente cuando los litros no cambiaron (|Δ| < 1 L); si cambiaron, observed_at."
+        }
+      }
+    }
+  }
+}

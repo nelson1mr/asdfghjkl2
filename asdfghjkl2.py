@@ -371,6 +371,53 @@ def generate_anh_reports(
 
 
 # =============================================================================
+#  ITEMS PARA api.ingest_official_reports (contrato v1, SUR-79)
+# =============================================================================
+
+def build_anh_items(raw_data: list[dict], now_utc: datetime) -> tuple[list[dict], dict]:
+    """
+    Convierte la telemetría cruda de la ANH en items del contrato v1, sin catálogo ni snapshot:
+    el servidor mapea anh_id, deduplica e inserta solo lo nuevo.
+      - anh_id, fuel_type_id y condition (misma regla que determine_availability);
+      - available_liters: 0 o vacío -> se omite (sin sonda), igual que parse_available_liters;
+      - reported_at = fecha_ultima_venta en UTC (si no se entiende, se omite y el servidor usa
+        observed_at); liters_reported_at no se manda: lo resuelve el servidor.
+    Devuelve (items, {"sin_mapeo": n, "sin_condicion": n}).
+    """
+    items: list[dict] = []
+    skipped = {"sin_mapeo": 0, "sin_condicion": 0}
+
+    for item in raw_data:
+        anh_id = item.get("id")
+        prod_meta = API_PRODUCT_TO_FUEL_TYPE_ID.get(item.get("_api_producto"))
+        if not isinstance(anh_id, int) or isinstance(anh_id, bool) or not prod_meta:
+            skipped["sin_mapeo"] += 1
+            continue
+
+        raw_fecha = item.get("fecha_ultima_venta")
+        dt_venta = parse_utc_dt(raw_fecha)
+        if dt_venta:
+            minutos_sin_venta = (now_utc - dt_venta).total_seconds() / 60.0
+        else:
+            minutos_sin_venta = 999999.0
+
+        condition = determine_availability(item, minutos_sin_venta)
+        if condition is None:
+            skipped["sin_condicion"] += 1
+            continue
+
+        out: dict = {"anh_id": anh_id, "fuel_type_id": prod_meta["id"], "condition": condition}
+        liters = parse_available_liters(item)
+        if liters is not None:
+            out["available_liters"] = liters
+        if dt_venta:
+            out["reported_at"] = dt_venta.isoformat()
+        items.append(out)
+
+    return items, skipped
+
+
+# =============================================================================
 # 7. INSERCIÓN EN LOTES Y DISPATCHES
 # =============================================================================
 
