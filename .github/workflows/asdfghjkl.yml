@@ -36,6 +36,13 @@ jobs:
           SCRAPE_BIOPETROL: ${{ vars.SCRAPE_BIOPETROL }}
           SCRAPE_GASGROUP: ${{ vars.SCRAPE_GASGROUP }}
           SCRAPE_YPFB: ${{ vars.SCRAPE_YPFB }}
+          # SUR-79: via RPC (api.ingest_official_reports) por fuente. APAGADOS por defecto: solo true/on/1 los enciende.
+          INGEST_RPC_GENEX: ${{ vars.INGEST_RPC_GENEX }}
+          INGEST_RPC_BIOPETROL: ${{ vars.INGEST_RPC_BIOPETROL }}
+          INGEST_RPC_GASGROUP: ${{ vars.INGEST_RPC_GASGROUP }}
+          INGEST_RPC_ANH: ${{ vars.INGEST_RPC_ANH }}
+          INGEST_BATCH_SIZE: ${{ vars.INGEST_BATCH_SIZE }}
+          INGEST_DRY_RUN: ${{ vars.INGEST_DRY_RUN }}
         run: |
           python main.py
       - name: Run Proximity & Geofencing Immediately

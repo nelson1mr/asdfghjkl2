@@ -1,0 +1,9 @@
+[
+  {"anh_id": 2390, "fuel_type_id": 1, "condition": "available", "available_liters": 12000.0, "reported_at": "2026-11-26T10:02:11+00:00"},
+  {"anh_id": 2390, "fuel_type_id": 2, "condition": "unavailable", "reported_at": "2026-11-26T09:00:00+00:00"},
+  {"anh_id": 2400, "fuel_type_id": 3, "condition": "available", "reported_at": "2026-11-26T10:10:00+00:00"},
+  {"anh_id": 2719, "fuel_type_id": 1, "condition": "available", "available_liters": 8000.0, "reported_at": "2026-11-26T09:30:00+00:00"},
+  {"anh_id": 2719, "fuel_type_id": 1, "condition": "available", "available_liters": 8000.0, "reported_at": "2026-11-26T10:00:00+00:00"},
+  {"anh_id": 2502, "fuel_type_id": 1, "condition": "available", "available_liters": 5000.5},
+  {"anh_id": 2503, "fuel_type_id": 2, "condition": "unavailable"}
+]

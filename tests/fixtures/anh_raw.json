@@ -1,0 +1,12 @@
+[
+  {"id": 2390, "_api_producto": 0, "saldo_litros": 12000, "saldo_estado": "alto", "fecha_ultima_venta": "2026-11-26T06:02:11"},
+  {"id": 2390, "_api_producto": 1, "saldo_litros": 0, "saldo_estado": "bajo", "fecha_ultima_venta": "2026-11-26T05:00:00"},
+  {"id": 2400, "_api_producto": 2, "saldo_litros": "", "saldo_estado": "bajo", "fecha_ultima_venta": "2026-11-26T06:10:00"},
+  {"id": 2719, "_api_producto": 0, "saldo_litros": 8000, "saldo_estado": "medio", "fecha_ultima_venta": "2026-11-26T05:30:00"},
+  {"id": 2719, "_api_producto": 0, "saldo_litros": 8000, "saldo_estado": "medio", "fecha_ultima_venta": "2026-11-26T06:00:00"},
+  {"id": 2500, "_api_producto": 3, "saldo_litros": 100, "saldo_estado": "", "fecha_ultima_venta": "2026-11-26T06:00:00"},
+  {"id": 2501, "_api_producto": 9, "saldo_litros": 100, "saldo_estado": "alto", "fecha_ultima_venta": "2026-11-26T06:00:00"},
+  {"id": 2502, "_api_producto": 0, "saldo_litros": 5000.5, "saldo_estado": "alto", "fecha_ultima_venta": "no-es-fecha"},
+  {"id": 2503, "_api_producto": 1, "saldo_litros": null, "saldo_estado": "bajo", "fecha_ultima_venta": null},
+  {"id": "2504", "_api_producto": 1, "saldo_litros": 10, "saldo_estado": "alto", "fecha_ultima_venta": "2026-11-26T06:00:00"}
+]
